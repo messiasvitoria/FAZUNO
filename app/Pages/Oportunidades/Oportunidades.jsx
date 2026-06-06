@@ -5,6 +5,8 @@ import {
   FaBolt,
   FaBroom,
   FaCalendarAlt,
+  FaCheckCircle,
+  FaComments,
   FaChevronDown,
   FaHammer,
   FaLeaf,
@@ -14,7 +16,6 @@ import {
   FaSlidersH,
   FaSnowflake,
   FaStar,
-  FaTag,
   FaThumbtack,
   FaTint,
   FaTools,
@@ -43,7 +44,6 @@ const CATEGORY_ICONS = {
 
 const FILTERS = [
   { label: "Todas", value: "todas" },
-  { label: "Próximas de mim", value: "proximas" },
   { label: "Maior valor", value: "maiorValor" },
   { label: "Menor distância", value: "menorDistancia" },
   { label: "Mais recentes", value: "recentes" },
@@ -65,8 +65,9 @@ const OPPORTUNITIES = [
   {
     id: 1,
     client: "Mariana Costa",
+    avatar: "/profiles/mariana-costa.jpg",
     rating: 4.8,
-    city: "São Paulo, SP",
+    city: "Vila Mariana, São Paulo - SP",
     category: "Pintura",
     title: "Pintura de apartamento",
     description: "Apartamento de 2 quartos, sala e cozinha. Cliente procura acabamento limpo e prazo curto.",
@@ -81,8 +82,9 @@ const OPPORTUNITIES = [
   {
     id: 2,
     client: "Carlos Menezes",
+    avatar: "/profiles/carlos-menezes.jpg",
     rating: 4.6,
-    city: "São Paulo, SP",
+    city: "Pinheiros, São Paulo - SP",
     category: "Limpeza",
     title: "Limpeza pós-obra",
     description: "Limpeza completa de apartamento após reforma, incluindo vidros, piso e retirada de resíduos.",
@@ -97,8 +99,9 @@ const OPPORTUNITIES = [
   {
     id: 3,
     client: "Juliana Pereira",
+    avatar: "/profiles/juliana-pereira.jpg",
     rating: 5.0,
-    city: "São Paulo, SP",
+    city: "Moema, São Paulo - SP",
     category: "Hidráulica",
     title: "Troca de torneira",
     description: "Torneira da cozinha com vazamento constante. Serviço simples com preferência para hoje.",
@@ -113,8 +116,9 @@ const OPPORTUNITIES = [
   {
     id: 4,
     client: "Ricardo Almeida",
+    avatar: "/profiles/ricardo-almeida.jpg",
     rating: 4.9,
-    city: "São Paulo, SP",
+    city: "Tatuapé, São Paulo - SP",
     category: "Elétrica",
     title: "Instalação de luminárias",
     description: "Instalar 3 luminárias no teto da sala e do quarto, com avaliação dos pontos existentes.",
@@ -129,8 +133,9 @@ const OPPORTUNITIES = [
   {
     id: 5,
     client: "Ana Souza",
+    avatar: "/profiles/ana-souza.jpg",
     rating: 4.7,
-    city: "São Paulo, SP",
+    city: "Santana, São Paulo - SP",
     category: "Jardinagem",
     title: "Poda de árvores e jardim",
     description: "Manutenção completa do jardim com poda de árvores frutíferas e organização dos canteiros.",
@@ -145,8 +150,9 @@ const OPPORTUNITIES = [
   {
     id: 6,
     client: "Pedro Lima",
+    avatar: "/profiles/pedro-lima.jpg",
     rating: 4.4,
-    city: "São Paulo, SP",
+    city: "Brooklin, São Paulo - SP",
     category: "Ar-condicionado",
     title: "Instalação de ar-condicionado",
     description: "Instalação de split 12.000 BTUs no quarto principal, com suporte e acabamento.",
@@ -213,18 +219,15 @@ function FilterButton({ children, active, onClick }) {
 }
 
 function OpportunityCard({ item, onPin }) {
-  return (
-    <article className={`op-card ${item.pinned ? "op-card--pinned" : ""}`}>
-      {item.pinned && (
-        <div className="op-pinned-label">
-          <FaThumbtack />
-          Fixada
-        </div>
-      )}
+  const isAccepted = item.status === "aceita";
+  const isPinned = item.pinned || isAccepted;
+  const avatarStyle = item.avatar ? { backgroundImage: `url(${item.avatar})` } : undefined;
 
+  return (
+    <article className={`op-card ${isPinned ? "op-card--pinned" : ""} ${isAccepted ? "op-card--accepted" : ""}`}>
       <div className="op-client-panel">
-        <div className="op-avatar" aria-hidden="true">
-          {item.client.charAt(0)}
+        <div className={`op-avatar ${item.avatar ? "op-avatar--photo" : ""}`} style={avatarStyle} aria-hidden="true">
+          {!item.avatar && item.client.charAt(0)}
         </div>
         <div className="op-client-row">
           <strong>{item.client}</strong>
@@ -234,6 +237,11 @@ function OpportunityCard({ item, onPin }) {
           </span>
           <span className="op-city">{item.city}</span>
         </div>
+        <span className="op-profile-distance">
+          <FaMapMarkerAlt />
+          <strong>{item.distance.toFixed(1)} km</strong>
+          de distância
+        </span>
       </div>
 
       <div className="op-service-panel">
@@ -253,32 +261,39 @@ function OpportunityCard({ item, onPin }) {
             Data desejada
             <strong>{item.date}</strong>
           </span>
-          <span>
-            <FaTag />
-            Orçamento
-            <strong>
-              R$ {money(item.budgetMin)} - R$ {money(item.budgetMax)}
-            </strong>
-          </span>
         </div>
       </div>
 
-      <aside className="op-card-side">
+      <aside className={`op-card-side ${isAccepted ? "op-card-side--accepted" : ""}`}>
         <StatusBadge status={item.status} />
-        <div className="op-price">
-          <strong>R$ {money(item.estimated)}</strong>
-          <span>Valor estimado</span>
-        </div>
-        <span className="op-distance">
-          <FaMapMarkerAlt />
-          <strong>{item.distance.toFixed(1)} km</strong>
-          de distância
-        </span>
+        {!isAccepted && (
+          <div className="op-price">
+            <strong>R$ {money(item.estimated)}</strong>
+            <span>Valor estimado</span>
+          </div>
+        )}
+        {isAccepted && (
+          <div className="op-accepted-banner">
+            <FaCheckCircle />
+            <span>Sua proposta foi aceita pelo cliente.</span>
+          </div>
+        )}
         <div className="op-card-actions">
-          <button type="button" className="op-details">
-            Ver detalhes
-          </button>
-          <PinButton pinned={item.pinned} onClick={() => onPin(item.id)} />
+          {isAccepted ? (
+            <button type="button" className="op-access-request">
+              Acessar solicitação
+            </button>
+          ) : (
+            <>
+              <button type="button" className="op-details">
+                Ver detalhes
+              </button>
+              <button type="button" className="op-chat" aria-label="Abrir chat com cliente" title="Chat com cliente">
+                <FaComments />
+              </button>
+              <PinButton pinned={isPinned} onClick={() => onPin(item.id)} />
+            </>
+          )}
         </div>
       </aside>
     </article>
@@ -302,6 +317,8 @@ export default function Oportunidades() {
   const sortedItems = useMemo(() => {
     const term = search.trim().toLowerCase();
     const filtered = items.filter((item) => {
+      if (item.transferred) return false;
+
       const matchesSearch =
         !term ||
         [item.client, item.city, item.category, item.title, item.description]
@@ -311,25 +328,28 @@ export default function Oportunidades() {
 
       const matchesCategory = categoryFilter === "todas" || item.category === categoryFilter;
       const matchesStatus = statusFilter === "todos" || item.status === statusFilter;
-      const matchesDistance = activeFilter !== "proximas" || item.distance <= 3;
-      const matchesPinned = !onlyPinned || item.pinned;
+      const isPriority = item.status === "aceita";
+      const matchesPinned = !onlyPinned || item.pinned || isPriority;
 
       return (
         matchesSearch &&
         matchesCategory &&
         matchesStatus &&
         matchesPriceRange(item, priceFilter) &&
-        matchesDistance &&
         matchesPinned
       );
     });
 
     return [...filtered].sort((a, b) => {
+      const acceptedOrder = Number(b.status === "aceita") - Number(a.status === "aceita");
+      if (acceptedOrder !== 0) return acceptedOrder;
+      const pinnedOrder = Number(b.pinned) - Number(a.pinned);
+      if (pinnedOrder !== 0) return pinnedOrder;
       if (activeFilter === "maiorValor") return b.estimated - a.estimated;
       if (activeFilter === "menorDistancia") return a.distance - b.distance;
       if (activeFilter === "recentes") return parseDate(b.date) - parseDate(a.date);
 
-      return Number(b.pinned) - Number(a.pinned);
+      return 0;
     });
   }, [activeFilter, categoryFilter, items, onlyPinned, priceFilter, search, statusFilter]);
 
@@ -339,8 +359,7 @@ export default function Oportunidades() {
     Number(categoryFilter !== "todas") +
     Number(priceFilter !== "todas") +
     Number(statusFilter !== "todos") +
-    Number(onlyPinned) +
-    Number(activeFilter === "proximas");
+    Number(onlyPinned);
 
   function togglePin(id) {
     setItems((current) => current.map((item) => (item.id === id ? { ...item, pinned: !item.pinned } : item)));
@@ -356,17 +375,24 @@ export default function Oportunidades() {
           box-sizing: border-box;
         }
 
+        html,
+        body {
+          height: auto !important;
+          min-height: 100%;
+          overflow-y: auto !important;
+        }
+
         .op-page {
           width: 100vw;
-          height: 100vh;
-          overflow: hidden;
+          min-height: 100vh;
+          overflow-x: hidden;
           background: #F7F8FB;
           color: #0A0B2D;
           font-family: 'DM Sans', sans-serif;
         }
 
         .op-shell {
-          height: 100%;
+          min-height: 100vh;
           max-width: 1160px;
           margin: 0 auto;
           padding: 30px 28px 22px;
@@ -615,7 +641,7 @@ export default function Oportunidades() {
         .op-list-wrap {
           min-height: 0;
           flex: 1;
-          overflow-y: auto;
+          overflow: visible;
           padding-right: 4px;
         }
 
@@ -677,22 +703,29 @@ export default function Oportunidades() {
           background: #F1670F;
         }
 
-        .op-pinned-label {
-          position: absolute;
-          top: -11px;
-          right: 18px;
-          display: inline-flex;
-          align-items: center;
-          gap: 5px;
-          min-height: 24px;
-          padding: 0 9px;
-          border-radius: 999px;
-          background: #F1670F;
-          color: #FFFFFF;
-          font-size: 0.68rem;
-          font-weight: 800;
-          box-shadow: 0 8px 18px rgba(241, 103, 15, 0.24);
-          z-index: 2;
+        .op-card--accepted {
+          border-color: #16A34A;
+          background: linear-gradient(90deg, #F3FBF6 0%, #FFFFFF 34%, #FFFFFF 100%);
+          box-shadow: 0 16px 38px rgba(22, 163, 74, 0.14);
+        }
+
+        .op-card--accepted:hover {
+          border-color: #16A34A;
+          box-shadow: 0 18px 42px rgba(22, 163, 74, 0.18);
+        }
+
+        .op-card--accepted::before {
+          background: #16A34A;
+        }
+
+        .op-card--accepted .op-category-icon {
+          background: rgba(22, 163, 74, 0.1);
+          color: #16A34A;
+        }
+
+        .op-card--accepted .op-profile-distance svg,
+        .op-card--accepted .op-meta svg {
+          color: #16A34A;
         }
 
         .op-client-panel {
@@ -716,6 +749,11 @@ export default function Oportunidades() {
           font-family: 'Sora', sans-serif;
           font-size: 1.1rem;
           font-weight: 700;
+        }
+
+        .op-avatar--photo {
+          background-position: center;
+          background-size: cover;
         }
 
         .op-service-panel {
@@ -756,6 +794,27 @@ export default function Oportunidades() {
           color: #8A90A0;
           font-size: 0.78rem;
           font-weight: 500;
+        }
+
+        .op-profile-distance {
+          grid-column: 2;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          margin-top: 0;
+          color: #667085;
+          font-size: 0.76rem;
+          font-weight: 600;
+        }
+
+        .op-profile-distance svg {
+          color: #F1670F;
+          font-size: 0.8rem;
+        }
+
+        .op-profile-distance strong {
+          color: #0A0B2D;
+          font-weight: 800;
         }
 
         .op-service-row {
@@ -802,6 +861,29 @@ export default function Oportunidades() {
           line-height: 1.5;
         }
 
+        .op-accepted-banner {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          width: 100%;
+          max-width: 100%;
+          min-height: 22px;
+          margin: 0;
+          padding: 0;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          color: #15803D;
+          font-size: 0.76rem;
+          font-weight: 800;
+        }
+
+        .op-accepted-banner svg {
+          flex: 0 0 auto;
+          color: #16A34A;
+          font-size: 0.88rem;
+        }
+
         .op-meta {
           display: flex;
           align-items: center;
@@ -834,9 +916,17 @@ export default function Oportunidades() {
           display: flex;
           flex-direction: column;
           align-items: flex-start;
-          justify-content: space-between;
-          gap: 10px;
+          justify-content: flex-start;
+          gap: 14px;
           padding-left: 22px;
+        }
+
+        .op-card-side--accepted {
+          gap: 12px;
+        }
+
+        .op-card-side--accepted .op-accepted-banner {
+          margin-top: 8px;
         }
 
         .op-status {
@@ -869,29 +959,15 @@ export default function Oportunidades() {
           font-weight: 600;
         }
 
-        .op-distance {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          color: #667085;
-          font-size: 0.76rem;
-          font-weight: 600;
-        }
-
-        .op-distance svg {
-          color: #0A0B2D;
-          font-size: 0.86rem;
-        }
-
-        .op-distance strong {
-          color: #0A0B2D;
-          font-weight: 800;
-        }
-
         .op-card-actions {
           display: flex;
           align-items: center;
           gap: 8px;
+          margin-top: 2px;
+        }
+
+        .op-card-side--accepted .op-card-actions {
+          margin-top: 8px;
         }
 
         .op-details {
@@ -914,6 +990,32 @@ export default function Oportunidades() {
           box-shadow: 0 8px 22px rgba(241, 103, 15, 0.26);
         }
 
+        .op-access-request {
+          height: 34px;
+          padding: 0 12px;
+          border-radius: 8px;
+          font-family: 'DM Sans', sans-serif;
+          font-size: 0.76rem;
+          font-weight: 800;
+          cursor: pointer;
+          transition: border-color 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s;
+        }
+
+        .op-access-request {
+          border: 1.5px solid #15803D;
+          background: #15803D;
+          color: #FFFFFF;
+          box-shadow: 0 8px 20px rgba(21, 128, 61, 0.18);
+        }
+
+        .op-access-request:hover {
+          border-color: #166534;
+          background: #166534;
+          color: #FFFFFF;
+          box-shadow: 0 10px 24px rgba(21, 128, 61, 0.24);
+        }
+
+        .op-chat,
         .op-pin {
           width: 34px;
           height: 34px;
@@ -926,6 +1028,13 @@ export default function Oportunidades() {
           color: #A3A8B6;
           cursor: pointer;
           transition: all 0.2s;
+        }
+
+        .op-chat:hover {
+          border-color: rgba(37, 99, 235, 0.38);
+          background: #EAF1FF;
+          color: #2563EB;
+          box-shadow: 0 8px 22px rgba(37, 99, 235, 0.12);
         }
 
         .op-pin:hover,
@@ -1189,7 +1298,9 @@ export default function Oportunidades() {
           <section className="op-list-wrap" aria-label="Lista de oportunidades">
             <div className="op-list">
               {sortedItems.length > 0 ? (
-                sortedItems.map((item) => <OpportunityCard key={item.id} item={item} onPin={togglePin} />)
+                sortedItems.map((item) => (
+                  <OpportunityCard key={item.id} item={item} onPin={togglePin} />
+                ))
               ) : (
                 <div className="op-empty">Nenhuma oportunidade encontrada.</div>
               )}
@@ -1205,6 +1316,7 @@ export default function Oportunidades() {
             </footer>
           </section>
         </div>
+
       </main>
     </>
   );
