@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DetalhesModal from "../Detalhes_solicitacao_prestador/Detalhes_solicitacao_prestador";
 import {
   FaBell,
@@ -98,6 +98,23 @@ const CATEGORY_COLORS = {
   Hidráulica: ["#f1670f", "#FFE8DE"],
 };
 const ITEMS_PER_PAGE = 6;
+const TRANSFERRED_OPPORTUNITIES_KEY = "fazuno_oportunidades_transferidas";
+
+function readTransferredOpportunities() {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const data = window.localStorage.getItem(TRANSFERRED_OPPORTUNITIES_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
+
+function clearTransferredOpportunities() {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(TRANSFERRED_OPPORTUNITIES_KEY);
+}
 
 const REQUESTS = [
   {
@@ -343,7 +360,10 @@ function RequestCard({ item, index, onAction, onVerDetalhes }) {
   const actionLabel = getActionLabel(item.status);
 
   return (
-    <article className="sr-card" style={{ animationDelay: `${index * 55}ms` }}>
+    <article
+      className={`sr-card ${item.origem === "oportunidades" ? "sr-card--from-opportunity" : ""}`}
+      style={{ animationDelay: `${index * 55}ms` }}
+    >
       <section className="sr-client">
         <img src={item.avatar} alt="" className="sr-avatar" />
         <div>
@@ -366,6 +386,12 @@ function RequestCard({ item, index, onAction, onVerDetalhes }) {
         <CategoryIcon category={item.category} />
         <div className="sr-service-body">
           <span>{item.category}</span>
+          {item.origem === "oportunidades" && (
+            <strong className="sr-origin-badge">
+              <FaCheckCircle />
+              {item.originLabel || "Veio de oportunidades"}
+            </strong>
+          )}
           <h3>{item.title}</h3>
           <p>{item.description}</p>
           <div className="sr-date-row">
@@ -476,6 +502,28 @@ export default function Oportunidades() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [solicitacaoSelecionada, setSolicitacaoSelecionada] = useState(null);
 
+  useEffect(() => {
+    const transferred = readTransferredOpportunities();
+    if (!transferred.length) return;
+    clearTransferredOpportunities();
+
+    const params = new URLSearchParams(window.location.search);
+    const targetId = params.get("id");
+    const selected = transferred.find((item) => String(item.id) === targetId);
+
+    if (selected) {
+      setSolicitacaoSelecionada(selected);
+    }
+
+    setItems((current) => {
+      const transferredIds = new Set(transferred.map((item) => item.id));
+      return [
+        ...transferred,
+        ...current.filter((item) => !transferredIds.has(item.id)),
+      ];
+    });
+  }, []);
+
   const counts = useMemo(() => {
     return Object.fromEntries(
       Object.keys(STATUS).map((key) => [
@@ -506,7 +554,14 @@ export default function Oportunidades() {
           statusFilter === "todos" || item.status === statusFilter;
         return matchesSearch && matchesStatus;
       })
-      .sort((a, b) => parseDate(b.date) - parseDate(a.date));
+      .sort((a, b) => {
+        const originOrder =
+          Number(b.origem === "oportunidades") -
+          Number(a.origem === "oportunidades");
+        if (originOrder !== 0) return originOrder;
+
+        return parseDate(b.date) - parseDate(a.date);
+      });
   }, [items, search, statusFilter]);
 
   const pageCount = Math.max(
@@ -794,6 +849,11 @@ export default function Oportunidades() {
           box-shadow: 0 14px 32px rgba(6, 16, 74, 0.08);
         }
 
+        .sr-card--from-opportunity {
+          border-color: rgba(22, 163, 74, 0.38);
+          box-shadow: 0 10px 26px rgba(22, 163, 74, 0.08);
+        }
+
         .sr-client {
           display: grid;
           grid-template-columns: 72px minmax(0, 1fr);
@@ -866,6 +926,22 @@ export default function Oportunidades() {
           color: #06104A;
           font-size: 0.78rem;
           font-weight: 700;
+        }
+
+        .sr-origin-badge {
+          width: fit-content;
+          min-height: 26px;
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          margin: 0 0 7px;
+          padding: 0 10px;
+          border: 1.5px solid rgba(22, 163, 74, 0.18);
+          border-radius: 999px;
+          background: #F0FDF4;
+          color: #15803D;
+          font-size: 0.72rem;
+          font-weight: 900;
         }
 
         .sr-service-body h3 {

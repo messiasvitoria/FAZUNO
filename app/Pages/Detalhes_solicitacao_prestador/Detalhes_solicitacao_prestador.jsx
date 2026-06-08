@@ -398,6 +398,26 @@ const categoryIcon =
                 />
                 {cfg.label}
               </span>
+              {solicitacao.origem === "oportunidades" && (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "5px 12px",
+                    borderRadius: 20,
+                    background: "#F0FDF4",
+                    border: "1px solid #BBF7D0",
+                    color: "#15803D",
+                    fontSize: "0.72rem",
+                    fontWeight: 700,
+                    fontFamily: "'Sora', sans-serif",
+                  }}
+                >
+                  <i className="ti ti-circle-check" style={{ fontSize: 14 }} />
+                  {solicitacao.originLabel || "Veio de oportunidades"}
+                </span>
+              )}
               <span style={{ fontSize: "0.78rem", color: "#6B7280" }}>
                 Última atualização:{" "}
                 {solicitacao.date || solicitacao.dataAgendada || "—"} às{" "}
