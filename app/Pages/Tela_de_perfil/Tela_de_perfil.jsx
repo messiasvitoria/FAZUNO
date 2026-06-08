@@ -42,13 +42,13 @@ export default function Login() {
   const router = useRouter();
   const [tipoConta, setTipoConta] = useState('cliente');
 
-  function handleContinuar() {
-    if (tipoConta === 'cliente') {
-      router.push('/Pages/Tela_inicial_cliente');
-    } else if (tipoConta === 'prestador') {
-      // rota do prestador quando tiver
-    }
+ function handleContinuar() {
+  if (tipoConta === 'cliente') {
+    router.push('/Pages/Tela_inicial_cliente');
+  } else if (tipoConta === 'prestador') {
+    router.push('/Pages/Tela_Inicial_prestador');
   }
+}
 
 return (
   <div className="page">

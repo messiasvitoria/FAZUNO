@@ -2,39 +2,40 @@
 
 import { useState, useEffect, useRef } from "react";
 
-// ─── MinhasSolicitacoes (inline) ────────────────────────────────────────────
+// ─── STATUS CONFIG ───────────────────────────────────────────────────────────
 const STATUS_CONFIG = {
-  "Solicitação Enviada": { color: "#2563EB", bg: "#EFF6FF", border: "#BFDBFE", label: "SOLICITAÇÃO ENVIADA" },
-  "Em Análise":          { color: "#EA580C", bg: "#FFF7ED", border: "#FED7AA", label: "EM ANÁLISE" },
-  "Aceita":              { color: "#7C3AED", bg: "#F5F3FF", border: "#DDD6FE", label: "ACEITA" },
-  "Aguardando Pagamento":{ color: "#CA8A04", bg: "#FEFCE8", border: "#FEF08A", label: "AGUARDANDO PAGAMENTO" },
-  "Em Andamento":        { color: "#0284C7", bg: "#F0F9FF", border: "#BAE6FD", label: "EM ANDAMENTO" },
-  "Concluída":           { color: "#16A34A", bg: "#F0FDF4", border: "#BBF7D0", label: "CONCLUÍDA" },
-  "Cancelada":           { color: "#DC2626", bg: "#FEF2F2", border: "#FECACA", label: "CANCELADA" },
+  "Solicitação Enviada":  { color: "#2563EB", bg: "#EFF6FF", border: "#BFDBFE", label: "SOLICITAÇÃO ENVIADA" },
+  "Em Análise":           { color: "#EA580C", bg: "#FFF7ED", border: "#FED7AA", label: "EM ANÁLISE" },
+  "Aceita":               { color: "#7C3AED", bg: "#F5F3FF", border: "#DDD6FE", label: "ACEITA" },
+  "Aguardando Pagamento": { color: "#CA8A04", bg: "#FEFCE8", border: "#FEF08A", label: "AGUARDANDO PAGAMENTO" },
+  "Em Andamento":         { color: "#0284C7", bg: "#F0F9FF", border: "#BAE6FD", label: "EM ANDAMENTO" },
+  "Concluída":            { color: "#16A34A", bg: "#F0FDF4", border: "#BBF7D0", label: "CONCLUÍDA" },
+  "Cancelada":            { color: "#DC2626", bg: "#FEF2F2", border: "#FECACA", label: "CANCELADA" },
 };
 
+// ─── SOLICITAÇÕES DATA ───────────────────────────────────────────────────────
 const SOLICITACOES = [
-  { id: 1,  prestador: { nome: "João Silva",     avaliacao: 4.8, avaliacoes: 32,  avatar: "JS", avatarColor: "#2563EB" }, servico: "Instalação de TV",            descricao: "Instalar TV 55 polegadas na parede da sala.",        local: "Moema, São Paulo – SP",       data: "20/05/2024 às 14:30", status: "Aceita",                 statusMsg: "O prestador aceitou sua solicitação. Aguarde o início do serviço.",                              valorLabel: "Valor estimado",   valor: "R$ 180,00", acoes: ["detalhes", "conversar"] },
-  { id: 2,  prestador: { nome: "Ana Caroline",   avaliacao: 5.0, avaliacoes: 18,  avatar: "AC", avatarColor: "#7C3AED" }, servico: "Limpeza Residencial",         descricao: "Limpeza completa de apartamento 80m².",              local: "Vila Mariana, São Paulo – SP", data: "18/05/2024 às 10:15", status: "Aguardando Pagamento",   statusMsg: "O prestador aceitou sua solicitação. Realize o pagamento para iniciar o serviço.",              valorLabel: "Valor do serviço", valor: "R$ 220,00", acoes: ["pagamento", "conversar", "detalhes"] },
-  { id: 3,  prestador: { nome: "Amancio Silva",  avaliacao: 4.8, avaliacoes: 45,  avatar: "AS", avatarColor: "#EA580C" }, servico: "Reparo Hidráulico",           descricao: "Conserto de vazamento no banheiro.",                 local: "Santo André, São Paulo – SP",  data: "15/05/2024 às 09:00", status: "Em Andamento",           statusMsg: "O serviço está em andamento. Acompanhe o progresso.",                                           valorLabel: "Valor do serviço", valor: "R$ 150,00", acoes: ["andamento", "conversar"] },
-  { id: 4,  prestador: { nome: "Lúcia Carvalho", avaliacao: 5.0, avaliacoes: 27,  avatar: "LC", avatarColor: "#16A34A" }, servico: "Pintura de Parede",           descricao: "Pintura de 2 quartos e sala.",                       local: "Ipiranga, São Paulo – SP",     data: "10/05/2024 às 16:20", status: "Concluída",              statusMsg: "Serviço concluído em 12/05/2024 às 17:40",                                                     valorLabel: "Valor do serviço", valor: "R$ 320,00", acoes: ["novamente", "avaliar"] },
-  { id: 5,  prestador: { nome: "Ricardo Almeida",avaliacao: 4.7, avaliacoes: 16,  avatar: "RA", avatarColor: "#0284C7" }, servico: "Troca de Tomadas",            descricao: "Trocar 3 tomadas danificadas.",                      local: "Tatuapé, São Paulo – SP",      data: "08/05/2024 às 11:40", status: "Solicitação Enviada",   statusMsg: "Aguardando o prestador analisar sua solicitação.",                                             valorLabel: "Valor estimado",   valor: "R$ 120,00", acoes: ["cancelar"] },
-  { id: 6,  prestador: { nome: "Fernanda Lima",  avaliacao: 4.9, avaliacoes: 52,  avatar: "FL", avatarColor: "#CA8A04" }, servico: "Instalação de Ar-condicionado",descricao: "Instalar ar-condicionado split 12.000 BTUs.",        local: "Pinheiros, São Paulo – SP",    data: "05/05/2024 às 13:00", status: "Em Análise",            statusMsg: "O prestador está analisando sua solicitação.",                                                 valorLabel: "Valor estimado",   valor: "R$ 280,00", acoes: ["cancelar"] },
-  { id: 7,  prestador: { nome: "Carlos Mendes",  avaliacao: 4.6, avaliacoes: 11,  avatar: "CM", avatarColor: "#DC2626" }, servico: "Conserto de Portão",          descricao: "Reparo no motor do portão automático.",              local: "Santana, São Paulo – SP",      data: "02/05/2024 às 08:30", status: "Cancelada",             statusMsg: "Solicitação cancelada pelo cliente.",                                                           valorLabel: "Valor estimado",   valor: "R$ 200,00", acoes: ["novamente"] },
+  { id: 1,  prestador: { nome: "João Silva",      avaliacao: 4.8, avaliacoes: 32,  avatar: "JS", avatarColor: "#2563EB" }, servico: "Instalação de TV",             descricao: "Instalar TV 55 polegadas na parede da sala.",        local: "Moema, São Paulo – SP",       data: "20/05/2024 às 14:30", status: "Aceita",                 statusMsg: "O prestador aceitou sua solicitação. Aguarde o início do serviço.",                             valorLabel: "Valor estimado",   valor: "R$ 180,00", acoes: ["detalhes", "conversar"] },
+  { id: 2,  prestador: { nome: "Ana Caroline",    avaliacao: 5.0, avaliacoes: 18,  avatar: "AC", avatarColor: "#7C3AED" }, servico: "Limpeza Residencial",          descricao: "Limpeza completa de apartamento 80m².",              local: "Vila Mariana, São Paulo – SP", data: "18/05/2024 às 10:15", status: "Aguardando Pagamento",   statusMsg: "O prestador aceitou sua solicitação. Realize o pagamento para iniciar o serviço.",             valorLabel: "Valor do serviço", valor: "R$ 220,00", acoes: ["pagamento", "conversar", "detalhes"] },
+  { id: 3,  prestador: { nome: "Amancio Silva",   avaliacao: 4.8, avaliacoes: 45,  avatar: "AS", avatarColor: "#EA580C" }, servico: "Reparo Hidráulico",            descricao: "Conserto de vazamento no banheiro.",                 local: "Santo André, São Paulo – SP",  data: "15/05/2024 às 09:00", status: "Em Andamento",           statusMsg: "O serviço está em andamento. Acompanhe o progresso.",                                          valorLabel: "Valor do serviço", valor: "R$ 150,00", acoes: ["andamento", "conversar"] },
+  { id: 4,  prestador: { nome: "Lúcia Carvalho",  avaliacao: 5.0, avaliacoes: 27,  avatar: "LC", avatarColor: "#16A34A" }, servico: "Pintura de Parede",            descricao: "Pintura de 2 quartos e sala.",                       local: "Ipiranga, São Paulo – SP",     data: "10/05/2024 às 16:20", status: "Concluída",              statusMsg: "Serviço concluído em 12/05/2024 às 17:40",                                                    valorLabel: "Valor do serviço", valor: "R$ 320,00", acoes: ["novamente", "avaliar"] },
+  { id: 5,  prestador: { nome: "Ricardo Almeida", avaliacao: 4.7, avaliacoes: 16,  avatar: "RA", avatarColor: "#0284C7" }, servico: "Troca de Tomadas",             descricao: "Trocar 3 tomadas danificadas.",                      local: "Tatuapé, São Paulo – SP",      data: "08/05/2024 às 11:40", status: "Solicitação Enviada",   statusMsg: "Aguardando o prestador analisar sua solicitação.",                                            valorLabel: "Valor estimado",   valor: "R$ 120,00", acoes: ["cancelar"] },
+  { id: 6,  prestador: { nome: "Fernanda Lima",   avaliacao: 4.9, avaliacoes: 52,  avatar: "FL", avatarColor: "#CA8A04" }, servico: "Instalação de Ar-condicionado",descricao: "Instalar ar-condicionado split 12.000 BTUs.",        local: "Pinheiros, São Paulo – SP",    data: "05/05/2024 às 13:00", status: "Em Análise",            statusMsg: "O prestador está analisando sua solicitação.",                                                valorLabel: "Valor estimado",   valor: "R$ 280,00", acoes: ["cancelar"] },
+  { id: 7,  prestador: { nome: "Carlos Mendes",   avaliacao: 4.6, avaliacoes: 11,  avatar: "CM", avatarColor: "#DC2626" }, servico: "Conserto de Portão",           descricao: "Reparo no motor do portão automático.",              local: "Santana, São Paulo – SP",      data: "02/05/2024 às 08:30", status: "Cancelada",             statusMsg: "Solicitação cancelada pelo cliente.",                                                         valorLabel: "Valor estimado",   valor: "R$ 200,00", acoes: ["novamente"] },
 ];
 
 const TABS_SOL = [
-  { label: "Todas",                  key: "Todas" },
-  { label: "Solicitação Enviada",    key: "Solicitação Enviada" },
-  { label: "Em Análise",             key: "Em Análise" },
-  { label: "Aceita",                 key: "Aceita" },
-  { label: "Aguardando Pagamento",   key: "Aguardando Pagamento" },
-  { label: "Em Andamento",           key: "Em Andamento" },
-  { label: "Concluídas",             key: "Concluída" },
-  { label: "Canceladas",             key: "Cancelada" },
+  { label: "Todas",                key: "Todas" },
+  { label: "Solicitação Enviada",  key: "Solicitação Enviada" },
+  { label: "Em Análise",           key: "Em Análise" },
+  { label: "Aceita",               key: "Aceita" },
+  { label: "Aguardando Pagamento", key: "Aguardando Pagamento" },
+  { label: "Em Andamento",         key: "Em Andamento" },
+  { label: "Concluídas",           key: "Concluída" },
+  { label: "Canceladas",           key: "Cancelada" },
 ];
 
-// ── Detalhe Modal ──────────────────────────────────────────────────────────
+// ─── DETALHE MODAL ───────────────────────────────────────────────────────────
 function DetalheModal({ item, onClose }) {
   useEffect(() => {
     const h = (e) => { if (e.key === "Escape") onClose(); };
@@ -45,12 +46,12 @@ function DetalheModal({ item, onClose }) {
   const cfg = STATUS_CONFIG[item.status];
 
   const timeline = [
-    { label: "Solicitação enviada",     done: true,  date: item.data },
-    { label: "Prestador notificado",    done: true,  date: "Automático" },
-    { label: "Proposta aceita",         done: ["Aceita","Aguardando Pagamento","Em Andamento","Concluída"].includes(item.status), date: "" },
-    { label: "Pagamento confirmado",    done: ["Em Andamento","Concluída"].includes(item.status), date: "" },
-    { label: "Serviço em andamento",    done: ["Em Andamento","Concluída"].includes(item.status), date: "" },
-    { label: "Serviço concluído",       done: item.status === "Concluída", date: "" },
+    { label: "Solicitação enviada",  done: true, date: item.data },
+    { label: "Prestador notificado", done: true, date: "Automático" },
+    { label: "Proposta aceita",      done: ["Aceita","Aguardando Pagamento","Em Andamento","Concluída"].includes(item.status), date: "" },
+    { label: "Pagamento confirmado", done: ["Em Andamento","Concluída"].includes(item.status), date: "" },
+    { label: "Serviço em andamento", done: ["Em Andamento","Concluída"].includes(item.status), date: "" },
+    { label: "Serviço concluído",    done: item.status === "Concluída", date: "" },
   ];
 
   return (
@@ -58,14 +59,13 @@ function DetalheModal({ item, onClose }) {
       onClick={onClose}
       style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1200, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(3px)" }}
     >
+      <style>{`@keyframes modalIn{from{opacity:0;transform:scale(0.95) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}`}</style>
       <div
         onClick={e => e.stopPropagation()}
         style={{ backgroundColor: "white", borderRadius: 24, width: 560, maxWidth: "92vw", maxHeight: "90vh", overflowY: "auto", boxShadow: "0 32px 80px rgba(0,0,0,0.25)", animation: "modalIn 0.22s ease" }}
       >
-        <style>{`@keyframes modalIn{from{opacity:0;transform:scale(0.95) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}`}</style>
-
         {/* Header */}
-        <div style={{ background: `linear-gradient(135deg, #0d1b3e 0%, #1e3a8a 100%)`, padding: "24px 24px 20px", borderRadius: "24px 24px 0 0", position: "relative" }}>
+        <div style={{ background: "linear-gradient(135deg, #0d1b3e 0%, #1e3a8a 100%)", padding: "24px 24px 20px", borderRadius: "24px 24px 0 0", position: "relative" }}>
           <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.15)", border: "none", borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "white", fontSize: 18 }}>✕</button>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <div style={{ width: 52, height: 52, borderRadius: "50%", backgroundColor: item.prestador.avatarColor, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 18, color: "white", flexShrink: 0 }}>
@@ -85,8 +85,6 @@ function DetalheModal({ item, onClose }) {
 
         {/* Body */}
         <div style={{ padding: "20px 24px 24px" }}>
-
-          {/* Serviço + Status */}
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 16, gap: 12 }}>
             <div>
               <h4 style={{ margin: "0 0 4px", fontSize: 17, fontWeight: 800, color: "#111827" }}>{item.servico}</h4>
@@ -97,11 +95,10 @@ function DetalheModal({ item, onClose }) {
             </span>
           </div>
 
-          {/* Info grid */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
             {[
-              { label: "📍 Local", value: item.local },
-              { label: "📅 Data", value: item.data },
+              { label: "📍 Local",            value: item.local },
+              { label: "📅 Data",             value: item.data },
               { label: "💰 " + item.valorLabel, value: item.valor },
               { label: "🔖 ID da solicitação", value: `#FAZ-${String(item.id).padStart(4,"0")}` },
             ].map((row, i) => (
@@ -112,12 +109,10 @@ function DetalheModal({ item, onClose }) {
             ))}
           </div>
 
-          {/* Status message */}
           <div style={{ background: cfg.bg, border: `1px solid ${cfg.border}`, borderRadius: 10, padding: "12px 14px", marginBottom: 16, borderLeft: `3px solid ${cfg.color}` }}>
             <p style={{ margin: 0, fontSize: 13, color: "#374151", lineHeight: 1.6 }}>{item.statusMsg}</p>
           </div>
 
-          {/* Timeline */}
           <div style={{ marginBottom: 20 }}>
             <p style={{ margin: "0 0 12px", fontSize: 13, fontWeight: 700, color: "#374151" }}>Andamento da solicitação</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
@@ -129,7 +124,7 @@ function DetalheModal({ item, onClose }) {
                     </div>
                     {i < timeline.length - 1 && <div style={{ width: 2, height: 22, backgroundColor: step.done ? "#bbf7d0" : "#e5e7eb", margin: "2px 0" }} />}
                   </div>
-                  <div style={{ paddingBottom: i < timeline.length - 1 ? 0 : 0, marginTop: 1 }}>
+                  <div style={{ marginTop: 1 }}>
                     <p style={{ margin: "0 0 1px", fontSize: 13, fontWeight: step.done ? 600 : 400, color: step.done ? "#111827" : "#9ca3af" }}>{step.label}</p>
                     {step.date && <p style={{ margin: 0, fontSize: 11, color: "#94a3b8" }}>{step.date}</p>}
                   </div>
@@ -138,13 +133,14 @@ function DetalheModal({ item, onClose }) {
             </div>
           </div>
 
-          {/* Botões */}
           <div style={{ display: "flex", gap: 10 }}>
-            <button onClick={onClose} style={{ flex: 1, padding: "11px 0", borderRadius: 12, border: "1.5px solid #e5e7eb", background: "white", color: "#374151", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+            <button onClick={onClose}
+              style={{ flex: 1, padding: "11px 0", borderRadius: 12, border: "1.5px solid #e5e7eb", background: "white", color: "#374151", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
               onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f8fafc"}
               onMouseLeave={e => e.currentTarget.style.backgroundColor = "white"}
             >Fechar</button>
-            <button onClick={onClose} style={{ flex: 2, padding: "11px 0", borderRadius: 12, border: "none", backgroundColor: "#0d1b3e", color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
+            <button onClick={onClose}
+              style={{ flex: 2, padding: "11px 0", borderRadius: 12, border: "none", backgroundColor: "#0d1b3e", color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer" }}
               onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f97316"}
               onMouseLeave={e => e.currentTarget.style.backgroundColor = "#0d1b3e"}
             >Conversar com prestador</button>
@@ -155,18 +151,19 @@ function DetalheModal({ item, onClose }) {
   );
 }
 
+// ─── SOLICITAÇÕES SUB-COMPONENTS ─────────────────────────────────────────────
 function AvatarSol({ initials, color, size = 54 }) {
   return (
-    <div style={{ width: size, height: size, borderRadius: "50%", background: color, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: size * 0.28, color: "#fff", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
+    <div style={{ width: size, height: size, borderRadius: "50%", background: color, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: size * 0.28, color: "#fff", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }}>
       {initials}
     </div>
   );
 }
 
-function StatusBadge({ status }) {
+function StatusBadgeSol({ status }) {
   const cfg = STATUS_CONFIG[status];
   return (
-    <span style={{ display: "inline-block", padding: "4px 10px", borderRadius: 20, background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color, fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.05em", whiteSpace: "nowrap" }}>
+    <span style={{ display: "inline-block", padding: "4px 10px", borderRadius: 20, background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color, fontSize: "0.65rem", fontWeight: 700, fontFamily: "'Sora', sans-serif", letterSpacing: "0.05em", whiteSpace: "nowrap" }}>
       {cfg.label}
     </span>
   );
@@ -174,23 +171,24 @@ function StatusBadge({ status }) {
 
 function ActionButton({ type, onClick }) {
   const configs = {
-    detalhes: { label: "Ver detalhes",           style: "primary"  },
-    conversar: { label: "Conversar",              style: "outline"  },
-    pagamento: { label: "Realizar pagamento",     style: "warning"  },
-    andamento: { label: "Ver andamento",          style: "outline"  },
-    novamente: { label: "Solicitar novamente",    style: "outline"  },
-    avaliar:   { label: "Avaliar serviço",        style: "outline"  },
-    cancelar:  { label: "Cancelar solicitação",   style: "danger"   },
+    detalhes: { label: "Ver detalhes",         style: "primary" },
+    conversar: { label: "Conversar",           style: "outline" },
+    pagamento: { label: "Realizar pagamento",  style: "warning" },
+    andamento: { label: "Ver andamento",       style: "outline" },
+    novamente: { label: "Solicitar novamente", style: "outline" },
+    avaliar:   { label: "Avaliar serviço",     style: "outline" },
+    cancelar:  { label: "Cancelar solicitação",style: "danger"  },
   };
   const cfg = configs[type] || { label: type, style: "outline" };
   const styles = {
-    primary: { background: "#111827", color: "#fff",     border: "1.5px solid #111827" },
-    warning: { background: "#FBBF24", color: "#111827",  border: "1.5px solid #FBBF24" },
-    outline: { background: "#fff",    color: "#374151",  border: "1.5px solid #E5E7EB" },
-    danger:  { background: "#FEF2F2", color: "#DC2626",  border: "1.5px solid #FECACA" },
+    primary: { background: "#111827", color: "#fff",    border: "1.5px solid #111827" },
+    warning: { background: "#FBBF24", color: "#111827", border: "1.5px solid #FBBF24" },
+    outline: { background: "#fff",    color: "#374151", border: "1.5px solid #E5E7EB" },
+    danger:  { background: "#FEF2F2", color: "#DC2626", border: "1.5px solid #FECACA" },
   };
   return (
-    <button onClick={onClick} style={{ ...styles[cfg.style], borderRadius: 8, padding: "8px 14px", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", transition: "all 0.18s ease", whiteSpace: "nowrap", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+    <button onClick={onClick}
+      style={{ ...styles[cfg.style], borderRadius: 8, padding: "8px 14px", fontSize: "0.78rem", fontWeight: 600, fontFamily: "'Sora', sans-serif", cursor: "pointer", transition: "all 0.18s ease", whiteSpace: "nowrap", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
       onMouseEnter={e => e.currentTarget.style.opacity = "0.82"}
       onMouseLeave={e => e.currentTarget.style.opacity = "1"}
     >
@@ -199,14 +197,29 @@ function ActionButton({ type, onClick }) {
   );
 }
 
-function SolicitacaoCard({ item, onVerDetalhes }) {
+function SolicitacaoCard({ item, onVerDetalhes, delay }) {
   const statusCfg = STATUS_CONFIG[item.status];
   return (
     <div
-      style={{ display: "grid", gridTemplateColumns: "88px 1fr 200px 168px", gap: "0 20px", alignItems: "center", background: "#fff", border: "1px solid #F3F4F6", borderLeft: `4px solid ${statusCfg.color}`, borderRadius: 14, padding: "20px 22px", boxShadow: "0 1px 4px rgba(0,0,0,0.05)", transition: "box-shadow 0.2s, transform 0.2s" }}
+      className="sol-card-in"
+      style={{
+        animationDelay: `${delay}ms`,
+        display: "grid",
+        gridTemplateColumns: "88px 1fr 200px 168px",
+        gap: "0 20px",
+        alignItems: "center",
+        background: "#fff",
+        border: "1px solid #F3F4F6",
+        borderLeft: `4px solid ${statusCfg.color}`,
+        borderRadius: 14,
+        padding: "20px 22px",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
+        transition: "box-shadow 0.2s, transform 0.2s",
+      }}
       onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.09)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
       onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)"; e.currentTarget.style.transform = "translateY(0)"; }}
     >
+      {/* Avatar col */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 7 }}>
         <AvatarSol initials={item.prestador.avatar} color={item.prestador.avatarColor} />
         <div style={{ textAlign: "center" }}>
@@ -218,22 +231,28 @@ function SolicitacaoCard({ item, onVerDetalhes }) {
           <div style={{ fontSize: "0.62rem", color: "#9CA3AF", marginTop: 1 }}>({item.prestador.avaliacoes} avaliações)</div>
         </div>
       </div>
+
+      {/* Info col */}
       <div>
-        <div style={{ fontWeight: 700, fontSize: "0.98rem", color: "#111827", marginBottom: 3 }}>{item.servico}</div>
+        <div style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: "0.98rem", color: "#111827", marginBottom: 3 }}>{item.servico}</div>
         <div style={{ fontSize: "0.78rem", color: "#6B7280", marginBottom: 12 }}>{item.descricao}</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.74rem", color: "#6B7280" }}>📍 {item.local}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.74rem", color: "#6B7280" }}>📅 {item.data}</div>
         </div>
       </div>
+
+      {/* Status col */}
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <StatusBadge status={item.status} />
+        <StatusBadgeSol status={item.status} />
         <p style={{ fontSize: "0.74rem", color: "#6B7280", lineHeight: 1.55, margin: 0 }}>{item.statusMsg}</p>
       </div>
+
+      {/* Actions col */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: "0.66rem", color: "#9CA3AF", marginBottom: 2 }}>{item.valorLabel}</div>
-          <div style={{ fontWeight: 700, fontSize: "1.05rem", color: "#111827" }}>{item.valor}</div>
+          <div style={{ fontSize: "0.66rem", color: "#9CA3AF", marginBottom: 2, fontFamily: "'DM Sans', sans-serif" }}>{item.valorLabel}</div>
+          <div style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: "1.05rem", color: "#111827" }}>{item.valor}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%" }}>
           {item.acoes.map((acao) => (
@@ -245,134 +264,165 @@ function SolicitacaoCard({ item, onVerDetalhes }) {
   );
 }
 
+// ─── MINHAS SOLICITAÇÕES PAGE ────────────────────────────────────────────────
 function MinhasSolicitacoesPage() {
-  const [activeTab, setActiveTab] = useState("Todas");
-  const [search, setSearch]       = useState("");
-  const [page, setPage]           = useState(1);
+  const [activeTab, setActiveTab]     = useState("Todas");
+  const [search, setSearch]           = useState("");
+  const [page, setPage]               = useState(1);
   const [detalheItem, setDetalheItem] = useState(null);
   const PER_PAGE = 6;
 
-  // Serviço mais recente (primeiro da lista)
-  const recente = SOLICITACOES[0];
+  const recente    = SOLICITACOES[0];
   const recenteCfg = STATUS_CONFIG[recente.status];
 
   const filtered = SOLICITACOES.filter(s => {
-    const matchTab = activeTab === "Todas" || s.status === activeTab;
-    const matchSearch = !search || s.servico.toLowerCase().includes(search.toLowerCase()) || s.prestador.nome.toLowerCase().includes(search.toLowerCase()) || s.status.toLowerCase().includes(search.toLowerCase());
+    const matchTab    = activeTab === "Todas" || s.status === activeTab;
+    const matchSearch = !search
+      || s.servico.toLowerCase().includes(search.toLowerCase())
+      || s.prestador.nome.toLowerCase().includes(search.toLowerCase())
+      || s.status.toLowerCase().includes(search.toLowerCase());
     return matchTab && matchSearch;
   });
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const paginated  = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
   const getTabCount = (key) => key === "Todas" ? SOLICITACOES.length : SOLICITACOES.filter(s => s.status === key).length;
 
   return (
-    <div style={{ flex: 1, overflowY: "auto", backgroundColor: "#f9fafb", fontFamily: "'DM Sans', 'Segoe UI', sans-serif" }}>
-      {detalheItem && <DetalheModal item={detalheItem} onClose={() => setDetalheItem(null)} />}
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap');
+        @keyframes solFadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        .sol-card-in { animation: solFadeUp 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+        .sol-page-in  { animation: solFadeUp 0.5s  cubic-bezier(0.22,1,0.36,1) both; }
+      `}</style>
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "36px 32px 60px" }}>
+      <div style={{ flex: 1, overflowY: "auto", backgroundColor: "#F9FAFB", fontFamily: "'DM Sans', sans-serif", color: "#111827" }}>
+        {detalheItem && <DetalheModal item={detalheItem} onClose={() => setDetalheItem(null)} />}
 
-        {/* Header */}
-        <div style={{ marginBottom: 28 }}>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: 700, color: "#111827", margin: "0 0 5px" }}>Minhas Solicitações</h1>
-          <p style={{ fontSize: "0.86rem", color: "#6B7280", margin: 0 }}>Acompanhe todas as suas solicitações de serviços.</p>
-        </div>
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "36px 32px 60px" }}>
 
-        {/* Search */}
-        <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
-          <div style={{ flex: 1, position: "relative" }}>
-            <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: "0.95rem", color: "#9CA3AF" }}>🔍</span>
-            <input type="text" placeholder="Pesquisar por serviço, prestador ou status..." value={search}
-              onChange={e => { setSearch(e.target.value); setPage(1); }}
-              style={{ width: "100%", padding: "12px 16px 12px 42px", background: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, fontSize: "0.88rem", color: "#111827", boxSizing: "border-box", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", outline: "none" }}
-              onFocus={e => { e.target.style.borderColor = "#6B7280"; e.target.style.boxShadow = "0 0 0 3px rgba(107,114,128,0.1)"; }}
-              onBlur={e => { e.target.style.borderColor = "#E5E7EB"; e.target.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; }}
-            />
+          {/* Header */}
+          <div className="sol-page-in" style={{ marginBottom: 28 }}>
+            <h1 style={{ fontFamily: "'Sora', sans-serif", fontSize: "1.75rem", fontWeight: 700, color: "#111827", margin: "0 0 5px" }}>
+              Minhas Solicitações
+            </h1>
+            <p style={{ fontSize: "0.86rem", color: "#6B7280", margin: 0 }}>
+              Acompanhe todas as suas solicitações de serviços.
+            </p>
           </div>
-        </div>
 
-        {/* ── Serviço mais recente ── */}
-        <div
-          onClick={() => setDetalheItem(recente)}
-          style={{ display: "flex", alignItems: "center", gap: 16, background: "white", border: `1.5px solid ${recenteCfg.border}`, borderLeft: `4px solid ${recenteCfg.color}`, borderRadius: 14, padding: "14px 18px", marginBottom: 22, cursor: "pointer", boxShadow: "0 2px 10px rgba(0,0,0,0.06)", transition: "box-shadow 0.2s, transform 0.18s" }}
-          onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.11)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-          onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 2px 10px rgba(0,0,0,0.06)"; e.currentTarget.style.transform = "translateY(0)"; }}
-        >
-          {/* Icon */}
-          <div style={{ width: 44, height: 44, borderRadius: 12, background: recenteCfg.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 22 }}>
-            🧹
-          </div>
-          {/* Info */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-              <span style={{ fontSize: 11, fontWeight: 600, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.06em" }}>Sua solicitação mais recente</span>
-              <span style={{ padding: "2px 8px", borderRadius: 20, background: recenteCfg.bg, border: `1px solid ${recenteCfg.border}`, color: recenteCfg.color, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em" }}>
-                {recenteCfg.label}
-              </span>
+          {/* Search + Filtros */}
+          <div className="sol-page-in" style={{ animationDelay: "50ms", display: "flex", gap: 10, marginBottom: 16 }}>
+            <div style={{ flex: 1, position: "relative" }}>
+              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: "0.95rem", color: "#9CA3AF" }}>🔍</span>
+              <input
+                type="text"
+                placeholder="Pesquisar por serviço, prestador ou status..."
+                value={search}
+                onChange={e => { setSearch(e.target.value); setPage(1); }}
+                style={{ width: "100%", padding: "12px 16px 12px 42px", background: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, fontSize: "0.88rem", color: "#111827", fontFamily: "'DM Sans', sans-serif", boxShadow: "0 1px 3px rgba(0,0,0,0.04)", outline: "none", boxSizing: "border-box", transition: "border-color 0.2s, box-shadow 0.2s" }}
+                onFocus={e => { e.target.style.borderColor = "#6B7280"; e.target.style.boxShadow = "0 0 0 3px rgba(107,114,128,0.1)"; }}
+                onBlur={e => { e.target.style.borderColor = "#E5E7EB"; e.target.style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; }}
+              />
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-              <span style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{recente.servico}</span>
-              <span style={{ fontSize: 12, color: "#6b7280" }}>📅 {recente.data}</span>
-              <span style={{ fontSize: 12, color: "#6b7280" }}>👤 {recente.prestador.nome}</span>
-              <span style={{ fontSize: 13, fontWeight: 700, color: recenteCfg.color }}>{recente.valor}</span>
+            <button
+              style={{ padding: "12px 20px", background: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, color: "#374151", fontSize: "0.86rem", fontWeight: 500, fontFamily: "'DM Sans', sans-serif", cursor: "pointer", display: "flex", alignItems: "center", gap: 7, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "border-color 0.2s" }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = "#6B7280"}
+              onMouseLeave={e => e.currentTarget.style.borderColor = "#E5E7EB"}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round">
+                <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+              </svg>
+              Filtros
+            </button>
+          </div>
+
+          {/* Serviço mais recente */}
+          <div
+            className="sol-page-in"
+            onClick={() => setDetalheItem(recente)}
+            style={{ animationDelay: "70ms", display: "flex", alignItems: "center", gap: 16, background: "white", border: `1.5px solid ${recenteCfg.border}`, borderLeft: `4px solid ${recenteCfg.color}`, borderRadius: 14, padding: "14px 18px", marginBottom: 22, cursor: "pointer", boxShadow: "0 2px 10px rgba(0,0,0,0.06)", transition: "box-shadow 0.2s, transform 0.18s" }}
+            onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.11)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+            onMouseLeave={e => { e.currentTarget.style.boxShadow = "0 2px 10px rgba(0,0,0,0.06)"; e.currentTarget.style.transform = "translateY(0)"; }}
+          >
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: recenteCfg.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 22 }}>
+              🧹
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.06em" }}>Sua solicitação mais recente</span>
+                <span style={{ padding: "2px 8px", borderRadius: 20, background: recenteCfg.bg, border: `1px solid ${recenteCfg.border}`, color: recenteCfg.color, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em" }}>
+                  {recenteCfg.label}
+                </span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{recente.servico}</span>
+                <span style={{ fontSize: 12, color: "#6b7280" }}>📅 {recente.data}</span>
+                <span style={{ fontSize: 12, color: "#6b7280" }}>👤 {recente.prestador.nome}</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: recenteCfg.color }}>{recente.valor}</span>
+              </div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0, padding: "8px 16px", borderRadius: 10, background: "#f1f5f9", color: "#374151", fontSize: 13, fontWeight: 600 }}>
+              Acompanhar pedido <span style={{ fontSize: 16 }}>›</span>
             </div>
           </div>
-          {/* CTA */}
-          <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0, padding: "8px 16px", borderRadius: 10, background: "#f1f5f9", color: "#374151", fontSize: 13, fontWeight: 600 }}>
-            Acompanhar pedido
-            <span style={{ fontSize: 16 }}>›</span>
+
+          {/* Tabs */}
+          <div className="sol-page-in" style={{ animationDelay: "90ms", display: "flex", gap: 6, marginBottom: 22, flexWrap: "wrap" }}>
+            {TABS_SOL.map(tab => {
+              const isActive = activeTab === tab.key;
+              const count    = getTabCount(tab.key);
+              const cfg      = STATUS_CONFIG[tab.key];
+              return (
+                <button key={tab.key}
+                  onClick={() => { setActiveTab(tab.key); setPage(1); }}
+                  style={{ padding: "7px 14px", borderRadius: 20, fontSize: "0.78rem", fontWeight: isActive ? 700 : 500, fontFamily: "'DM Sans', sans-serif", cursor: "pointer", transition: "all 0.18s ease", background: isActive ? (tab.key === "Todas" ? "#111827" : cfg.color) : "#fff", color: isActive ? "#fff" : "#6B7280", border: isActive ? `1.5px solid ${tab.key === "Todas" ? "#111827" : cfg.color}` : "1.5px solid #E5E7EB", boxShadow: isActive ? "0 2px 8px rgba(0,0,0,0.15)" : "0 1px 2px rgba(0,0,0,0.04)" }}
+                >
+                  {tab.label} ({count})
+                </button>
+              );
+            })}
           </div>
-        </div>
 
-        {/* Tabs */}
-        <div style={{ display: "flex", gap: 6, marginBottom: 22, flexWrap: "wrap" }}>
-          {TABS_SOL.map(tab => {
-            const isActive = activeTab === tab.key;
-            const count = getTabCount(tab.key);
-            const cfg = STATUS_CONFIG[tab.key];
-            return (
-              <button key={tab.key} onClick={() => { setActiveTab(tab.key); setPage(1); }}
-                style={{ padding: "7px 14px", borderRadius: 20, fontSize: "0.78rem", fontWeight: isActive ? 700 : 500, cursor: "pointer", transition: "all 0.18s ease", background: isActive ? (tab.key === "Todas" ? "#111827" : cfg.color) : "#fff", color: isActive ? "#fff" : "#6B7280", border: isActive ? `1.5px solid ${tab.key === "Todas" ? "#111827" : cfg.color}` : "1.5px solid #E5E7EB", boxShadow: isActive ? "0 2px 8px rgba(0,0,0,0.15)" : "0 1px 2px rgba(0,0,0,0.04)" }}
-              >
-                {tab.label} ({count})
-              </button>
-            );
-          })}
-        </div>
+          {/* Cards */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {paginated.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "64px 20px", background: "#fff", borderRadius: 14, border: "1px solid #F3F4F6", color: "#9CA3AF", fontSize: "0.9rem" }}>
+                Nenhuma solicitação encontrada.
+              </div>
+            ) : (
+              paginated.map((item, i) => (
+                <SolicitacaoCard key={item.id} item={item} onVerDetalhes={setDetalheItem} delay={i * 55} />
+              ))
+            )}
+          </div>
 
-        {/* Cards */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {paginated.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "64px 20px", background: "#fff", borderRadius: 14, border: "1px solid #F3F4F6", color: "#9CA3AF", fontSize: "0.9rem" }}>
-              Nenhuma solicitação encontrada.
+          {/* Paginação */}
+          <div className="sol-page-in" style={{ animationDelay: "200ms", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28 }}>
+            <span style={{ fontSize: "0.78rem", color: "#9CA3AF" }}>
+              Mostrando {Math.min((page - 1) * PER_PAGE + 1, filtered.length)} a {Math.min(page * PER_PAGE, filtered.length)} de {filtered.length} solicitações
+            </span>
+            <div style={{ display: "flex", gap: 6 }}>
+              <button disabled={page === 1} onClick={() => setPage(p => p - 1)}
+                style={{ width: 34, height: 34, borderRadius: 8, background: "#fff", border: "1px solid #E5E7EB", color: page === 1 ? "#D1D5DB" : "#374151", fontSize: "0.9rem", cursor: page === 1 ? "not-allowed" : "pointer", fontWeight: 600 }}>‹</button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                <button key={p} onClick={() => setPage(p)}
+                  style={{ width: 34, height: 34, borderRadius: 8, background: p === page ? "#111827" : "#fff", border: `1px solid ${p === page ? "#111827" : "#E5E7EB"}`, color: p === page ? "#fff" : "#374151", fontSize: "0.82rem", fontWeight: 600, cursor: "pointer", fontFamily: "'Sora', sans-serif" }}>
+                  {p}
+                </button>
+              ))}
+              <button disabled={page === totalPages || totalPages === 0} onClick={() => setPage(p => p + 1)}
+                style={{ width: 34, height: 34, borderRadius: 8, background: "#fff", border: "1px solid #E5E7EB", color: (page === totalPages || totalPages === 0) ? "#D1D5DB" : "#374151", fontSize: "0.9rem", cursor: (page === totalPages || totalPages === 0) ? "not-allowed" : "pointer", fontWeight: 600 }}>›</button>
             </div>
-          ) : (
-            paginated.map(item => (
-              <SolicitacaoCard key={item.id} item={item} onVerDetalhes={setDetalheItem} />
-            ))
-          )}
-        </div>
-
-        {/* Paginação */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28 }}>
-          <span style={{ fontSize: "0.78rem", color: "#9CA3AF" }}>
-            Mostrando {Math.min((page - 1) * PER_PAGE + 1, filtered.length)} a {Math.min(page * PER_PAGE, filtered.length)} de {filtered.length} solicitações
-          </span>
-          <div style={{ display: "flex", gap: 6 }}>
-            <button disabled={page === 1} onClick={() => setPage(p => p - 1)} style={{ width: 34, height: 34, borderRadius: 8, background: "#fff", border: "1px solid #E5E7EB", color: page === 1 ? "#D1D5DB" : "#374151", fontSize: "0.9rem", cursor: page === 1 ? "not-allowed" : "pointer", fontWeight: 600 }}>‹</button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-              <button key={p} onClick={() => setPage(p)} style={{ width: 34, height: 34, borderRadius: 8, background: p === page ? "#111827" : "#fff", border: `1px solid ${p === page ? "#111827" : "#E5E7EB"}`, color: p === page ? "#fff" : "#374151", fontSize: "0.82rem", fontWeight: 600, cursor: "pointer" }}>
-                {p}
-              </button>
-            ))}
-            <button disabled={page === totalPages || totalPages === 0} onClick={() => setPage(p => p + 1)} style={{ width: 34, height: 34, borderRadius: 8, background: "#fff", border: "1px solid #E5E7EB", color: (page === totalPages || totalPages === 0) ? "#D1D5DB" : "#374151", fontSize: "0.9rem", cursor: (page === totalPages || totalPages === 0) ? "not-allowed" : "pointer", fontWeight: 600 }}>›</button>
           </div>
+
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
-// ─── Main TelainicialCliente ─────────────────────────────────────────────────
+// ─── ICON COMPONENT ──────────────────────────────────────────────────────────
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
   const paths = {
     home:      ["M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z","M9 21V12h6v9"],
@@ -424,6 +474,7 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
   );
 }
 
+// ─── HOME PAGE SUB-COMPONENTS ────────────────────────────────────────────────
 function CategoryCard({ cat }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -460,6 +511,7 @@ function ServiceCard({ svc }) {
   );
 }
 
+// ─── NOTIF DETAIL MODAL ───────────────────────────────────────────────────────
 function NotifDetailModal({ notif, onClose }) {
   useEffect(() => {
     const handler = (e) => { if (e.key === "Escape") onClose(); };
@@ -478,8 +530,8 @@ function NotifDetailModal({ notif, onClose }) {
 
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.45)", zIndex: 1100, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(2px)" }}>
+      <style>{`@keyframes modalIn { from { opacity:0; transform:scale(0.95) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }`}</style>
       <div onClick={e => e.stopPropagation()} style={{ backgroundColor: "white", borderRadius: 24, width: 460, maxWidth: "90vw", boxShadow: "0 32px 80px rgba(0,0,0,0.22)", overflow: "hidden", animation: "modalIn 0.2s ease" }}>
-        <style>{`@keyframes modalIn { from { opacity:0; transform:scale(0.95) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }`}</style>
         <div style={{ backgroundColor: notif.iconBg, padding: "24px 24px 20px", position: "relative" }}>
           <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "rgba(0,0,0,0.08)", border: "none", borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
             <Icon name="xIcon" size={16} color="#374151" strokeWidth={2.5} />
@@ -523,6 +575,7 @@ function NotifDetailModal({ notif, onClose }) {
   );
 }
 
+// ─── STATIC DATA ─────────────────────────────────────────────────────────────
 const categories = [
   { icon: "heartIcon",    label: "Saúde"      },
   { icon: "broomCat",     label: "Limpeza"    },
@@ -559,7 +612,6 @@ const reviews = [
   { name: "Felipe R.",   role: "Encanador",           text: "Resolveu o problema rapidinho, preço justo e muito educado. Recomendo!",              rating: 5, photo: "/homem3.avif" },
 ];
 
-// nav items — index 2 = Minhas solicitações
 const navItems = [
   { icon: "home", label: "Início" },
   { icon: "plus", label: "Abrir novas solicitações" },
@@ -568,21 +620,25 @@ const navItems = [
 ];
 
 const filters = ["Todas", "Não lidas", "Solicitações", "Serviços", "Pagamentos"];
-const filterKey = (label, index) => { if (index === 0) return "todas"; if (index === 1) return "não_lidas"; return label.toLowerCase(); };
+const filterKey = (label, index) => {
+  if (index === 0) return "todas";
+  if (index === 1) return "não_lidas";
+  return label.toLowerCase();
+};
 
 const allNotifs = [
-  { id: 1,  icon: "doc",     title: "Serviço Aceito",                       desc: "O prestador João Silva aceitou sua solicitação de Instalação de Ar Condicionado.",  time: "Há 5 min",       sortOrder: 1,  unread: true,  category: "solicitações", iconColor: "#3b82f6", iconBg: "#dbeafe" },
-  { id: 2,  icon: "chat",    title: "Nova Mensagem",                         desc: "Você recebeu uma nova mensagem do prestador João Silva.",                           time: "Há 20 min",      sortOrder: 2,  unread: true,  category: "serviços",     iconColor: "#22c55e", iconBg: "#dcfce7" },
-  { id: 3,  icon: "payment", title: "Pagamento Aprovado",                    desc: "Seu pagamento de R$ 350,00 foi aprovado com sucesso.",                             time: "Há 1 hora",      sortOrder: 3,  unread: true,  category: "pagamentos",   iconColor: "#8b5cf6", iconBg: "#ede9fe" },
-  { id: 4,  icon: "star",    title: "Avalie seu Serviço",                    desc: "Seu serviço de Limpeza Residencial foi concluído. Conte como foi sua experiência!", time: "Ontem às 10:30", sortOrder: 6,  unread: false, category: "serviços",     iconColor: "#f59e0b", iconBg: "#fef3c7" },
-  { id: 5,  icon: "eye",     title: "Prestador Visualizou sua Solicitação",  desc: "O prestador Maria Santos visualizou sua solicitação de Pintura Residencial.",      time: "Ontem às 09:15", sortOrder: 7,  unread: false, category: "solicitações", iconColor: "#f97316", iconBg: "#ffedd5" },
-  { id: 6,  icon: "doc",     title: "Serviço Concluído",                     desc: "Carlos Lima marcou o serviço de Reparo Elétrico como concluído. Tudo certo?",       time: "Ontem às 14:00", sortOrder: 5,  unread: false, category: "solicitações", iconColor: "#3b82f6", iconBg: "#dbeafe" },
-  { id: 7,  icon: "chat",    title: "Nova Mensagem",                         desc: "Ana Faxineira enviou uma mensagem: 'Posso chegar às 8h amanhã?'",                   time: "Há 2 dias",      sortOrder: 8,  unread: false, category: "serviços",     iconColor: "#22c55e", iconBg: "#dcfce7" },
-  { id: 8,  icon: "payment", title: "Cobrança Gerada",                       desc: "Foi gerada uma cobrança de R$ 180,00 pelo serviço de Encanamento.",                time: "Há 2 dias",      sortOrder: 9,  unread: false, category: "pagamentos",   iconColor: "#8b5cf6", iconBg: "#ede9fe" },
-  { id: 9,  icon: "star",    title: "Avalie seu Serviço",                    desc: "Seu serviço de Instalação de Prateleiras foi concluído.",                           time: "Há 3 dias",      sortOrder: 10, unread: false, category: "serviços",     iconColor: "#f59e0b", iconBg: "#fef3c7" },
-  { id: 10, icon: "doc",     title: "Novo Prestador Disponível",             desc: "Roberto Souza está disponível para sua solicitação de Pintura de Quarto.",          time: "Há 3 dias",      sortOrder: 11, unread: false, category: "solicitações", iconColor: "#3b82f6", iconBg: "#dbeafe" },
-  { id: 11, icon: "chat",    title: "Nova Mensagem",                         desc: "Fernanda Pintora enviou fotos do trabalho finalizado para sua aprovação.",          time: "Há 4 dias",      sortOrder: 12, unread: false, category: "serviços",     iconColor: "#22c55e", iconBg: "#dcfce7" },
-  { id: 12, icon: "payment", title: "Reembolso Processado",                  desc: "Seu reembolso de R$ 90,00 foi processado e será creditado em até 5 dias úteis.",  time: "Há 5 dias",      sortOrder: 13, unread: false, category: "pagamentos",   iconColor: "#8b5cf6", iconBg: "#ede9fe" },
+  { id: 1,  icon: "doc",     title: "Serviço Aceito",                      desc: "O prestador João Silva aceitou sua solicitação de Instalação de Ar Condicionado.",  time: "Há 5 min",       sortOrder: 1,  unread: true,  category: "solicitações", iconColor: "#3b82f6", iconBg: "#dbeafe" },
+  { id: 2,  icon: "chat",    title: "Nova Mensagem",                        desc: "Você recebeu uma nova mensagem do prestador João Silva.",                           time: "Há 20 min",      sortOrder: 2,  unread: true,  category: "serviços",     iconColor: "#22c55e", iconBg: "#dcfce7" },
+  { id: 3,  icon: "payment", title: "Pagamento Aprovado",                   desc: "Seu pagamento de R$ 350,00 foi aprovado com sucesso.",                             time: "Há 1 hora",      sortOrder: 3,  unread: true,  category: "pagamentos",   iconColor: "#8b5cf6", iconBg: "#ede9fe" },
+  { id: 4,  icon: "star",    title: "Avalie seu Serviço",                   desc: "Seu serviço de Limpeza Residencial foi concluído. Conte como foi sua experiência!", time: "Ontem às 10:30", sortOrder: 6,  unread: false, category: "serviços",     iconColor: "#f59e0b", iconBg: "#fef3c7" },
+  { id: 5,  icon: "eye",     title: "Prestador Visualizou sua Solicitação", desc: "O prestador Maria Santos visualizou sua solicitação de Pintura Residencial.",      time: "Ontem às 09:15", sortOrder: 7,  unread: false, category: "solicitações", iconColor: "#f97316", iconBg: "#ffedd5" },
+  { id: 6,  icon: "doc",     title: "Serviço Concluído",                    desc: "Carlos Lima marcou o serviço de Reparo Elétrico como concluído. Tudo certo?",       time: "Ontem às 14:00", sortOrder: 5,  unread: false, category: "solicitações", iconColor: "#3b82f6", iconBg: "#dbeafe" },
+  { id: 7,  icon: "chat",    title: "Nova Mensagem",                        desc: "Ana Faxineira enviou uma mensagem: 'Posso chegar às 8h amanhã?'",                   time: "Há 2 dias",      sortOrder: 8,  unread: false, category: "serviços",     iconColor: "#22c55e", iconBg: "#dcfce7" },
+  { id: 8,  icon: "payment", title: "Cobrança Gerada",                      desc: "Foi gerada uma cobrança de R$ 180,00 pelo serviço de Encanamento.",               time: "Há 2 dias",      sortOrder: 9,  unread: false, category: "pagamentos",   iconColor: "#8b5cf6", iconBg: "#ede9fe" },
+  { id: 9,  icon: "star",    title: "Avalie seu Serviço",                   desc: "Seu serviço de Instalação de Prateleiras foi concluído.",                           time: "Há 3 dias",      sortOrder: 10, unread: false, category: "serviços",     iconColor: "#f59e0b", iconBg: "#fef3c7" },
+  { id: 10, icon: "doc",     title: "Novo Prestador Disponível",            desc: "Roberto Souza está disponível para sua solicitação de Pintura de Quarto.",          time: "Há 3 dias",      sortOrder: 11, unread: false, category: "solicitações", iconColor: "#3b82f6", iconBg: "#dbeafe" },
+  { id: 11, icon: "chat",    title: "Nova Mensagem",                        desc: "Fernanda Pintora enviou fotos do trabalho finalizado para sua aprovação.",          time: "Há 4 dias",      sortOrder: 12, unread: false, category: "serviços",     iconColor: "#22c55e", iconBg: "#dcfce7" },
+  { id: 12, icon: "payment", title: "Reembolso Processado",                 desc: "Seu reembolso de R$ 90,00 foi processado e será creditado em até 5 dias úteis.",  time: "Há 5 dias",      sortOrder: 13, unread: false, category: "pagamentos",   iconColor: "#8b5cf6", iconBg: "#ede9fe" },
 ].sort((a, b) => a.sortOrder - b.sortOrder);
 
 function NotifIcon({ icon, iconColor }) {
@@ -594,8 +650,8 @@ function NotifIcon({ icon, iconColor }) {
   return null;
 }
 
-// ─── Home Page ──────────────────────────────────────────────────────────────
-function HomePage({ onNavigateToSolicitacoes }) {
+// ─── HOME PAGE ────────────────────────────────────────────────────────────────
+function HomePage() {
   return (
     <div className="fazuno-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", backgroundColor: "#f9fafb" }}>
       {/* HERO */}
@@ -760,7 +816,7 @@ function HomePage({ onNavigateToSolicitacoes }) {
   );
 }
 
-// ─── ROOT ───────────────────────────────────────────────────────────────────
+// ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function TelainicialCliente() {
   const [activeNav, setActiveNav]         = useState(0);
   const [notifOpen, setNotifOpen]         = useState(false);
@@ -777,9 +833,14 @@ export default function TelainicialCliente() {
     return () => document.removeEventListener("mousedown", handler);
   }, [notifOpen]);
 
-  const baseNotifs = notifFilter === "todas" ? notifs : notifFilter === "não_lidas" ? notifs.filter(n => n.unread) : notifs.filter(n => n.category === notifFilter);
+  const baseNotifs = notifFilter === "todas"
+    ? notifs
+    : notifFilter === "não_lidas"
+    ? notifs.filter(n => n.unread)
+    : notifs.filter(n => n.category === notifFilter);
   const filteredNotifs = showAllNotifs ? baseNotifs : baseNotifs.slice(0, 5);
   const unreadCount = notifs.filter(n => n.unread).length;
+
   const unreadForFilter = (label, index) => {
     if (index === 0 || index === 1) return notifs.filter(n => n.unread).length;
     return notifs.filter(n => n.unread && n.category === label.toLowerCase()).length;
@@ -942,10 +1003,10 @@ export default function TelainicialCliente() {
           </div>
         </div>
 
-        {/* PAGE CONTENT — switch between Home and Minhas Solicitações */}
+        {/* PAGE CONTENT */}
         {activeNav === 2
           ? <MinhasSolicitacoesPage />
-          : <HomePage onNavigateToSolicitacoes={() => setActiveNav(2)} />
+          : <HomePage />
         }
       </div>
     </div>
