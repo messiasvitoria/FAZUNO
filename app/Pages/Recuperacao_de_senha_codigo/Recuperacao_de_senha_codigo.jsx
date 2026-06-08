@@ -49,6 +49,10 @@ export default function ResetPasswordCode() {
         .reset-btn:hover { border: 1.5px solid #E87722 !important; box-shadow: 0 0 10px rgba(232,119,34,0.45), 0 0 24px rgba(232,119,34,0.2) !important; }
       `}</style>
 
+       <div className="absolute z-20" style={{ top: 24, left: 12 }}>
+          <img src="/Logo_branca.png" alt="FazUno" style={{ height: 60, width: "auto" }} />
+        </div>
+
       <div
         className="relative w-screen h-screen overflow-hidden flex items-center justify-center"
         style={{ background: "#0A0B2D", fontFamily: "'DM Sans', sans-serif", color: "#E6E6E6" }}
