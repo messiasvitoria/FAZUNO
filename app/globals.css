@@ -12,6 +12,7 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
+  font-family: var(--font-sora), 'Sora', sans-serif;
 }
 
 /* Telas com sidebar + topbar: scroll interno, body travado */
