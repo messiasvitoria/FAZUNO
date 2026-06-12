@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Sidebar from "../../components/SideBar_cliente";
+import Topbar  from "../../components/TopBar_cliente";
 
 // ─── ICON COMPONENT ──────────────────────────────────────────────────────────
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
@@ -9,9 +12,9 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
     plus:         ["M12 5v14", "M5 12h14"],
     list:         ["M8 6h13", "M8 12h13", "M8 18h13", "M3 6h.01", "M3 12h.01", "M3 18h.01"],
     chat:         ["M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"],
-    bell:         ["M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9", "M13.73 21a2 2 0 01-3.46 0"],
-    help:         ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", "M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3", "M12 17h.01"],
-    settings:     ["M12 15a3 3 0 100-6 3 3 0 000 6z", "M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"],
+    bell:         ["M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9","M13.73 21a2 2 0 01-3.46 0"],
+    help:         ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z","M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3","M12 17h.01"],
+    settings:     ["M12 15a3 3 0 100-6 3 3 0 000 6z","M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"],
     chevDown:     ["M6 9l6 6 6-6"],
     chevRight:    ["M9 18l6-6-6-6"],
     mapPin:       ["M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z", "M12 10m-3 0a3 3 0 106 0 3 3 0 00-6 0"],
@@ -23,33 +26,24 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
     phone:        ["M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"],
     fileText:     ["M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z", "M14 2v6h6", "M16 13H8", "M16 17H8", "M10 9H8"],
     calendar:     ["M3 4h18v18H3z", "M16 2v4", "M8 2v4", "M3 10h18"],
-    star:         null,
+    pencil:       ["M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7", "M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"],
+    arrowLeft:    ["M19 12H5", "M12 19l-7-7 7-7"],
+    clock:        ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", "M12 6v6l4 2"],
     heartIcon:    ["M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"],
     broomCat:     ["M2 19.5A2.5 2.5 0 014.5 17h15", "M4.5 17l1.5-9h12l1.5 9", "M9 11v6", "M12 11v6", "M15 11v6"],
     homeIcon:     ["M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z", "M9 22V12h6v10"],
     scissorsIcon: ["M6 9a3 3 0 100-6 3 3 0 000 6z", "M6 15a3 3 0 100 6 3 3 0 000-6z", "M20 4L8.12 15.88", "M14.47 14.48L20 20", "M8.12 8.12L12 12"],
     leafIcon:     ["M17 8C8 10 5.9 16.17 3.82 19.56A1 1 0 004.72 21C11.81 17.44 14.83 12.66 17 8zm0 0c0 9-9 15-17 7"],
-    carIcon:      ["M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v9a2 2 0 01-2 2h-2", "M17 17m-2 0a2 2 0 104 0 2 2 0 00-4 0", "M7 17m-2 0a2 2 0 104 0 2 2 0 00-4 0"],
     monitorIcon:  ["M20 3H4a2 2 0 00-2 2v11a2 2 0 002 2h16a2 2 0 002-2V5a2 2 0 00-2-2z", "M8 21h8", "M12 17v4"],
     pawIcon:      ["M11 4a2 2 0 114 0", "M18 8a2 2 0 114 0", "M18 16a2 2 0 114 0", "M4 12a2 2 0 114 0", "M9 10a5 5 0 015 5v3.5a3.5 3.5 0 01-7 0V15a5 5 0 015-5z"],
     bookIcon:     ["M4 19.5A2.5 2.5 0 016.5 17H20", "M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"],
-    mortarboard: ["M22 10v6M2 10l10-5 10 5-10 5z", "M6 12v5c3 3 9 3 12 0v-5"],
-    key:          ["M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"],
-    ellipsis:     ["M5 12h.01", "M12 12h.01", "M19 12h.01"],
-    pencil:       ["M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7", "M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"],
-    arrowLeft:    ["M19 12H5", "M12 19l-7-7 7-7"],
-    clock:        ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", "M12 6v6l4 2"],
-    xIcon:        ["M18 6L6 18", "M6 6l12 12"],
+    mortarboard:  ["M22 10v6M2 10l10-5 10 5-10 5z", "M6 12v5c3 3 9 3 12 0v-5"],
+    star:         null,
   };
 
   if (name === "star") {
-    return (
-      <svg width={size} height={size} viewBox="0 0 24 24" fill={color} stroke="none">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-      </svg>
-    );
+    return <svg width={size} height={size} viewBox="0 0 24 24" fill={color} stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
   }
-
   const d = paths[name];
   if (!d) return null;
   return (
@@ -67,16 +61,16 @@ const clientData = {
   rating:      4.9,
   bio:         "Gosto de praticidade e qualidade no dia a dia. Sempre que preciso de um serviço, busco profissionais confiáveis e bem avaliados aqui na plataforma.",
   stats: [
-    { icon: "fileText",   value: 18,        label: "Solicitações realizadas", color: "#6366f1", bg: "#ede9fe" },
-    { icon: "checkCircle", value: 15,       label: "Serviços concluídos",     color: "#22c55e", bg: "#dcfce7" },
-    { icon: "star",       value: 12,        label: "Avaliações recebidas",    color: "#f59e0b", bg: "#fef3c7" },
-    { icon: "calendar",   value: "6 meses", label: "Tempo na plataforma",     color: "#3b82f6", bg: "#dbeafe" },
+    { icon: "fileText",    value: 18,        label: "Solicitações realizadas", color: "#6366f1", bg: "#ede9fe" },
+    { icon: "checkCircle", value: 15,        label: "Serviços concluídos",     color: "#22c55e", bg: "#dcfce7" },
+    { icon: "star",        value: 12,        label: "Avaliações recebidas",    color: "#f59e0b", bg: "#fef3c7" },
+    { icon: "calendar",    value: "6 meses", label: "Tempo na plataforma",     color: "#3b82f6", bg: "#dbeafe" },
   ],
   verifications: [
-    { icon: "mail",       label: "E-mail verificado"   },
-    { icon: "phone",      label: "Telefone verificado" },
-    { icon: "fileText",   label: "Documento validado"  },
-    { icon: "shieldCheck", label: "Perfil verificado"  },
+    { icon: "mail",        label: "E-mail verificado"   },
+    { icon: "phone",       label: "Telefone verificado" },
+    { icon: "fileText",    label: "Documento validado"  },
+    { icon: "shieldCheck", label: "Perfil verificado"   },
   ],
   topCategories: [
     { icon: "broomCat",     label: "Limpeza"          },
@@ -84,7 +78,6 @@ const clientData = {
     { icon: "heartIcon",    label: "Saúde e Cuidados" },
     { icon: "mortarboard",  label: "Educação"         },
     { icon: "scissorsIcon", label: "Beleza"           },
-    { icon: "monitorIcon",  label: "Tecnologia"       },
   ],
   reviews: [
     { name: "João Silva",    role: "Eletricista",        rating: 5.0, date: "12/05/2025", text: "Cliente muito educado, comunicação clara e pagamento sem complicações. Recomendo!",              photo: "/foto_eletricista2.jpg"     },
@@ -102,16 +95,13 @@ const clientData = {
 function StatCard({ stat }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{ backgroundColor: "white", borderRadius: 16, padding: "20px 16px", boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.18)" : "0 2px 12px rgba(0,0,0,0.06)", border: `1.5px solid ${hovered ? "#f97316" : "#f1f5f9"}`, transform: hovered ? "translateY(-5px)" : "translateY(0)", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, flex: 1, minWidth: 0, transition: "all 0.25s ease", cursor: "default" }}
-    >
-      <div style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: stat.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Icon name={stat.icon} size={22} color={stat.color} strokeWidth={2} />
+    <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+      style={{ backgroundColor: "white", borderRadius: 14, padding: "16px 12px", boxShadow: hovered ? "0 0 0 2px #f97316, 0 8px 24px rgba(249,115,22,0.15)" : "0 2px 12px rgba(0,0,0,0.06)", border: `1.5px solid ${hovered ? "#f97316" : "#f1f5f9"}`, transform: hovered ? "translateY(-4px)" : "translateY(0)", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, flex: 1, minWidth: 0, transition: "all 0.25s ease", cursor: "default" }}>
+      <div style={{ width: 38, height: 38, borderRadius: 12, backgroundColor: stat.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Icon name={stat.icon} size={19} color={stat.color} strokeWidth={2} />
       </div>
-      <span style={{ fontSize: 22, fontWeight: 800, color: "#0d1b3e" }}>{stat.value}</span>
-      <span style={{ fontSize: 12, color: "#9ca3af", textAlign: "center", lineHeight: 1.3 }}>{stat.label}</span>
+      <span style={{ fontSize: 20, fontWeight: 800, color: "#0d1b3e" }}>{stat.value}</span>
+      <span style={{ fontSize: 11, color: "#9ca3af", textAlign: "center", lineHeight: 1.3 }}>{stat.label}</span>
     </div>
   );
 }
@@ -120,15 +110,12 @@ function StatCard({ stat }) {
 function CategoryPill({ cat }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, cursor: "pointer" }}
-    >
-      <div style={{ width: 56, height: 56, borderRadius: 16, backgroundColor: "white", border: hovered ? "2px solid #f97316" : "2px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", transform: hovered ? "translateY(-4px)" : "translateY(0)", boxShadow: hovered ? "0 8px 20px rgba(249,115,22,0.2)" : "0 2px 8px rgba(0,0,0,0.06)", transition: "all 0.22s ease" }}>
-        <Icon name={cat.icon} size={24} color="#0d1b3e" strokeWidth={1.7} />
+    <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+      style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: "pointer" }}>
+      <div style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: "white", border: hovered ? "2px solid #f97316" : "2px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", transform: hovered ? "translateY(-3px)" : "translateY(0)", boxShadow: hovered ? "0 6px 16px rgba(249,115,22,0.2)" : "0 2px 8px rgba(0,0,0,0.06)", transition: "all 0.22s ease" }}>
+        <Icon name={cat.icon} size={20} color="#0d1b3e" strokeWidth={1.7} />
       </div>
-      <span style={{ fontSize: 11, color: "#4b5563", fontWeight: 500, textAlign: "center", lineHeight: 1.2 }}>{cat.label}</span>
+      <span style={{ fontSize: 10, color: "#4b5563", fontWeight: 500, textAlign: "center", lineHeight: 1.2 }}>{cat.label}</span>
     </div>
   );
 }
@@ -137,126 +124,84 @@ function CategoryPill({ cat }) {
 function ReviewCard({ review }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{ backgroundColor: "white", borderRadius: 18, padding: 18, boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.18)" : "0 2px 12px rgba(0,0,0,0.06)", border: `1.5px solid ${hovered ? "#f97316" : "#f1f5f9"}`, transform: hovered ? "translateY(-5px)" : "translateY(0)", height: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 0, transition: "all 0.25s ease", cursor: "default" }}
-    >
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-        <div style={{ width: 42, height: 42, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "2px solid #fed7aa" }}>
+    <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+      style={{ backgroundColor: "white", borderRadius: 16, padding: 16, boxShadow: hovered ? "0 0 0 2px #f97316, 0 8px 24px rgba(249,115,22,0.15)" : "0 2px 12px rgba(0,0,0,0.06)", border: `1.5px solid ${hovered ? "#f97316" : "#f1f5f9"}`, transform: hovered ? "translateY(-4px)" : "translateY(0)", height: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", transition: "all 0.25s ease", cursor: "default" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+        <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "2px solid #fed7aa" }}>
           <img src={review.photo} alt={review.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#111827" }}>{review.name}</p>
-          <p style={{ margin: 0, fontSize: 12, color: "#9ca3af" }}>{review.role}</p>
+          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#111827" }}>{review.name}</p>
+          <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>{review.role}</p>
         </div>
-        <span style={{ fontSize: 11, color: "#9ca3af", flexShrink: 0 }}>{review.date}</span>
+        <span style={{ fontSize: 10, color: "#9ca3af", flexShrink: 0 }}>{review.date}</span>
       </div>
-
-      {/* Stars */}
-      <div style={{ display: "flex", gap: 2, marginBottom: 10 }}>
+      <div style={{ display: "flex", gap: 2, marginBottom: 8 }}>
         {Array.from({ length: 5 }).map((_, i) => (
-          <Icon key={i} name="star" size={14} color={i < Math.round(review.rating) ? "#f59e0b" : "#e5e7eb"} />
+          <Icon key={i} name="star" size={12} color={i < Math.round(review.rating) ? "#f59e0b" : "#e5e7eb"} />
         ))}
-        <span style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginLeft: 4 }}>{review.rating.toFixed(1)}</span>
+        <span style={{ fontSize: 11, fontWeight: 700, color: "#374151", marginLeft: 3 }}>{review.rating.toFixed(1)}</span>
       </div>
-
-      {/* Text */}
-      <p style={{ margin: 0, fontSize: 12, color: "#4b5563", lineHeight: 1.6, flex: 1 }}>&ldquo;{review.text}&rdquo;</p>
+      <p style={{ margin: 0, fontSize: 11, color: "#4b5563", lineHeight: 1.6, flex: 1 }}>&ldquo;{review.text}&rdquo;</p>
     </div>
   );
 }
 
 // ─── REVIEWS CAROUSEL ────────────────────────────────────────────────────────
 function ReviewsCarousel({ reviews }) {
-  const CARD_W  = "calc((100% - 16px) / 2)";
-  const STEP_PX = "calc((100% - 16px) / 2 + 16px)";
-  const TOTAL   = reviews.length;
-
+  const TOTAL = reviews.length;
   const items = [...reviews, ...reviews];
-
   const [index, setIndex]       = useState(0);
   const [animated, setAnimated] = useState(true);
 
-  const next = () => {
-    setAnimated(true);
-    setIndex(i => i + 1);
-  };
+  const next = () => { setAnimated(true); setIndex(i => i + 1); };
 
   useEffect(() => {
     if (index === TOTAL) {
-      const timer = setTimeout(() => {
-        setAnimated(false);
-        setIndex(0);
-      }, 380);
-      return () => clearTimeout(timer);
+      const t = setTimeout(() => { setAnimated(false); setIndex(0); }, 380);
+      return () => clearTimeout(t);
     }
     if (index === 0) {
-      const raf = requestAnimationFrame(() => setAnimated(true));
-      return () => cancelAnimationFrame(raf);
+      const r = requestAnimationFrame(() => setAnimated(true));
+      return () => cancelAnimationFrame(r);
     }
   }, [index, TOTAL]);
 
   const dotIndex = index % TOTAL;
 
   return (
-    <div style={{ marginBottom: 28, position: "relative" }}>
-      <div style={{ marginBottom: 16 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>
-          Avaliações recebidas dos prestadores
-        </h3>
-      </div>
-
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        {/* Janela do carrossel */}
-        <div style={{ flex: 1, overflow: "hidden", position: "relative" }}>
-          <div
-            style={{
-              display: "flex",
-              gap: 16,
-              transition: animated ? "transform 0.38s cubic-bezier(0.4, 0, 0.2, 1)" : "none",
-              transform: `translateX(calc(-${index} * (${STEP_PX})))`,
-            }}
-          >
+    <div style={{ marginBottom: 24 }}>
+      <h3 style={{ fontSize: 16, fontWeight: 700, color: "#111827", margin: "0 0 14px" }}>Avaliações recebidas dos prestadores</h3>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ flex: 1, overflow: "hidden" }}>
+          <div style={{ display: "flex", gap: 14, transition: animated ? "transform 0.38s cubic-bezier(0.4,0,0.2,1)" : "none", transform: `translateX(calc(-${index} * (50% + 7px)))` }}>
             {items.map((review, i) => (
-              <div key={i} style={{ flexShrink: 0, width: CARD_W }}>
+              <div key={i} style={{ flexShrink: 0, width: "calc(50% - 7px)" }}>
                 <ReviewCard review={review} />
               </div>
             ))}
           </div>
         </div>
-
-        {/* Seta direita */}
-        <button
-          onClick={next}
-          style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer", padding: 4, transition: "opacity 0.2s" }}
+        <button onClick={next} style={{ flexShrink: 0, background: "none", border: "none", cursor: "pointer", padding: 4 }}
           onMouseEnter={e => e.currentTarget.style.opacity = "0.55"}
-          onMouseLeave={e => e.currentTarget.style.opacity = "1"}
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 18l6-6-6-6" />
-          </svg>
+          onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
       </div>
-
-      {/* Dots */}
-      <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 14 }}>
+      <div style={{ display: "flex", justifyContent: "center", gap: 5, marginTop: 12 }}>
         {reviews.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => { setAnimated(true); setIndex(i); }}
-            style={{ width: i === dotIndex ? 20 : 6, height: 6, borderRadius: 3, border: "none", backgroundColor: i === dotIndex ? "#f97316" : "#e5e7eb", cursor: "pointer", padding: 0, transition: "all 0.25s ease" }}
-          />
+          <button key={i} onClick={() => { setAnimated(true); setIndex(i); }}
+            style={{ width: i === dotIndex ? 18 : 6, height: 6, borderRadius: 3, border: "none", backgroundColor: i === dotIndex ? "#f97316" : "#e5e7eb", cursor: "pointer", padding: 0, transition: "all 0.25s ease" }} />
         ))}
       </div>
     </div>
   );
 }
 
-// ─── PROFILE PAGE ─────────────────────────────────────────────────────────────
+// ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function PerfilCliente() {
   const c = clientData;
+  const [activeNav, setActiveNav] = useState(null);
 
   useEffect(() => {
     const style = document.createElement("style");
@@ -266,132 +211,128 @@ export default function PerfilCliente() {
   }, []);
 
   return (
-    <div className="perfil-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", backgroundColor: "#f9fafb" }}>
+    <div style={{ display: "flex", width: "100%", height: "100%", overflow: "hidden", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f9fafb" }}>
 
-      {/* ── HERO / CABEÇALHO DO PERFIL ── */}
-      <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 55%, #1e40af 100%)", padding: "32px 40px 40px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 90% 50%, rgba(249,115,22,0.15) 0%, transparent 55%)" }} />
+      <Sidebar activeNav={activeNav} setActiveNav={setActiveNav} />
 
-        <div style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "flex-start", gap: 28 }}>
-          {/* Foto */}
-          <div style={{ position: "relative", flexShrink: 0 }}>
-            <div style={{ width: 96, height: 96, borderRadius: "50%", overflow: "hidden", border: "3px solid #f97316", boxShadow: "0 0 0 4px rgba(249,115,22,0.25)" }}>
-              <img src="/homem1.avif" alt={c.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
-            </div>
-            <div style={{ position: "absolute", bottom: 2, right: 2, width: 26, height: 26, borderRadius: "50%", backgroundColor: "#22c55e", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Icon name="checkCircle" size={14} color="white" strokeWidth={2.5} />
-            </div>
-          </div>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden" }}>
+        <Topbar />
 
-          {/* Dados */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <h1 style={{ color: "white", fontSize: 26, fontWeight: 800, margin: "0 0 4px" }}>{c.name}</h1>
-            <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, margin: "0 0 10px" }}>Cliente desde {c.memberSince}</p>
+        <div className="perfil-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", backgroundColor: "#f9fafb" }}>
 
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <Icon name="mapPin" size={14} color="rgba(255,255,255,0.55)" strokeWidth={2} />
-                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.7)" }}>{c.location}</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <Icon name="star" size={14} color="#f59e0b" />
-                <span style={{ fontSize: 13, fontWeight: 700, color: "white" }}>{c.rating}</span>
-                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>Avaliação média</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <Icon name="shieldCheck" size={14} color="#22c55e" strokeWidth={2} />
-                <span style={{ fontSize: 13, color: "#4ade80", fontWeight: 600 }}>Perfil Verificado</span>
-              </div>
-            </div>
-
-            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, margin: "14px 0 0", lineHeight: 1.6, maxWidth: 520 }}>{c.bio}</p>
-          </div>
-
-          {/* Botão editar */}
-          <button
-            style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 8, padding: "10px 20px", borderRadius: 12, border: "1.5px solid rgba(255,255,255,0.2)", backgroundColor: "rgba(255,255,255,0.08)", color: "white", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.2s", backdropFilter: "blur(4px)" }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.16)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)"; }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}
-          >
-            <Icon name="pencil" size={15} color="white" strokeWidth={2} />
-            Editar perfil
-          </button>
-        </div>
-      </div>
-
-      {/* ── CONTEÚDO PRINCIPAL ── */}
-      <div style={{ padding: "28px 40px", boxSizing: "border-box" }}>
-
-        {/* ── ESTATÍSTICAS ── */}
-        <div style={{ display: "flex", gap: 16, marginBottom: 28 }}>
-          {c.stats.map((stat, i) => <StatCard key={i} stat={stat} />)}
-        </div>
-
-        {/* ── SOBRE + VERIFICAÇÕES ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 28 }}>
-          <div style={{ backgroundColor: "white", borderRadius: 18, padding: 24, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #f1f5f9" }}>
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0d1b3e", margin: "0 0 14px" }}>Sobre</h3>
-            <p style={{ fontSize: 13, color: "#4b5563", lineHeight: 1.7, margin: 0 }}>{c.bio}</p>
-          </div>
-
-          <div style={{ backgroundColor: "white", borderRadius: 18, padding: 24, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #f1f5f9" }}>
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0d1b3e", margin: "0 0 14px" }}>Verificações</h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {c.verifications.map((v, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: "#dcfce7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <Icon name="checkCircle" size={15} color="#16a34a" strokeWidth={2.5} />
-                  </div>
-                  <span style={{ fontSize: 13, color: "#374151", fontWeight: 500 }}>{v.label}</span>
+          {/* HERO */}
+          <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 55%, #1e40af 100%)", padding: "24px 32px 28px", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 90% 50%, rgba(249,115,22,0.15) 0%, transparent 55%)" }} />
+            <div style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "flex-start", gap: 22 }}>
+              <div style={{ position: "relative", flexShrink: 0 }}>
+                <div style={{ width: 80, height: 80, borderRadius: "50%", overflow: "hidden", border: "3px solid #f97316", boxShadow: "0 0 0 3px rgba(249,115,22,0.25)" }}>
+                  <img src="/homem1.avif" alt={c.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
                 </div>
-              ))}
+                <div style={{ position: "absolute", bottom: 2, right: 2, width: 22, height: 22, borderRadius: "50%", backgroundColor: "#22c55e", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon name="checkCircle" size={12} color="white" strokeWidth={2.5} />
+                </div>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <h1 style={{ color: "white", fontSize: 22, fontWeight: 800, margin: "0 0 3px" }}>{c.name}</h1>
+                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, margin: "0 0 8px" }}>Cliente desde {c.memberSince}</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                    <Icon name="mapPin" size={12} color="rgba(255,255,255,0.55)" strokeWidth={2} />
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{c.location}</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                    <Icon name="star" size={12} color="#f59e0b" />
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "white" }}>{c.rating}</span>
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>Avaliação média</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                    <Icon name="shieldCheck" size={12} color="#22c55e" strokeWidth={2} />
+                    <span style={{ fontSize: 12, color: "#4ade80", fontWeight: 600 }}>Perfil Verificado</span>
+                  </div>
+                </div>
+                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, margin: "10px 0 0", lineHeight: 1.6, maxWidth: 480 }}>{c.bio}</p>
+              </div>
+              <button
+                style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 7, padding: "9px 16px", borderRadius: 10, border: "1.5px solid rgba(255,255,255,0.2)", backgroundColor: "rgba(255,255,255,0.08)", color: "white", fontSize: 12, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}
+                onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.16)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)"; }}
+                onMouseLeave={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}>
+                <Icon name="pencil" size={13} color="white" strokeWidth={2} />
+                Editar perfil
+              </button>
             </div>
           </div>
-        </div>
 
-        {/* ── CATEGORIAS MAIS CONTRATADAS ── */}
-        <div style={{ backgroundColor: "white", borderRadius: 18, padding: 24, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #f1f5f9", marginBottom: 28 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#0d1b3e", margin: 0 }}>Categorias mais contratadas</h3>
-            <button style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 600, color: "#f97316", background: "none", border: "none", cursor: "pointer" }}>
-              Ver mais <Icon name="chevRight" size={14} color="#f97316" />
-            </button>
-          </div>
-          <div style={{ display: "flex", gap: 48, justifyContent: "center" }}>
-            {c.topCategories.slice(0, 5).map((cat, i) => <CategoryPill key={i} cat={cat} />)}
-          </div>
-        </div>
+          {/* CONTEÚDO */}
+          <div style={{ padding: "22px 32px", boxSizing: "border-box" }}>
 
-        {/* ── AVALIAÇÕES (CARROSSEL) ── */}
-        <ReviewsCarousel reviews={c.reviews} />
+            {/* STATS */}
+            <div style={{ display: "flex", gap: 14, marginBottom: 22 }}>
+              {c.stats.map((stat, i) => <StatCard key={i} stat={stat} />)}
+            </div>
 
-        {/* ── BANNER SEGURANÇA ── */}
-        <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 100%)", borderRadius: 18, padding: "24px 28px", display: "flex", alignItems: "center", gap: 20, position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 100% 50%, rgba(249,115,22,0.12) 0%, transparent 60%)" }} />
-          <div style={{ width: 56, height: 56, borderRadius: 16, backgroundColor: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, zIndex: 2 }}>
-            <Icon name="shield" size={28} color="#f97316" strokeWidth={1.7} />
+            {/* SOBRE + VERIFICAÇÕES */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 22 }}>
+              <div style={{ backgroundColor: "white", borderRadius: 16, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #f1f5f9" }}>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0d1b3e", margin: "0 0 12px" }}>Sobre</h3>
+                <p style={{ fontSize: 12, color: "#4b5563", lineHeight: 1.7, margin: 0 }}>{c.bio}</p>
+              </div>
+              <div style={{ backgroundColor: "white", borderRadius: 16, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #f1f5f9" }}>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0d1b3e", margin: "0 0 12px" }}>Verificações</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {c.verifications.map((v, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <div style={{ width: 24, height: 24, borderRadius: 7, backgroundColor: "#dcfce7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <Icon name="checkCircle" size={13} color="#16a34a" strokeWidth={2.5} />
+                      </div>
+                      <span style={{ fontSize: 12, color: "#374151", fontWeight: 500 }}>{v.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* CATEGORIAS */}
+            <div style={{ backgroundColor: "white", borderRadius: 16, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #f1f5f9", marginBottom: 22 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0d1b3e", margin: 0 }}>Categorias mais contratadas</h3>
+                <button style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, color: "#f97316", background: "none", border: "none", cursor: "pointer" }}>
+                  Ver mais <Icon name="chevRight" size={13} color="#f97316" />
+                </button>
+              </div>
+              <div style={{ display: "flex", gap: 40, justifyContent: "center" }}>
+                {c.topCategories.map((cat, i) => <CategoryPill key={i} cat={cat} />)}
+              </div>
+            </div>
+
+            {/* AVALIAÇÕES */}
+            <ReviewsCarousel reviews={c.reviews} />
+
+            {/* BANNER SEGURANÇA */}
+            <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 100%)", borderRadius: 16, padding: "20px 24px", display: "flex", alignItems: "center", gap: 16, position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 100% 50%, rgba(249,115,22,0.12) 0%, transparent 60%)" }} />
+              <div style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, zIndex: 2 }}>
+                <Icon name="shield" size={24} color="#f97316" strokeWidth={1.7} />
+              </div>
+              <div style={{ zIndex: 2 }}>
+                <p style={{ margin: "0 0 3px", fontSize: 14, fontWeight: 700, color: "white" }}>Perfil seguro e confiável</p>
+                <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.6)", lineHeight: 1.5 }}>
+                  Todas as informações deste perfil são checadas pela nossa equipe para garantir mais segurança para os prestadores de serviço da plataforma.
+                </p>
+              </div>
+            </div>
           </div>
-          <div style={{ zIndex: 2 }}>
-            <p style={{ margin: "0 0 4px", fontSize: 15, fontWeight: 700, color: "white" }}>Perfil seguro e confiável</p>
-            <p style={{ margin: 0, fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.5 }}>
-              Todas as informações deste perfil são checadas pela nossa equipe para garantir mais segurança para os prestadores de serviço da plataforma.
-            </p>
-          </div>
-          <div style={{ marginLeft: "auto", flexShrink: 0, zIndex: 2 }}>
-            <Icon name="shield" size={52} color="rgba(255,255,255,0.06)" strokeWidth={1} />
-          </div>
+
+          {/* FOOTER */}
+          <footer style={{ backgroundColor: "#0d1b3e", color: "white", marginTop: 8 }}>
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <img src="/Logo_branca.png" alt="Fazuno" height="36" />
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginLeft: 8 }}>© 2026 FazUno. Todos os direitos reservados.</span>
+              </div>
+            </div>
+          </footer>
         </div>
       </div>
-
-      {/* ── RODAPÉ ── */}
-      <footer style={{ backgroundColor: "#0d1b3e", color: "white", marginTop: 8 }}>
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", padding: "20px 40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <img src="/Logo_branca.png" alt="Fazuno" height="40" />
-            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginLeft: 8 }}>© 2026 FazUno. Todos os direitos reservados.</span>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
