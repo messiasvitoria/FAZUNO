@@ -4,11 +4,10 @@ import {
   FaStar, FaStarHalfAlt, FaRegStar,
   FaMapMarkerAlt, FaCheckCircle,
   FaShieldAlt, FaClock, FaChevronDown, FaChevronUp,
-  FaShare, FaHeart, FaRegHeart,
-  FaBroom, FaTools, FaHeartbeat, FaGraduationCap, FaCut,
+  FaHeart, FaRegHeart,
+  FaBroom, FaPaintRoller, FaHeartbeat, FaGraduationCap, FaCut,
   FaLaptop, FaEllipsisH, FaExclamationCircle, FaBan,
   FaWrench, FaBolt, FaEdit, FaFileAlt, FaCalendar,
-  FaPaintRoller,
 } from "react-icons/fa";
 
 const C = {
@@ -26,14 +25,14 @@ const C = {
   star:    "#F59E0B",
 };
 
-// ── FOTOS ATUALIZADAS ──────────────────────────────────────────────────────
 const PHOTO_PROVIDER = "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=200&h=200&fit=crop&crop=face";
 
+// Fotos realistas de eletricista
 const PORTFOLIO_PHOTOS = [
+  "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400&h=300&fit=crop",  // ← substituída
   "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1609714212520-8eae9d70e57f?w=400&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?w=400&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=300&fit=crop",
+  "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&h=300&fit=crop",
 ];
 
@@ -43,7 +42,6 @@ const AVATAR_PHOTOS = [
   "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=face",
   "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face",
 ];
-// ──────────────────────────────────────────────────────────────────────────
 
 const PROVIDER = {
   name: "João Silva",
@@ -63,13 +61,13 @@ const PROVIDER = {
     { label: "Perfil verificado", done: true },
   ],
   categories: [
-    { label: "Limpeza",          Icon: FaBroom,       iconBg: "#EDE9FE", iconColor: "#7C3AED" },
-    { label: "Reformas",         Icon: FaPaintRoller, iconBg: "#DCFCE7", iconColor: "#16A34A" },
-    { label: "Saúde e Cuidados", Icon: FaHeartbeat,   iconBg: "#FCE7F3", iconColor: "#DB2777" },
-    { label: "Educação",         Icon: FaGraduationCap,iconBg:"#FEF3C7", iconColor: "#D97706" },
-    { label: "Beleza",           Icon: FaCut,         iconBg: "#FFE4E6", iconColor: "#E11D48" },
-    { label: "Tecnologia",       Icon: FaLaptop,      iconBg: "#DBEAFE", iconColor: "#2563EB" },
-    { label: "Outros",           Icon: FaEllipsisH,   iconBg: "#F3F4F6", iconColor: "#6B7280" },
+    { label: "Limpeza",          Icon: FaBroom,        iconBg: "#EDE9FE", iconColor: "#7C3AED" },
+    { label: "Reformas",         Icon: FaPaintRoller,  iconBg: "#DCFCE7", iconColor: "#16A34A" },
+    { label: "Saúde e Cuidados", Icon: FaHeartbeat,    iconBg: "#FCE7F3", iconColor: "#DB2777" },
+    { label: "Educação",         Icon: FaGraduationCap,iconBg: "#FEF3C7", iconColor: "#D97706" },
+    { label: "Beleza",           Icon: FaCut,          iconBg: "#FFE4E6", iconColor: "#E11D48" },
+    { label: "Tecnologia",       Icon: FaLaptop,       iconBg: "#DBEAFE", iconColor: "#2563EB" },
+    { label: "Outros",           Icon: FaEllipsisH,    iconBg: "#F3F4F6", iconColor: "#6B7280" },
   ],
   skills: ["Instalações elétricas","Manutenção preventiva","Quadros de distribuição","Curto-circuitos","Iluminação LED","Tomadas e interruptores","Fiação e cabeamento"],
   certifications: [
@@ -82,51 +80,48 @@ const PROVIDER = {
     schedule: "Segunda a Sexta: 8h às 18h\nSábado: 8h às 12h",
   },
   reviews: [
-    { id: 1, author: "Ana Souza",       rating: 5, date: "12/05/2025", text: "Excelente profissional! Chegou no horário, resolveu o problema rapidamente e ainda explicou tudo. Muito educado e atencioso. Recomendo!" },
-    { id: 2, author: "Carlos Lima",     rating: 5, date: "08/05/2025", text: "Serviço de alta qualidade, muito caprichoso e organizado. Fez a instalação completa da minha casa com perfeição." },
-    { id: 3, author: "Mariana Costa",   rating: 5, date: "20/04/2025", text: "Super recomendo! Resolveu um problema que outros eletricistas não conseguiram. Preço justo e serviço impecável." },
-    { id: 4, author: "Roberto Ferreira",rating: 4, date: "15/04/2025", text: "Bom profissional, chegou no horário combinado e fez o serviço direitinho. Só demorou um pouco mais do previsto." },
+    { id: 1, author: "Ana Souza",        rating: 5, date: "12/05/2025", text: "Excelente profissional! Chegou no horário, resolveu o problema rapidamente e ainda explicou tudo. Muito educado e atencioso. Recomendo!" },
+    { id: 2, author: "Carlos Lima",      rating: 5, date: "08/05/2025", text: "Serviço de alta qualidade, muito caprichoso e organizado. Fez a instalação completa da minha casa com perfeição." },
+    { id: 3, author: "Mariana Costa",    rating: 5, date: "20/04/2025", text: "Super recomendo! Resolveu um problema que outros eletricistas não conseguiram. Preço justo e serviço impecável." },
+    { id: 4, author: "Roberto Ferreira", rating: 4, date: "15/04/2025", text: "Bom profissional, chegou no horário combinado e fez o serviço direitinho. Só demorou um pouco mais do previsto." },
   ],
 };
 
-// ─── helpers ────────────────────────────────────────────────────────────────
 function StarRow({ value }) {
   return (
-    <span style={{ display: "inline-flex", gap: 2, color: C.star, fontSize: "0.8rem" }}>
+    <span style={{ display:"inline-flex", gap:2, color:C.star, fontSize:"0.8rem" }}>
       {[1,2,3,4,5].map(i =>
-        value >= i ? <FaStar key={i} /> :
-        value >= i - 0.5 ? <FaStarHalfAlt key={i} /> :
-        <FaRegStar key={i} />
+        value >= i ? <FaStar key={i}/> :
+        value >= i - 0.5 ? <FaStarHalfAlt key={i}/> :
+        <FaRegStar key={i}/>
       )}
     </span>
   );
 }
 
-function AnimCard({ children, delay = 0, style = {} }) {
+function AnimCard({ children, delay=0, style={} }) {
   const ref = useRef(null);
   const [vis, setVis] = useState(false);
   useEffect(() => {
     const el = ref.current; if (!el) return;
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVis(true); io.disconnect(); } }, { threshold: 0.04 });
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVis(true); io.disconnect(); } }, { threshold:0.04 });
     io.observe(el); return () => io.disconnect();
   }, []);
   return (
-    <div ref={ref} style={{ opacity: vis?1:0, transform: vis?"translateY(0)":"translateY(18px)", transition: `opacity 0.5s ${delay}ms ease, transform 0.5s ${delay}ms ease`, ...style }}>
+    <div ref={ref} style={{ opacity:vis?1:0, transform:vis?"translateY(0)":"translateY(18px)", transition:`opacity 0.5s ${delay}ms ease, transform 0.5s ${delay}ms ease`, ...style }}>
       {children}
     </div>
   );
 }
 
-const card = { border: `1.5px solid ${C.border}`, borderRadius: 12, background: C.bg, boxShadow: "0 2px 12px rgba(6,16,74,0.05)", overflow: "hidden" };
-const secTitle = { fontFamily: "'Sora',sans-serif", fontSize: "1rem", fontWeight: 700, color: C.navy, marginBottom: 18, marginTop: 0 };
+const card = { border:`1.5px solid ${C.border}`, borderRadius:12, background:C.bg, boxShadow:"0 2px 12px rgba(6,16,74,0.05)", overflow:"hidden" };
+const secTitle = { fontFamily:"'Sora',sans-serif", fontSize:"1rem", fontWeight:700, color:C.navy, marginBottom:18, marginTop:0 };
 
 export default function PerfilPrestador() {
   const p = PROVIDER;
-  const [liked, setLiked]           = useState(false);
   const [showAll, setShowAll]       = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [skillHover, setSkillHover] = useState(null);
-  const [btnHover, setBtnHover]     = useState(null);
 
   const visibleReviews = showAll ? p.reviews : p.reviews.slice(0, 2);
 
@@ -138,8 +133,8 @@ export default function PerfilPrestador() {
         @keyframes ppSlideIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         @keyframes ppFadeBg { from{opacity:0} to{opacity:1} }
         * { box-sizing: border-box; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-thumb { background: #c7cde0; border-radius: 99px; }
+        ::-webkit-scrollbar { width:6px; height:6px; }
+        ::-webkit-scrollbar-thumb { background:#c7cde0; border-radius:99px; }
       `}</style>
 
       <div style={{ fontFamily:"'DM Sans','Segoe UI',sans-serif", background:"#EEF1F8", color:C.navy, position:"fixed", inset:0, overflowY:"auto" }}>
@@ -149,24 +144,17 @@ export default function PerfilPrestador() {
           <div style={{ maxWidth:1100, margin:"0 auto", padding:"36px 40px 32px" }}>
             <div style={{ display:"flex", alignItems:"flex-start", gap:22 }}>
 
-              {/* Avatar eletricista */}
               <div style={{ position:"relative", flexShrink:0 }}>
                 <div style={{ width:96, height:96, borderRadius:"50%", border:"3.5px solid rgba(255,255,255,0.5)", overflow:"hidden", boxShadow:"0 4px 20px rgba(0,0,0,0.3)" }}>
-                  <img
-                    src={PHOTO_PROVIDER}
-                    alt="João Silva"
-                    style={{ width:"100%", height:"100%", objectFit:"cover" }}
-                    onError={e => { e.target.src = "https://picsum.photos/seed/electrician42/200/200"; }}
-                  />
+                  <img src={PHOTO_PROVIDER} alt="João Silva" style={{ width:"100%", height:"100%", objectFit:"cover" }} onError={e => { e.target.src="https://picsum.photos/seed/electrician42/200/200"; }}/>
                 </div>
                 {p.available && (
                   <div style={{ position:"absolute", bottom:4, right:4, width:22, height:22, borderRadius:"50%", background:C.green, border:"2.5px solid #fff", display:"flex", alignItems:"center", justifyContent:"center", animation:"ppPulse 2s infinite" }}>
-                    <FaCheckCircle style={{ color:"#fff", fontSize:10 }} />
+                    <FaCheckCircle style={{ color:"#fff", fontSize:10 }}/>
                   </div>
                 )}
               </div>
 
-              {/* Texto */}
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap", marginBottom:4 }}>
                   <span style={{ fontFamily:"'Sora',sans-serif", fontSize:"1.6rem", fontWeight:800, color:"#fff" }}>{p.name}</span>
@@ -176,14 +164,14 @@ export default function PerfilPrestador() {
                 </div>
                 <div style={{ display:"flex", flexWrap:"wrap", gap:16, alignItems:"center" }}>
                   <span style={{ display:"flex", alignItems:"center", gap:6, color:"rgba(255,255,255,0.82)", fontSize:".84rem", fontWeight:600 }}>
-                    <FaMapMarkerAlt style={{ color:C.orange }} /> {p.city}, {p.state}
+                    <FaMapMarkerAlt style={{ color:C.orange }}/> {p.city}, {p.state}
                   </span>
                   <span style={{ display:"flex", alignItems:"center", gap:6, color:"rgba(255,255,255,0.82)", fontSize:".84rem", fontWeight:600 }}>
-                    <FaStar style={{ color:C.star }} /> {p.rating} Avaliação média
+                    <FaStar style={{ color:C.star }}/> {p.rating} Avaliação média
                   </span>
                   {p.verified && (
                     <span style={{ display:"inline-flex", alignItems:"center", gap:5, background:"rgba(22,163,74,0.18)", color:"#4ade80", border:"1px solid rgba(74,222,128,0.4)", fontSize:".75rem", fontWeight:700, borderRadius:999, padding:"3px 11px" }}>
-                      <FaCheckCircle size={10} /> Perfil Verificado
+                      <FaCheckCircle size={10}/> Perfil Verificado
                     </span>
                   )}
                 </div>
@@ -192,31 +180,30 @@ export default function PerfilPrestador() {
                 </p>
               </div>
 
-              {/* Editar */}
               <button
                 onMouseEnter={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.7)"; e.currentTarget.style.background="rgba(255,255,255,0.08)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
                 style={{ height:40, padding:"0 18px", background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", borderRadius:8, color:"#fff", fontSize:".84rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:7, flexShrink:0, transition:"all 0.15s" }}>
-                <FaEdit size={13} /> Editar perfil
+                <FaEdit size={13}/> Editar perfil
               </button>
             </div>
           </div>
         </div>
 
         {/* ══ CONTEÚDO ══ */}
-        <div style={{ maxWidth:1100, margin:"0 auto", padding:"28px 40px 100px" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto", padding:"28px 40px 60px" }}>
 
           {/* Stats */}
           <AnimCard delay={0} style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:22 }}>
             {[
-              { Icon:FaFileAlt,     iconBg:"#EDE9FE", iconColor:"#7C3AED", val:p.servicesCompleted,      label:"Solicitações realizadas" },
-              { Icon:FaCheckCircle, iconBg:"#DCFCE7", iconColor:C.green,   val:p.completionRate+"%",     label:"Taxa de conclusão" },
-              { Icon:FaStar,        iconBg:"#FEF3C7", iconColor:"#D97706", val:p.totalRatings,            label:"Avaliações recebidas" },
-              { Icon:FaCalendar,    iconBg:"#DBEAFE", iconColor:"#2563EB", val:p.yearsOnPlatform+" anos", label:"Tempo na plataforma" },
+              { Icon:FaFileAlt,     iconBg:"#EDE9FE", iconColor:"#7C3AED", val:p.servicesCompleted,       label:"Solicitações realizadas" },
+              { Icon:FaCheckCircle, iconBg:"#DCFCE7", iconColor:C.green,   val:p.completionRate+"%",      label:"Taxa de conclusão" },
+              { Icon:FaStar,        iconBg:"#FEF3C7", iconColor:"#D97706", val:p.totalRatings,             label:"Avaliações recebidas" },
+              { Icon:FaCalendar,    iconBg:"#DBEAFE", iconColor:"#2563EB", val:p.yearsOnPlatform+" anos",  label:"Tempo na plataforma" },
             ].map((s,i) => (
               <div key={i} style={{ ...card, padding:"24px 20px", textAlign:"center" }}>
                 <div style={{ width:52, height:52, borderRadius:12, background:s.iconBg, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 14px" }}>
-                  <s.Icon style={{ color:s.iconColor, fontSize:"1.3rem" }} />
+                  <s.Icon style={{ color:s.iconColor, fontSize:"1.3rem" }}/>
                 </div>
                 <div style={{ fontFamily:"'Sora',sans-serif", fontSize:"1.6rem", fontWeight:800, color:C.navy, lineHeight:1 }}>{s.val}</div>
                 <div style={{ fontSize:".74rem", color:C.muted, fontWeight:600, marginTop:6 }}>{s.label}</div>
@@ -233,7 +220,7 @@ export default function PerfilPrestador() {
                 <div style={{ display:"flex", flexDirection:"column", gap:9 }}>
                   {p.highlights.map((h,i) => (
                     <div key={i} style={{ display:"flex", alignItems:"center", gap:9, fontSize:".84rem", fontWeight:600, color:C.navy }}>
-                      <FaCheckCircle style={{ color:C.green, flexShrink:0, fontSize:".85rem" }} /> {h}
+                      <FaCheckCircle style={{ color:C.green, flexShrink:0, fontSize:".85rem" }}/> {h}
                     </div>
                   ))}
                 </div>
@@ -246,13 +233,13 @@ export default function PerfilPrestador() {
                 {p.verifications.map((v,i) => (
                   <div key={i} style={{ display:"flex", alignItems:"center", gap:12, padding:"11px 0", borderBottom: i < p.verifications.length-1 ? `1px solid ${C.bgLight}` : "none" }}>
                     <div style={{ width:28, height:28, borderRadius:"50%", background:v.done?C.greenBg:C.bgLight, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                      <FaCheckCircle style={{ color:v.done?C.green:C.border, fontSize:".85rem" }} />
+                      <FaCheckCircle style={{ color:v.done?C.green:C.border, fontSize:".85rem" }}/>
                     </div>
                     <span style={{ fontSize:".88rem", fontWeight:600, color:C.navy }}>{v.label}</span>
                   </div>
                 ))}
                 <div style={{ display:"flex", alignItems:"flex-start", gap:9, background:"#EFF6FF", border:"1.5px solid #BFDBFE", borderRadius:8, padding:"11px 13px", marginTop:16, fontSize:".75rem", color:"#1E40AF", lineHeight:1.6, fontWeight:600 }}>
-                  <FaBan style={{ flexShrink:0, marginTop:1, fontSize:".9rem" }} />
+                  <FaBan style={{ flexShrink:0, marginTop:1, fontSize:".9rem" }}/>
                   Dados sensíveis como telefone, e-mail e documentos não são exibidos ao público.
                 </div>
               </div>
@@ -267,7 +254,7 @@ export default function PerfilPrestador() {
                 {p.categories.map((cat,i) => (
                   <div key={i} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:9 }}>
                     <div style={{ width:"100%", aspectRatio:"1", maxWidth:72, borderRadius:14, background:cat.iconBg, color:cat.iconColor, display:"flex", alignItems:"center", justifyContent:"center", fontSize:"1.3rem" }}>
-                      <cat.Icon />
+                      <cat.Icon/>
                     </div>
                     <div style={{ fontSize:".75rem", fontWeight:700, color:C.muted, textAlign:"center", lineHeight:1.3 }}>{cat.label}</div>
                   </div>
@@ -293,12 +280,12 @@ export default function PerfilPrestador() {
                 <p style={{ ...secTitle, marginTop:22 }}>Certificações</p>
                 {p.certifications.map((c,i) => (
                   <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:12, background:"#F8FAFF", border:`1.5px solid ${C.border}`, borderRadius:10, padding:14 }}>
-                    <FaShieldAlt style={{ color:C.band, fontSize:"1.3rem", flexShrink:0, marginTop:2 }} />
+                    <FaShieldAlt style={{ color:C.band, fontSize:"1.3rem", flexShrink:0, marginTop:2 }}/>
                     <div>
                       <div style={{ fontSize:".84rem", fontWeight:700, color:C.navy }}>{c.name}</div>
                       <div style={{ fontSize:".74rem", color:C.muted, marginTop:4, display:"flex", alignItems:"center", gap:5 }}>
                         Certificado em {c.year}
-                        {c.verified && <span style={{ color:C.green, display:"inline-flex", alignItems:"center", gap:3 }}><FaCheckCircle size={10} /> Verificado</span>}
+                        {c.verified && <span style={{ color:C.green, display:"inline-flex", alignItems:"center", gap:3 }}><FaCheckCircle size={10}/> Verificado</span>}
                       </div>
                     </div>
                   </div>
@@ -317,7 +304,7 @@ export default function PerfilPrestador() {
                 ].map((row,i) => (
                   <div key={i} style={{ display:"flex", gap:12, alignItems:"flex-start", marginBottom:i<3?18:0 }}>
                     <div style={{ width:32, height:32, borderRadius:8, background:"#FFF4EE", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                      <row.Icon style={{ color:C.orange, fontSize:".88rem" }} />
+                      <row.Icon style={{ color:C.orange, fontSize:".88rem" }}/>
                     </div>
                     <div>
                       <div style={{ color:C.muted, fontSize:".71rem", fontWeight:700, textTransform:"uppercase", letterSpacing:".04em", marginBottom:2 }}>{row.key}</div>
@@ -346,7 +333,7 @@ export default function PerfilPrestador() {
                       src={url}
                       alt={`Portfolio ${i+1}`}
                       style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
-                      onError={e => { e.target.src = `https://picsum.photos/seed/elec${i+1}/400/300`; }}
+                      onError={e => { e.target.src=`https://picsum.photos/seed/elec${i+1}/400/300`; }}
                     />
                   </div>
                 ))}
@@ -370,12 +357,12 @@ export default function PerfilPrestador() {
                         src={AVATAR_PHOTOS[idx % AVATAR_PHOTOS.length]}
                         alt={r.author}
                         style={{ width:"100%", height:"100%", objectFit:"cover" }}
-                        onError={e => { e.target.src = `https://picsum.photos/seed/person${idx+1}/80/80`; }}
+                        onError={e => { e.target.src=`https://picsum.photos/seed/person${idx+1}/80/80`; }}
                       />
                     </div>
                     <div>
                       <div style={{ fontFamily:"'Sora',sans-serif", fontSize:".88rem", fontWeight:700, color:C.navy }}>{r.author}</div>
-                      <StarRow value={r.rating} />
+                      <StarRow value={r.rating}/>
                     </div>
                     <div style={{ fontSize:".74rem", color:C.muted, fontWeight:600, marginLeft:"auto" }}>{r.date}</div>
                   </div>
@@ -398,41 +385,8 @@ export default function PerfilPrestador() {
             onMouseEnter={e => e.currentTarget.style.color=C.red}
             onMouseLeave={e => e.currentTarget.style.color=C.muted}
             style={{ display:"flex", alignItems:"center", gap:7, justifyContent:"center", background:"none", border:"none", color:C.muted, fontSize:".78rem", fontWeight:600, cursor:"pointer", padding:"10px 0", margin:"4px auto 0", transition:"color 0.15s" }}>
-            <FaExclamationCircle /> Denunciar este perfil
+            <FaExclamationCircle/> Denunciar este perfil
           </button>
-        </div>
-
-        {/* ── Sticky CTA ── */}
-        <div style={{ position:"sticky", bottom:0, background:C.bg, borderTop:`1.5px solid ${C.border}`, padding:"14px 40px", display:"flex", alignItems:"center", gap:16, boxShadow:"0 -4px 20px rgba(6,16,74,0.08)", zIndex:40 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:12, flex:1 }}>
-            <div style={{ width:40, height:40, borderRadius:"50%", overflow:"hidden", flexShrink:0, border:`2px solid ${C.border}` }}>
-              <img
-                src={PHOTO_PROVIDER}
-                alt="João Silva"
-                style={{ width:"100%", height:"100%", objectFit:"cover" }}
-                onError={e => { e.target.src = "https://picsum.photos/seed/electrician42/200/200"; }}
-              />
-            </div>
-            <div>
-              <div style={{ fontFamily:"'Sora',sans-serif", fontSize:".9rem", fontWeight:700, color:C.navy }}>{p.name}</div>
-              <div style={{ fontSize:".76rem", color:C.muted, fontWeight:600, display:"flex", alignItems:"center", gap:5, marginTop:1 }}>
-                <FaStar style={{ color:C.star }} /> {p.rating} · {p.totalRatings} avaliações
-              </div>
-            </div>
-          </div>
-          <div style={{ display:"flex", gap:10 }}>
-            <button onClick={() => setLiked(l => !l)}
-              onMouseEnter={() => setBtnHover("like")} onMouseLeave={() => setBtnHover(null)}
-              style={{ height:42, padding:"0 18px", display:"inline-flex", alignItems:"center", gap:7, border:`1.5px solid ${btnHover==="like"?C.orange:C.border2}`, borderRadius:8, background:C.bg, color:liked?C.red:C.navy, fontSize:".86rem", fontWeight:700, cursor:"pointer", transition:"all 0.18s" }}>
-              {liked ? <FaHeart style={{ color:C.red }} /> : <FaRegHeart />} {liked?"Salvo":"Salvar"}
-            </button>
-            <button
-              onMouseEnter={e => e.currentTarget.style.background="#d95b0a"}
-              onMouseLeave={e => e.currentTarget.style.background=C.orange}
-              style={{ height:42, padding:"0 28px", background:C.orange, color:"#fff", border:"none", borderRadius:8, fontSize:".9rem", fontWeight:800, cursor:"pointer", boxShadow:"0 6px 16px rgba(241,103,15,0.3)", transition:"background 0.15s" }}>
-              Solicitar serviço
-            </button>
-          </div>
         </div>
 
         {/* ── Modal ── */}
