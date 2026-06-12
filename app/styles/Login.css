@@ -1,0 +1,41 @@
+/* ─── APENAS O QUE TAILWIND NÃO COBRE ─── */
+/* Animações customizadas e border-radius irregular do blob */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+/* Blob shape & animation */
+.blob {
+  border-radius: 0% 58% 52% 0% / 0% 46% 54% 0%;
+  animation: morphBlob 16s ease-in-out infinite alternate;
+  will-change: border-radius;
+}
+
+@keyframes morphBlob {
+  0%   { border-radius: 0% 58% 52% 0% / 0% 46% 54% 0%; }
+  25%  { border-radius: 0% 62% 48% 0% / 0% 52% 48% 0%; }
+  50%  { border-radius: 0% 55% 56% 0% / 0% 44% 58% 0%; }
+  75%  { border-radius: 0% 60% 50% 0% / 0% 50% 52% 0%; }
+  100% { border-radius: 0% 56% 54% 0% / 0% 48% 56% 0%; }
+}
+
+/* fadeUp na entrada do formulário */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fadeUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Ripple do botão */
+@keyframes rippleAnim {
+  to { transform: scale(5); opacity: 0; }
+}
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(10, 11, 45, 0.12);
+  transform: scale(0);
+  animation: rippleAnim 0.5s linear;
+  pointer-events: none;
+}
