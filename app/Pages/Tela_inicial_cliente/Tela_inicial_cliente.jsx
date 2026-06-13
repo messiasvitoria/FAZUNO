@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 // ─── STATUS CONFIG ───────────────────────────────────────────────────────────
 const STATUS_CONFIG = {
@@ -652,6 +653,8 @@ function NotifIcon({ icon, iconColor }) {
 
 // ─── HOME PAGE ────────────────────────────────────────────────────────────────
 function HomePage() {
+  const router = useRouter();
+
   return (
     <div className="fazuno-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", backgroundColor: "#f9fafb" }}>
       {/* HERO */}
@@ -665,7 +668,7 @@ function HomePage() {
             <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 14, lineHeight: 1.6, margin: "0 0 24px" }}>
               Encontre profissionais confiáveis para serviços residenciais, saúde, beleza e muito mais.
             </p>
-            <button style={{ backgroundColor: "#f97316", color: "white", fontWeight: 700, fontSize: 15, padding: "13px 36px", borderRadius: 9999, border: "none", cursor: "pointer", boxShadow: "0 8px 24px rgba(249,115,22,0.45)", transition: "background 0.2s, transform 0.1s" }}
+            <button onClick={() => router.push("/Pages/Escolha_contratacao")} style={{ backgroundColor: "#f97316", color: "white", fontWeight: 700, fontSize: 15, padding: "13px 36px", borderRadius: 9999, border: "none", cursor: "pointer", boxShadow: "0 8px 24px rgba(249,115,22,0.45)", transition: "background 0.2s, transform 0.1s" }}
               onMouseEnter={e => { e.currentTarget.style.backgroundColor = "#ea6c0a"; e.currentTarget.style.transform = "scale(1.03)"; }}
               onMouseLeave={e => { e.currentTarget.style.backgroundColor = "#f97316"; e.currentTarget.style.transform = "scale(1)"; }}
             >Solicitar serviço</button>
@@ -818,6 +821,7 @@ function HomePage() {
 
 // ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function TelainicialCliente() {
+  const router = useRouter();
   const [activeNav, setActiveNav]         = useState(0);
   const [notifOpen, setNotifOpen]         = useState(false);
   const [notifFilter, setNotifFilter]     = useState("todas");
@@ -882,7 +886,7 @@ export default function TelainicialCliente() {
         </div>
         <nav style={{ flex: 1, padding: "12px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
           {navItems.map((item, i) => (
-            <button key={i} onClick={() => setActiveNav(i)}
+            <button key={i} onClick={() => (i === 1 ? router.push("/Pages/Escolha_contratacao") : setActiveNav(i))}
               style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 12px", borderRadius: 12, border: "none", cursor: "pointer", textAlign: "left", width: "100%", backgroundColor: activeNav === i ? "rgba(255,255,255,0.15)" : "transparent", color: activeNav === i ? "white" : "rgba(255,255,255,0.55)", transition: "all 0.2s" }}
               onMouseEnter={e => { if (activeNav !== i) e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)"; }}
               onMouseLeave={e => { if (activeNav !== i) e.currentTarget.style.backgroundColor = "transparent"; }}
