@@ -1,5 +1,5 @@
-import Login from "./Pages/Login/Login.jsx";
+import  MeusServicosPage_prestador from '../app/Pages/Seus_servicos_prestador/page'
 
 export default function Home() {
-  return <Login />;
+  return < MeusServicosPage_prestador />;
 }
