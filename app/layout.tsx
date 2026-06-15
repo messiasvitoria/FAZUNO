@@ -30,6 +30,7 @@ export default function RootLayout({
       className={`${sora.variable} ${dmSans.variable} antialiased`}
     >
       <body className="w-full">{children}</body>
+      <body className="w-full">{children}</body>
     </html>
   );
 }
