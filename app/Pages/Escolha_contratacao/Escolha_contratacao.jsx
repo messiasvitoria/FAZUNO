@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   FaArrowLeft,
@@ -71,11 +71,16 @@ const DIRECT_STEPS = [
 ];
 
 const DIRECT_CATEGORIES = [
-  { label: "Limpeza", icon: "droplet" },
+  { label: "Limpeza", icon: "broom" },
   { label: "Reformas", icon: "home" },
   { label: "Elétrica", icon: "zap" },
   { label: "Hidráulica", icon: "droplet" },
-  { label: "Mais", icon: "plus" },
+  { label: "Pintura", icon: "brush" },
+  { label: "Jardinagem", icon: "leaf" },
+  { label: "Montagem", icon: "wrench" },
+  { label: "Beleza", icon: "heart" },
+  { label: "Tecnologia", icon: "monitor" },
+  { label: "Automotivo", icon: "car" },
 ];
 
 const DIRECT_SERVICES = [
@@ -137,6 +142,21 @@ const DIRECT_SERVICES = [
   },
 ];
 
+const CONTRACT_FLOW_KEY = "fazuno_tipo_contratacao";
+const DIRECT_STEP_KEY = "fazuno_solicitacao_direta_etapa";
+const DIRECT_SERVICE_KEY = "fazuno_solicitacao_direta_servico";
+
+function getStoredDirectStep() {
+  const savedStep = Number(window.sessionStorage.getItem(DIRECT_STEP_KEY));
+  if (!savedStep) return 1;
+  return Math.min(Math.max(savedStep, 1), DIRECT_STEPS.length);
+}
+
+function getStoredDirectService() {
+  const savedServiceId = Number(window.sessionStorage.getItem(DIRECT_SERVICE_KEY));
+  return DIRECT_SERVICES.find((service) => service.id === savedServiceId) || DIRECT_SERVICES[0];
+}
+
 function SidebarIcon({ name, size = 17, color = "currentColor", strokeWidth = 2 }) {
   const paths = {
     home: ["M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z", "M9 21V12h6v9"],
@@ -149,6 +169,14 @@ function SidebarIcon({ name, size = 17, color = "currentColor", strokeWidth = 2 
     chevDown: ["M6 9l6 6 6-6"],
     droplet: ["M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"],
     zap: ["M13 2L3 14h9l-1 8 10-12h-9l1-8z"],
+    heart: ["M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"],
+    broom: ["M2 19.5A2.5 2.5 0 014.5 17h15", "M4.5 17l1.5-9h12l1.5 9", "M9 11v6", "M12 11v6", "M15 11v6"],
+    brush: ["M18.37 2.63a2.12 2.12 0 010 3L8.2 15.8l-4 1 1-4L15.37 2.63a2.12 2.12 0 013 0z", "M4 21c3 0 5-1 5-4"],
+    leaf: ["M17 8C8 10 5.9 16.17 3.82 19.56A1 1 0 004.72 21C11.81 17.44 14.83 12.66 17 8z", "M17 8c0 9-9 15-17 7"],
+    wrench: ["M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"],
+    scissors: ["M6 9a3 3 0 100-6 3 3 0 000 6z", "M6 15a3 3 0 100 6 3 3 0 000-6z", "M20 4L8.12 15.88", "M14.47 14.48L20 20", "M8.12 8.12L12 12"],
+    monitor: ["M20 3H4a2 2 0 00-2 2v11a2 2 0 002 2h16a2 2 0 002-2V5a2 2 0 00-2-2z", "M8 21h8", "M12 17v4"],
+    car: ["M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v9a2 2 0 01-2 2h-2", "M17 17m-2 0a2 2 0 104 0 2 2 0 00-4 0", "M7 17m-2 0a2 2 0 104 0 2 2 0 00-4 0"],
   };
 
   return (
@@ -285,11 +313,16 @@ function ProfessionalCard({ service, onDetails, onRequest }) {
   );
 }
 
-function DirectSearchStep({ onNext, onSelect }) {
+function DirectSearchStep({ onNext, onSelect, onBack }) {
+  const categoriesRef = useRef(null);
+  const scrollCategories = (direction) => {
+    categoriesRef.current?.scrollBy({ left: direction * 300, behavior: "smooth" });
+  };
+
   return (
     <section className="direct-panel">
       <div className="direct-panel-header">
-        <button type="button" className="direct-back" aria-label="Voltar">
+        <button type="button" className="direct-back" onClick={onBack} aria-label="Voltar">
           <FaArrowLeft />
         </button>
         <h2>Buscar serviço</h2>
@@ -302,18 +335,25 @@ function DirectSearchStep({ onNext, onSelect }) {
 
       <div className="direct-section-title">
         <h3>Categorias</h3>
-        <button type="button">Ver todas</button>
       </div>
 
-      <div className="direct-categories">
-        {DIRECT_CATEGORIES.map((category) => (
-        <button key={category.label} type="button">
-          <span>
-              <SidebarIcon name={category.icon} size={18} color="#F1670F" strokeWidth={2} />
-          </span>
-          {category.label}
+      <div className="direct-carousel-wrap">
+        <button type="button" className="direct-carousel-arrow" aria-label="Categorias anteriores" onClick={() => scrollCategories(-1)}>
+          <FaArrowLeft />
         </button>
-        ))}
+        <div className="direct-categories" ref={categoriesRef}>
+          {DIRECT_CATEGORIES.map((category) => (
+            <button key={category.label} type="button">
+              <span>
+                <SidebarIcon name={category.icon} size={18} color="#F1670F" strokeWidth={2} />
+              </span>
+              {category.label}
+            </button>
+          ))}
+        </div>
+        <button type="button" className="direct-carousel-arrow" aria-label="Próximas categorias" onClick={() => scrollCategories(1)}>
+          <FaArrowRight />
+        </button>
       </div>
 
       <div className="direct-section-title">
@@ -333,9 +373,6 @@ function DirectSearchStep({ onNext, onSelect }) {
         ))}
       </div>
 
-      <button type="button" className="direct-wide-secondary" onClick={() => onNext(2)}>
-        Ver todas as categorias
-      </button>
     </section>
   );
 }
@@ -560,13 +597,13 @@ function DirectConfirmationStep({ service, onHome }) {
   );
 }
 
-function DirectSolicitationFlow({ step, service, setStep, setService, onBackToChoice, onHome }) {
+function DirectSolicitationFlow({ step, service, setStep, setService, onBack, onHome }) {
   const selectedService = service || DIRECT_SERVICES[0];
 
   return (
     <div className="direct-flow">
       <div className="direct-flow-title">
-        <button type="button" className="direct-back-to-choice" onClick={onBackToChoice}>
+        <button type="button" className="direct-back-to-choice" onClick={onBack}>
           <FaArrowLeft />
           Tipo de contratação
         </button>
@@ -579,7 +616,7 @@ function DirectSolicitationFlow({ step, service, setStep, setService, onBackToCh
       <StepIndicator step={step} />
 
       <div className="direct-step-shell">
-        {step === 1 && <DirectSearchStep onNext={setStep} onSelect={setService} />}
+        {step === 1 && <DirectSearchStep onNext={setStep} onSelect={setService} onBack={onBack} />}
         {step === 2 && (
           <DirectResultsStep
             onBack={() => setStep(1)}
@@ -603,19 +640,57 @@ function DirectSolicitationFlow({ step, service, setStep, setService, onBackToCh
 
 export default function EscolhaContratacao() {
   const router = useRouter();
+  const [storageReady, setStorageReady] = useState(false);
   const [selected, setSelected] = useState("");
   const [flow, setFlow] = useState("choice");
   const [directStep, setDirectStep] = useState(1);
   const [selectedService, setSelectedService] = useState(DIRECT_SERVICES[0]);
 
+  useEffect(() => {
+    const savedFlow = window.sessionStorage.getItem(CONTRACT_FLOW_KEY);
+
+    if (savedFlow === "direta") {
+      setSelected("direta");
+      setFlow("direta");
+      setDirectStep(getStoredDirectStep());
+      setSelectedService(getStoredDirectService());
+    } else if (savedFlow) {
+      setSelected(savedFlow);
+    }
+
+    setStorageReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!storageReady) return;
+
+    window.sessionStorage.setItem(CONTRACT_FLOW_KEY, selected);
+    window.sessionStorage.setItem(DIRECT_STEP_KEY, String(directStep));
+    window.sessionStorage.setItem(DIRECT_SERVICE_KEY, String(selectedService.id));
+  }, [directStep, selected, selectedService.id, storageReady]);
+
+  function handleDirectStep(nextStep) {
+    setDirectStep(Math.min(Math.max(nextStep, 1), DIRECT_STEPS.length));
+  }
+
+  function handleDirectBack() {
+    if (directStep > 1) {
+      handleDirectStep(directStep - 1);
+      return;
+    }
+
+    setFlow("choice");
+    setSelected("");
+  }
+
   function handleSelect(value) {
     setSelected(value);
-    window.sessionStorage.setItem("fazuno_tipo_contratacao", value);
+    window.sessionStorage.setItem(CONTRACT_FLOW_KEY, value);
 
     if (value === "direta") {
       setFlow("direta");
-      setDirectStep(1);
-      setSelectedService(DIRECT_SERVICES[0]);
+      setDirectStep(getStoredDirectStep());
+      setSelectedService(getStoredDirectService());
     }
   }
 
@@ -1291,11 +1366,35 @@ export default function EscolhaContratacao() {
           gap: 6px;
           border: 0;
           background: transparent;
-          color: #F1670F;
+          color: #0A0B2D;
           font: inherit;
           font-size: 0.74rem;
           font-weight: 800;
           cursor: pointer;
+        }
+
+        .direct-carousel-wrap {
+          display: grid;
+          grid-template-columns: 34px minmax(0, 1fr) 34px;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .direct-carousel-arrow {
+          width: 34px;
+          height: 34px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border: 1.5px solid #E6E8EF;
+          border-radius: 8px;
+          background: #FFFFFF;
+          color: #0A0B2D;
+          cursor: pointer;
+        }
+
+        .direct-carousel-arrow:hover {
+          background: #EEF0F5;
         }
 
         .direct-categories {
@@ -1303,23 +1402,13 @@ export default function EscolhaContratacao() {
           gap: 9px;
           overflow-x: auto;
           overflow-y: hidden;
-          padding: 2px 2px 8px;
+          padding: 2px;
           scroll-snap-type: x mandatory;
-          scrollbar-width: thin;
-          scrollbar-color: #F1670F transparent;
+          scrollbar-width: none;
         }
 
         .direct-categories::-webkit-scrollbar {
-          height: 5px;
-        }
-
-        .direct-categories::-webkit-scrollbar-track {
-          background: transparent;
-        }
-
-        .direct-categories::-webkit-scrollbar-thumb {
-          background: #F1670F;
-          border-radius: 999px;
+          display: none;
         }
 
         .direct-categories button {
@@ -1420,15 +1509,22 @@ export default function EscolhaContratacao() {
 
         .direct-wide-secondary,
         .direct-secondary {
-          border: 1.5px solid #FFE0CC;
+          border: 1.5px solid #0A0B2D;
           background: #FFFFFF;
-          color: #F1670F;
+          color: #0A0B2D;
         }
 
         .direct-wide-primary,
         .direct-primary {
-          border: 1.5px solid #0B55F4;
-          background: #0B55F4;
+          border: 1.5px solid #0A0B2D;
+          background: #0A0B2D;
+          color: #FFFFFF;
+        }
+
+        .direct-secondary:hover,
+        .direct-primary:hover {
+          border-color: #F1670F;
+          background: #F1670F;
           color: #FFFFFF;
         }
 
@@ -1460,14 +1556,14 @@ export default function EscolhaContratacao() {
         }
 
         .direct-result-info svg {
-          color: #F1670F;
+          color: #0A0B2D;
         }
 
         .direct-result-info p span {
           display: inline-flex;
           align-items: center;
           gap: 4px;
-          color: #16A34A;
+          color: #0A0B2D;
         }
 
         .direct-result-actions {
@@ -2027,12 +2123,9 @@ export default function EscolhaContratacao() {
                 <DirectSolicitationFlow
                   step={directStep}
                   service={selectedService}
-                  setStep={setDirectStep}
+                  setStep={handleDirectStep}
                   setService={setSelectedService}
-                  onBackToChoice={() => {
-                    setFlow("choice");
-                    setSelected("");
-                  }}
+                  onBack={handleDirectBack}
                   onHome={() => router.push("/Pages/Tela_inicial_cliente")}
                 />
               ) : (
