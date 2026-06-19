@@ -34,11 +34,28 @@ body.layout-scroll {
   border-color: #E87722 !important;
   box-shadow: 0 0 10px rgba(232,119,34,0.45),
               0 0 24px rgba(232,119,34,0.2) !important;
+  box-shadow: 0 0 10px rgba(232,119,34,0.45),
+              0 0 24px rgba(232,119,34,0.2) !important;
 }
 
 .input-neon:hover,
 .input-neon:focus {
   border-color: #f1670f !important;
+  box-shadow: 0 0 0 2px rgba(241, 103, 15, 0.15),
+              0 0 12px rgba(241, 103, 15, 0.25);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
   box-shadow: 0 0 0 2px rgba(241, 103, 15, 0.15),
               0 0 12px rgba(241, 103, 15, 0.25);
 }

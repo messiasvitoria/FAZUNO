@@ -3,7 +3,6 @@
 import { useRouter, usePathname } from "next/navigation";
 
 // ─── ICON ─────────────────────────────────────────────────────────────────────
-// Apenas os ícones usados no sidebar: home, plus, list, chat
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
   const paths = {
     home: ["M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z", "M9 21V12h6v9"],
@@ -34,7 +33,7 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
 // ─── ROTAS ────────────────────────────────────────────────────────────────────
 const navItems = [
   { icon: "home", label: "Início",                   route: "/Pages/Tela_inicial_cliente" },
-  { icon: "plus", label: "Abrir novas solicitações", route: null },
+  { icon: "plus", label: "Abrir novas solicitações", route: "/Pages/Escolha_contratacao" },
   { icon: "list", label: "Minhas solicitações",      route: "/Pages/Minhas_Solicitacoes" },
   { icon: "chat", label: "Chat",                     route: null },
 ];
