@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation"; // ← ADICIONADO
 import {
   FaStar, FaStarHalfAlt, FaRegStar,
   FaMapMarkerAlt, FaCheckCircle,
@@ -8,6 +9,7 @@ import {
   FaBroom, FaPaintRoller, FaHeartbeat, FaGraduationCap, FaCut,
   FaLaptop, FaEllipsisH, FaExclamationCircle, FaBan,
   FaWrench, FaBolt, FaEdit, FaFileAlt, FaCalendar,
+  FaArrowLeft, // ← ADICIONADO
 } from "react-icons/fa";
 
 const C = {
@@ -25,11 +27,12 @@ const C = {
   star:    "#F59E0B",
 };
 
-const PHOTO_PROVIDER = "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=200&h=200&fit=crop&crop=face";
+// ── PADRONIZADO: mesma foto usada no Modal_Detalhes_Cliente ──
+const PHOTO_PROVIDER = "https://randomuser.me/api/portraits/men/32.jpg";
 
 // Fotos realistas de eletricista
 const PORTFOLIO_PHOTOS = [
-  "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400&h=300&fit=crop",  // ← substituída
+  "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=300&fit=crop",
   "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400&h=300&fit=crop",
@@ -118,6 +121,7 @@ const card = { border:`1.5px solid ${C.border}`, borderRadius:12, background:C.b
 const secTitle = { fontFamily:"'Sora',sans-serif", fontSize:"1rem", fontWeight:700, color:C.navy, marginBottom:18, marginTop:0 };
 
 export default function PerfilPrestador() {
+  const router = useRouter(); // ← ADICIONADO
   const p = PROVIDER;
   const [showAll, setShowAll]       = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
@@ -142,11 +146,28 @@ export default function PerfilPrestador() {
         {/* ══ HERO BANNER ══ */}
         <div style={{ background:"linear-gradient(120deg,#06104A 0%,#143660 50%,#1a4a7a 100%)", animation:"ppSlideIn 0.5s ease both" }}>
           <div style={{ maxWidth:1100, margin:"0 auto", padding:"36px 40px 32px" }}>
+
+            {/* ── BOTÃO VOLTAR ── */}
+            <button
+              onClick={() => router.push("/Pages/Minhas_Solicitacoes")}
+              style={{ display:"inline-flex", alignItems:"center", gap:8, marginBottom:18, padding:"8px 14px", borderRadius:8, border:"1.5px solid rgba(255,255,255,0.2)", backgroundColor:"rgba(255,255,255,0.08)", color:"white", fontSize:13, fontWeight:600, cursor:"pointer", transition:"all 0.2s", background:"rgba(255,255,255,0.08)" }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor="rgba(255,255,255,0.16)"; e.currentTarget.style.borderColor="rgba(255,255,255,0.4)"; }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor="rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor="rgba(255,255,255,0.2)"; }}
+            >
+              <FaArrowLeft size={13} /> Voltar
+            </button>
+
             <div style={{ display:"flex", alignItems:"flex-start", gap:22 }}>
 
               <div style={{ position:"relative", flexShrink:0 }}>
                 <div style={{ width:96, height:96, borderRadius:"50%", border:"3.5px solid rgba(255,255,255,0.5)", overflow:"hidden", boxShadow:"0 4px 20px rgba(0,0,0,0.3)" }}>
-                  <img src={PHOTO_PROVIDER} alt="João Silva" style={{ width:"100%", height:"100%", objectFit:"cover" }} onError={e => { e.target.src="https://picsum.photos/seed/electrician42/200/200"; }}/>
+                  {/* ── PADRONIZADO: mesma foto do Modal_Detalhes_Cliente ── */}
+                  <img
+                    src={PHOTO_PROVIDER}
+                    alt="João Silva"
+                    style={{ width:"100%", height:"100%", objectFit:"cover" }}
+                    onError={e => { e.target.src="https://picsum.photos/seed/electrician42/200/200"; }}
+                  />
                 </div>
                 {p.available && (
                   <div style={{ position:"absolute", bottom:4, right:4, width:22, height:22, borderRadius:"50%", background:C.green, border:"2.5px solid #fff", display:"flex", alignItems:"center", justifyContent:"center", animation:"ppPulse 2s infinite" }}>
@@ -389,7 +410,7 @@ export default function PerfilPrestador() {
           </button>
         </div>
 
-        {/* ── Modal ── */}
+        {/* ── Modal de denúncia ── */}
         {reportOpen && (
           <div onClick={() => setReportOpen(false)} style={{ position:"fixed", inset:0, background:"rgba(6,16,74,0.55)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:60, animation:"ppFadeBg 0.2s ease" }}>
             <div onClick={e => e.stopPropagation()} style={{ background:C.bg, borderRadius:14, padding:"28px 24px", width:"min(360px,94vw)", boxShadow:"0 24px 60px rgba(6,16,74,0.25)", animation:"ppSlideIn 0.3s ease" }}>

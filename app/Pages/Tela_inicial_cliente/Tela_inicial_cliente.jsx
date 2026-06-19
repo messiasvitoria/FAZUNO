@@ -274,10 +274,10 @@ function HomePage() {
       </div>
 
       <footer style={{ backgroundColor: "#0d1b3e", color: "white", marginTop: 16 }}>
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", padding: "20px 40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", padding: "16px 40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <img src="/Logo_branca.png" alt="Fazuno" height="40" />
-            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginLeft: 8 }}>© 2026 FazUno. Todos os direitos reservados.</span>
+            <img src="/Logo_branca.png" alt="Fazuno" style={{ height: 36, width: "auto", display: "block" }} />
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginLeft: 8 }}>© 2026 FazUno. Todos os direitos reservados.</span>
           </div>
         </div>
       </footer>
@@ -287,8 +287,6 @@ function HomePage() {
 
 // ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function TelainicialCliente() {
-  const [activeNav, setActiveNav] = useState(0);
-
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = ".fazuno-scroll::-webkit-scrollbar{display:none}.fazuno-scroll{-ms-overflow-style:none;scrollbar-width:none}";
@@ -297,15 +295,15 @@ export default function TelainicialCliente() {
   }, []);
 
   return (
-    <div style={{ display: "flex", width: "100%", height: "100%", overflow: "hidden", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f9fafb" }}>
+    <div style={{ display: "flex", width: "100%", height: "100vh", overflow: "hidden", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f9fafb" }}>
 
-      {/* SIDEBAR — componente em app/components/Sidebar.jsx */}
-      <Sidebar activeNav={activeNav} setActiveNav={setActiveNav} />
+      {/* SIDEBAR */}
+      <Sidebar />
 
       {/* MAIN */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden" }}>
 
-        {/* TOPBAR — componente em app/components/Topbar.jsx */}
+        {/* TOPBAR */}
         <Topbar />
 
         {/* PAGE CONTENT */}

@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Sidebar from "../../components/SideBar_cliente";
-import Topbar  from "../../components/TopBar_cliente";
 
 // ─── ICON COMPONENT ──────────────────────────────────────────────────────────
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
@@ -38,6 +36,7 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
     pawIcon:      ["M11 4a2 2 0 114 0", "M18 8a2 2 0 114 0", "M18 16a2 2 0 114 0", "M4 12a2 2 0 114 0", "M9 10a5 5 0 015 5v3.5a3.5 3.5 0 01-7 0V15a5 5 0 015-5z"],
     bookIcon:     ["M4 19.5A2.5 2.5 0 016.5 17H20", "M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"],
     mortarboard:  ["M22 10v6M2 10l10-5 10 5-10 5z", "M6 12v5c3 3 9 3 12 0v-5"],
+    wrench:       ["M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"],
     star:         null,
   };
 
@@ -53,18 +52,21 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
   );
 }
 
-// ─── STATIC DATA ─────────────────────────────────────────────────────────────
+// ─── STATIC DATA — CARLOS MENDES ─────────────────────────────────────────────
 const clientData = {
-  name:        "Isaac Oliveira",
-  memberSince: "Janeiro de 2025",
-  location:    "Fortaleza, CE",
-  rating:      4.9,
-  bio:         "Gosto de praticidade e qualidade no dia a dia. Sempre que preciso de um serviço, busco profissionais confiáveis e bem avaliados aqui na plataforma.",
+  name:        "Carlos Mendes",
+  memberSince: "Março de 2023",
+  location:    "Santo André, São Paulo - SP",
+  rating:      4.6,
+  reviewCount: 7,
+  avatar:      "https://i.pravatar.cc/120?img=12",
+  bio:         "Morador de Santo André, busco profissionais confiáveis para serviços domésticos. Priorizo qualidade e pontualidade nas contratações.",
+  verified:    true,
   stats: [
-    { icon: "fileText",    value: 18,        label: "Solicitações realizadas", color: "#6366f1", bg: "#ede9fe" },
-    { icon: "checkCircle", value: 15,        label: "Serviços concluídos",     color: "#22c55e", bg: "#dcfce7" },
-    { icon: "star",        value: 12,        label: "Avaliações recebidas",    color: "#f59e0b", bg: "#fef3c7" },
-    { icon: "calendar",    value: "6 meses", label: "Tempo na plataforma",     color: "#3b82f6", bg: "#dbeafe" },
+    { icon: "fileText",    value: 7,         label: "Solicitações realizadas", color: "#6366f1", bg: "#ede9fe" },
+    { icon: "checkCircle", value: 5,         label: "Serviços concluídos",     color: "#22c55e", bg: "#dcfce7" },
+    { icon: "star",        value: 7,         label: "Avaliações recebidas",    color: "#f59e0b", bg: "#fef3c7" },
+    { icon: "calendar",    value: "3 anos",  label: "Tempo na plataforma",     color: "#3b82f6", bg: "#dbeafe" },
   ],
   verifications: [
     { icon: "mail",        label: "E-mail verificado"   },
@@ -73,21 +75,20 @@ const clientData = {
     { icon: "shieldCheck", label: "Perfil verificado"   },
   ],
   topCategories: [
-    { icon: "broomCat",     label: "Limpeza"          },
+    { icon: "wrench",       label: "Manutenção"       },
     { icon: "homeIcon",     label: "Reformas"         },
-    { icon: "heartIcon",    label: "Saúde e Cuidados" },
-    { icon: "mortarboard",  label: "Educação"         },
-    { icon: "scissorsIcon", label: "Beleza"           },
+    { icon: "broomCat",     label: "Limpeza"          },
+    { icon: "mortarboard",  label: "Instalações"      },
+    { icon: "scissorsIcon", label: "Outros"           },
   ],
   reviews: [
-    { name: "João Silva",    role: "Eletricista",        rating: 5.0, date: "12/05/2025", text: "Cliente muito educado, comunicação clara e pagamento sem complicações. Recomendo!",              photo: "/foto_eletricista2.jpg"     },
-    { name: "Ana Souza",     role: "Diarista",           rating: 5.0, date: "05/05/2025", text: "Ambiente organizado e cliente muito atenciosa. Foi um prazer realizar o serviço!",              photo: "/foto_faxineira2.avif"      },
-    { name: "Carlos Lima",   role: "Encanador",          rating: 4.8, date: "20/04/2025", text: "Ótimo cliente! Muito pontual e prestativo. Tornaria a trabalhar sem hesitar.",                  photo: "/foto_encanador2.jpg"       },
-    { name: "Fernanda Reis", role: "Pintora",            rating: 5.0, date: "10/04/2025", text: "Muito organizado e justo. Pagamento realizado no prazo combinado. Top!",                        photo: "/foto_pintora2.avif"        },
-    { name: "Roberto Souza", role: "Montador de Móveis", rating: 4.9, date: "28/03/2025", text: "Casa sempre organizada e acesso facilitado. Cliente excelente, recomendo para qualquer colega!", photo: "/foto_montador_moveis.avif" },
-    { name: "Patrícia Lima", role: "Cuidadora",          rating: 5.0, date: "15/03/2025", text: "Ótima comunicação e muito atencioso durante todo o serviço. Voltaria com prazer!",              photo: "/foto_cuidadora.jpg"        },
-    { name: "Marcos Prado",  role: "Jardineiro",         rating: 4.7, date: "02/03/2025", text: "Cliente pontual e super educado. Deixou tudo pronto para eu trabalhar sem dificuldades.",       photo: "/homem2.avif"               },
-    { name: "Juliana Costa", role: "Personal Trainer",   rating: 5.0, date: "18/02/2025", text: "Comprometido com os horários e sempre muito simpático. Uma referência de bom cliente!",         photo: "/mulher 1.avif"             },
+    { name: "João Silva",    role: "Eletricista",        rating: 5.0, date: "10/05/2025", text: "Cliente muito educado e prestativo. Comunicação clara desde o início. Recomendo!",             photo: "/foto_eletricista2.jpg"     },
+    { name: "Ana Souza",     role: "Diarista",           rating: 4.5, date: "22/04/2025", text: "Ambiente organizado e cliente muito atencioso. Foi um prazer realizar o serviço.",             photo: "/foto_faxineira2.avif"      },
+    { name: "Carlos Lima",   role: "Encanador",          rating: 4.8, date: "14/04/2025", text: "Muito pontual e prestativo. Voltaria a trabalhar sem hesitar.",                               photo: "/foto_encanador2.jpg"       },
+    { name: "Fernanda Reis", role: "Pintora",            rating: 4.6, date: "02/04/2025", text: "Organizado e justo. Pagamento realizado no prazo combinado.",                                  photo: "/foto_pintora2.avif"        },
+    { name: "Roberto Souza", role: "Montador de Móveis", rating: 4.5, date: "18/03/2025", text: "Casa sempre organizada e acesso facilitado. Cliente excelente!",                              photo: "/foto_montador_moveis.avif" },
+    { name: "Patrícia Lima", role: "Cuidadora",          rating: 4.7, date: "05/03/2025", text: "Ótima comunicação e muito atencioso durante todo o serviço. Voltaria com prazer!",            photo: "/foto_cuidadora.jpg"        },
+    { name: "Marcos Prado",  role: "Jardineiro",         rating: 4.3, date: "20/02/2025", text: "Cliente pontual e educado. Deixou tudo pronto para trabalhar sem dificuldades.",              photo: "/homem2.avif"               },
   ],
 };
 
@@ -200,8 +201,8 @@ function ReviewsCarousel({ reviews }) {
 
 // ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function PerfilCliente() {
+  const router = useRouter();
   const c = clientData;
-  const [activeNav, setActiveNav] = useState(null);
 
   useEffect(() => {
     const style = document.createElement("style");
@@ -211,127 +212,130 @@ export default function PerfilCliente() {
   }, []);
 
   return (
-    <div style={{ display: "flex", width: "100%", height: "100%", overflow: "hidden", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f9fafb" }}>
+    <div style={{ width: "100%", height: "100vh", overflow: "hidden", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f9fafb", display: "flex", flexDirection: "column" }}>
 
-      <Sidebar activeNav={activeNav} setActiveNav={setActiveNav} />
+      <div className="perfil-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", backgroundColor: "#f9fafb" }}>
 
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden" }}>
-        <Topbar />
+        {/* HERO */}
+        <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 55%, #1e40af 100%)", padding: "24px 32px 28px", position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 90% 50%, rgba(249,115,22,0.15) 0%, transparent 55%)" }} />
 
-        <div className="perfil-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", backgroundColor: "#f9fafb" }}>
+          {/* Botão voltar */}
+          <button
+            onClick={() => router.back()}
+            style={{ position: "relative", zIndex: 3, display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 18, padding: "8px 14px", borderRadius: 8, border: "1.5px solid rgba(255,255,255,0.2)", backgroundColor: "rgba(255,255,255,0.08)", color: "white", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}
+            onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.16)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)"; }}
+            onMouseLeave={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}
+          >
+            <Icon name="arrowLeft" size={15} color="white" strokeWidth={2} />
+            Voltar
+          </button>
 
-          {/* HERO */}
-          <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 55%, #1e40af 100%)", padding: "24px 32px 28px", position: "relative", overflow: "hidden" }}>
-            <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 90% 50%, rgba(249,115,22,0.15) 0%, transparent 55%)" }} />
-            <div style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "flex-start", gap: 22 }}>
-              <div style={{ position: "relative", flexShrink: 0 }}>
-                <div style={{ width: 80, height: 80, borderRadius: "50%", overflow: "hidden", border: "3px solid #f97316", boxShadow: "0 0 0 3px rgba(249,115,22,0.25)" }}>
-                  <img src="/homem1.avif" alt={c.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
-                </div>
+          <div style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "flex-start", gap: 22 }}>
+            <div style={{ position: "relative", flexShrink: 0 }}>
+              <div style={{ width: 80, height: 80, borderRadius: "50%", overflow: "hidden", border: "3px solid #f97316", boxShadow: "0 0 0 3px rgba(249,115,22,0.25)" }}>
+                <img src={c.avatar} alt={c.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
+              </div>
+              {c.verified && (
                 <div style={{ position: "absolute", bottom: 2, right: 2, width: 22, height: 22, borderRadius: "50%", backgroundColor: "#22c55e", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <Icon name="checkCircle" size={12} color="white" strokeWidth={2.5} />
                 </div>
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <h1 style={{ color: "white", fontSize: 22, fontWeight: 800, margin: "0 0 3px" }}>{c.name}</h1>
-                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, margin: "0 0 8px" }}>Cliente desde {c.memberSince}</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                    <Icon name="mapPin" size={12} color="rgba(255,255,255,0.55)" strokeWidth={2} />
-                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{c.location}</span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                    <Icon name="star" size={12} color="#f59e0b" />
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "white" }}>{c.rating}</span>
-                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>Avaliação média</span>
-                  </div>
+              )}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h1 style={{ color: "white", fontSize: 22, fontWeight: 800, margin: "0 0 3px" }}>{c.name}</h1>
+              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, margin: "0 0 8px" }}>Cliente desde {c.memberSince}</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 14 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  <Icon name="mapPin" size={12} color="rgba(255,255,255,0.55)" strokeWidth={2} />
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{c.location}</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  <Icon name="star" size={12} color="#f59e0b" />
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "white" }}>{c.rating}</span>
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>({c.reviewCount} avaliações)</span>
+                </div>
+                {c.verified && (
                   <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
                     <Icon name="shieldCheck" size={12} color="#22c55e" strokeWidth={2} />
-                    <span style={{ fontSize: 12, color: "#4ade80", fontWeight: 600 }}>Perfil Verificado</span>
+                    <span style={{ fontSize: 12, color: "#4ade80", fontWeight: 600 }}>Cliente Verificado</span>
                   </div>
-                </div>
-                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, margin: "10px 0 0", lineHeight: 1.6, maxWidth: 480 }}>{c.bio}</p>
+                )}
               </div>
-              <button
-                style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 7, padding: "9px 16px", borderRadius: 10, border: "1.5px solid rgba(255,255,255,0.2)", backgroundColor: "rgba(255,255,255,0.08)", color: "white", fontSize: 12, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}
-                onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.16)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)"; }}
-                onMouseLeave={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; }}>
-                <Icon name="pencil" size={13} color="white" strokeWidth={2} />
-                Editar perfil
+              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 12, margin: "10px 0 0", lineHeight: 1.6, maxWidth: 480 }}>{c.bio}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* CONTEÚDO */}
+        <div style={{ padding: "22px 32px", boxSizing: "border-box" }}>
+
+          {/* STATS */}
+          <div style={{ display: "flex", gap: 14, marginBottom: 22 }}>
+            {c.stats.map((stat, i) => <StatCard key={i} stat={stat} />)}
+          </div>
+
+          {/* SOBRE + VERIFICAÇÕES */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 22 }}>
+            <div style={{ backgroundColor: "white", borderRadius: 16, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #f1f5f9" }}>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0d1b3e", margin: "0 0 12px" }}>Sobre</h3>
+              <p style={{ fontSize: 12, color: "#4b5563", lineHeight: 1.7, margin: 0 }}>{c.bio}</p>
+            </div>
+            <div style={{ backgroundColor: "white", borderRadius: 16, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #f1f5f9" }}>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0d1b3e", margin: "0 0 12px" }}>Verificações</h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {c.verifications.map((v, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ width: 24, height: 24, borderRadius: 7, backgroundColor: "#dcfce7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <Icon name="checkCircle" size={13} color="#16a34a" strokeWidth={2.5} />
+                    </div>
+                    <span style={{ fontSize: 12, color: "#374151", fontWeight: 500 }}>{v.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* CATEGORIAS */}
+          <div style={{ backgroundColor: "white", borderRadius: 16, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #f1f5f9", marginBottom: 22 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0d1b3e", margin: 0 }}>Categorias mais contratadas</h3>
+              <button style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, color: "#f97316", background: "none", border: "none", cursor: "pointer" }}>
+                Ver mais <Icon name="chevRight" size={13} color="#f97316" />
               </button>
             </div>
-          </div>
-
-          {/* CONTEÚDO */}
-          <div style={{ padding: "22px 32px", boxSizing: "border-box" }}>
-
-            {/* STATS */}
-            <div style={{ display: "flex", gap: 14, marginBottom: 22 }}>
-              {c.stats.map((stat, i) => <StatCard key={i} stat={stat} />)}
-            </div>
-
-            {/* SOBRE + VERIFICAÇÕES */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 22 }}>
-              <div style={{ backgroundColor: "white", borderRadius: 16, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #f1f5f9" }}>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0d1b3e", margin: "0 0 12px" }}>Sobre</h3>
-                <p style={{ fontSize: 12, color: "#4b5563", lineHeight: 1.7, margin: 0 }}>{c.bio}</p>
-              </div>
-              <div style={{ backgroundColor: "white", borderRadius: 16, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #f1f5f9" }}>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0d1b3e", margin: "0 0 12px" }}>Verificações</h3>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {c.verifications.map((v, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div style={{ width: 24, height: 24, borderRadius: 7, backgroundColor: "#dcfce7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <Icon name="checkCircle" size={13} color="#16a34a" strokeWidth={2.5} />
-                      </div>
-                      <span style={{ fontSize: 12, color: "#374151", fontWeight: 500 }}>{v.label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* CATEGORIAS */}
-            <div style={{ backgroundColor: "white", borderRadius: 16, padding: 20, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid #f1f5f9", marginBottom: 22 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: "#0d1b3e", margin: 0 }}>Categorias mais contratadas</h3>
-                <button style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, color: "#f97316", background: "none", border: "none", cursor: "pointer" }}>
-                  Ver mais <Icon name="chevRight" size={13} color="#f97316" />
-                </button>
-              </div>
-              <div style={{ display: "flex", gap: 40, justifyContent: "center" }}>
-                {c.topCategories.map((cat, i) => <CategoryPill key={i} cat={cat} />)}
-              </div>
-            </div>
-
-            {/* AVALIAÇÕES */}
-            <ReviewsCarousel reviews={c.reviews} />
-
-            {/* BANNER SEGURANÇA */}
-            <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 100%)", borderRadius: 16, padding: "20px 24px", display: "flex", alignItems: "center", gap: 16, position: "relative", overflow: "hidden" }}>
-              <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 100% 50%, rgba(249,115,22,0.12) 0%, transparent 60%)" }} />
-              <div style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, zIndex: 2 }}>
-                <Icon name="shield" size={24} color="#f97316" strokeWidth={1.7} />
-              </div>
-              <div style={{ zIndex: 2 }}>
-                <p style={{ margin: "0 0 3px", fontSize: 14, fontWeight: 700, color: "white" }}>Perfil seguro e confiável</p>
-                <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.6)", lineHeight: 1.5 }}>
-                  Todas as informações deste perfil são checadas pela nossa equipe para garantir mais segurança para os prestadores de serviço da plataforma.
-                </p>
-              </div>
+            <div style={{ display: "flex", gap: 40, justifyContent: "center" }}>
+              {c.topCategories.map((cat, i) => <CategoryPill key={i} cat={cat} />)}
             </div>
           </div>
 
-          {/* FOOTER */}
-          <footer style={{ backgroundColor: "#0d1b3e", color: "white", marginTop: 8 }}>
-            <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <img src="/Logo_branca.png" alt="Fazuno" height="36" />
-                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginLeft: 8 }}>© 2026 FazUno. Todos os direitos reservados.</span>
-              </div>
+          {/* AVALIAÇÕES */}
+          <ReviewsCarousel reviews={c.reviews} />
+
+          {/* BANNER SEGURANÇA */}
+          <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 100%)", borderRadius: 16, padding: "20px 24px", display: "flex", alignItems: "center", gap: 16, position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 100% 50%, rgba(249,115,22,0.12) 0%, transparent 60%)" }} />
+            <div style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, zIndex: 2 }}>
+              <Icon name="shield" size={24} color="#f97316" strokeWidth={1.7} />
             </div>
-          </footer>
+            <div style={{ zIndex: 2 }}>
+              <p style={{ margin: "0 0 3px", fontSize: 14, fontWeight: 700, color: "white" }}>Perfil seguro e confiável</p>
+              <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.6)", lineHeight: 1.5 }}>
+                Todas as informações deste perfil são checadas pela nossa equipe para garantir mais segurança para os prestadores de serviço da plataforma.
+              </p>
+            </div>
+          </div>
         </div>
+
+        {/* FOOTER */}
+        <footer style={{ backgroundColor: "#0d1b3e", color: "white", marginTop: 8 }}>
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <img src="/Logo_branca.png" alt="Fazuno" style={{ height: 36, width: "auto", display: "block" }} />
+              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginLeft: 8 }}>© 2026 FazUno. Todos os direitos reservados.</span>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );

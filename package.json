@@ -9,14 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     "lucide-react": "^1.18.0",
->>>>>>> origin/Tela_Calendario_Prestador
-=======
-    "lucide-react": "^1.18.0",
->>>>>>> origin/feature/Tela_Seus_Serviços_do_Prestador
     "next": "16.2.6",
     "postcss": "^8.5.15",
     "react": "19.2.4",

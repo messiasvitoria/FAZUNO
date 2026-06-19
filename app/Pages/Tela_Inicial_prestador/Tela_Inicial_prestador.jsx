@@ -35,12 +35,12 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
 }
 
 const navItems = [
-  { icon: "home",      label: "Início"                  },
-  { icon: "list",      label: "Solicitações Recebidas" },
-  { icon: "zap",       label: "Oportunidades",          route: "/Pages/Oportunidades" },
-  { icon: "briefcase", label: "Meus Serviços"           },
-  { icon: "calendar",  label: "Agenda"                  },
-  { icon: "chat",      label: "Chat"                    },
+  { icon: "home",      label: "Início"                                                          },
+  { icon: "list",      label: "Solicitações Recebidas"                                         },
+  { icon: "zap",       label: "Oportunidades",  route: "/Pages/Oportunidades"                  },
+  { icon: "briefcase", label: "Meus Serviços",  route: "/Pages/Seus_servicos_prestador"        }, // ← rota adicionada
+  { icon: "calendar",  label: "Agenda", route: "/Pages/Tela_Calendario_Prestador" },
+  { icon: "chat",      label: "Chat"                                                            },
 ];
 
 function StatusDropdown({ isOnline, onChange, onClose }) {

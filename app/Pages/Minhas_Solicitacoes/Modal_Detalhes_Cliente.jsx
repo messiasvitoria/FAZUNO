@@ -32,18 +32,18 @@ const MOCK_SOLICITACAO = {
     verificado: true,
     avatar: "JS",
     avatarColor: "#2563EB",
-    foto: "https://randomuser.me/api/portraits/men/32.jpg", // ← PADRONIZADO
+    foto: "https://randomuser.me/api/portraits/men/32.jpg",
   },
   timeline: [
-    { status: "Solicitação criada",   data: "20/05/2024 às 10:15", desc: "Sua solicitação foi criada com sucesso.",      done: true,  active: false },
+    { status: "Solicitação criada",    data: "20/05/2024 às 10:15", desc: "Sua solicitação foi criada com sucesso.",      done: true,  active: false },
     { status: "Aceita pelo prestador", data: "20/05/2024 às 11:02", desc: "João Silva aceitou sua solicitação.",          done: true,  active: false },
-    { status: "A caminho",            data: "20/05/2024 às 13:50", desc: "O prestador está a caminho do local.",         done: true,  active: false, caminho: true },
-    { status: "Em andamento",         data: "20/05/2024 às 14:05", desc: "O serviço está em execução.",                  done: false, active: true  },
-    { status: "Concluída",            data: null,                  desc: "Aguardando conclusão do serviço.",             done: false, active: false },
-    { status: "Cancelada",            data: null,                  desc: "Solicitação cancelada.",                       done: false, active: false, cancelada: true },
+    { status: "A caminho",             data: "20/05/2024 às 13:50", desc: "O prestador está a caminho do local.",         done: true,  active: false, caminho: true },
+    { status: "Em andamento",          data: "20/05/2024 às 14:05", desc: "O serviço está em execução.",                  done: false, active: true  },
+    { status: "Concluída",             data: null,                  desc: "Aguardando conclusão do serviço.",             done: false, active: false },
+    { status: "Cancelada",             data: null,                  desc: "Solicitação cancelada.",                       done: false, active: false, cancelada: true },
   ],
-  caminho:   { distancia: "3,2 km", chegada: "12 min", previsao: "14:42" },
-  orcamento: { valorOriginal: "R$ 120,00", novoValor: "R$ 180,00", diferenca: "R$ 60,00", motivo: "Material adicional necessário", justificativa: "Foi identificado que o registro precisa ser trocado também.", fotos: [] },
+  caminho:    { distancia: "3,2 km", chegada: "12 min", previsao: "14:42" },
+  orcamento:  { valorOriginal: "R$ 120,00", novoValor: "R$ 180,00", diferenca: "R$ 60,00", motivo: "Material adicional necessário", justificativa: "Foi identificado que o registro precisa ser trocado também.", fotos: [] },
 };
 
 function CheckIcon({ done, active, cancelada }) {
@@ -72,11 +72,11 @@ function CheckIcon({ done, active, cancelada }) {
 export default function DetalhesModal({ onClose, solicitacao }) {
   const router = useRouter(); // ← ADICIONADO
 
-  const sol      = solicitacao || MOCK_SOLICITACAO;
-  const status   = sol.status;
-  const cfg      = STATUS_CONFIG[status] || STATUS_CONFIG["Em Andamento"];
-  const timeline = sol.timeline  || MOCK_SOLICITACAO.timeline;
-  const caminho  = sol.caminho   || MOCK_SOLICITACAO.caminho;
+  const sol       = solicitacao || MOCK_SOLICITACAO;
+  const status    = sol.status;
+  const cfg       = STATUS_CONFIG[status] || STATUS_CONFIG["Em Andamento"];
+  const timeline  = sol.timeline  || MOCK_SOLICITACAO.timeline;
+  const caminho   = sol.caminho   || MOCK_SOLICITACAO.caminho;
   const orcamento = sol.orcamento || MOCK_SOLICITACAO.orcamento;
   const endereco  = sol.endereco  || sol.local || "";
   const prestador = sol.prestador || MOCK_SOLICITACAO.prestador;
@@ -247,7 +247,7 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 10 }}>
-                    {/* ── CORRIGIDO: onClick redireciona para Perfil_prestador ── */}
+                    {/* ── CORRIGIDO: redireciona para Perfil_prestador ao clicar ── */}
                     <button
                       className="action-btn"
                       onClick={() => router.push("/Pages/Perfil_prestador")}
