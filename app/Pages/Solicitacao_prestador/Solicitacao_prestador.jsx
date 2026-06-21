@@ -3,12 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import DetalhesModal from "../Detalhes_solicitacao_prestador/Detalhes_solicitacao_prestador";
 import {
-  FaBell,
   FaBolt,
   FaBroom,
   FaCalendarAlt,
   FaCheckCircle,
-  FaChevronDown,
   FaChevronLeft,
   FaChevronRight,
   FaClock,
@@ -503,18 +501,19 @@ export default function Oportunidades() {
   const [solicitacaoSelecionada, setSolicitacaoSelecionada] = useState(null);
 
   useEffect(() => {
-    const transferred = readTransferredOpportunities();
-    if (!transferred.length) return;
-    clearTransferredOpportunities();
+  const transferred = readTransferredOpportunities();
+  if (!transferred.length) return;
+  clearTransferredOpportunities();
 
-    const params = new URLSearchParams(window.location.search);
-    const targetId = params.get("id");
-    const selected = transferred.find((item) => String(item.id) === targetId);
+  const params = new URLSearchParams(window.location.search);
+  const targetId = params.get("id");
+  const selected = transferred.find((item) => String(item.id) === targetId);
 
-    if (selected) {
-      setSolicitacaoSelecionada(selected);
-    }
+  if (selected) {
+    setTimeout(() => setSolicitacaoSelecionada(selected), 0);
+  }
 
+  setTimeout(() => {
     setItems((current) => {
       const transferredIds = new Set(transferred.map((item) => item.id));
       return [
@@ -522,7 +521,8 @@ export default function Oportunidades() {
         ...current.filter((item) => !transferredIds.has(item.id)),
       ];
     });
-  }, []);
+  }, 0);
+}, []);
 
   const counts = useMemo(() => {
     return Object.fromEntries(
@@ -610,6 +610,11 @@ export default function Oportunidades() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
 
+        html, body{
+          min-height:100%;
+          overflow-y: auto;
+        };
+
         .sr-page, .sr-page * { box-sizing: border-box; }
         .sr-page {
           min-height: 100vh;
@@ -617,6 +622,8 @@ export default function Oportunidades() {
           background: #FFFFFF;
           color: #06104A;
           font-family: 'DM Sans', sans-serif;
+          overflow-x: hidden;
+          overflow-y: visible;
         }
 
         .sr-shell {
@@ -1269,10 +1276,12 @@ export default function Oportunidades() {
         }
       `}</style>
 
-      <main
-        className="solicitacoes-page"
-        style={{ position: "fixed", inset: 0, overflowY: "auto" }}
-      >
+      
+        <main
+  className="sr-page"
+  style={{ minHeight: "100vh" }}
+>
+      
         <div className="sr-shell">
           <header className="sr-header">
             <div className="sr-title">

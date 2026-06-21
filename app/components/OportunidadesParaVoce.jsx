@@ -1,5 +1,6 @@
 "use client";
 import { FaPaintRoller, FaTint, FaBolt, FaBroom, FaMapMarkerAlt } from "react-icons/fa";
+import Link from "next/link";
 
 const oportunidades = [
   {
@@ -45,7 +46,12 @@ export default function OportunidadesParaVoce() {
     <div style={{ background: "#fff", borderRadius: 12, border: "0.5px solid rgba(0,0,0,0.10)", padding: "20px 24px", width: 380, flexShrink: 0 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <span style={{ fontWeight: 600, fontSize: 15, color: "#111827" }}>Oportunidades para você</span>
-        <a href="#" style={{ fontSize: 13, color: "#3b82f6", textDecoration: "none" }}>Ver todas</a>
+        <Link
+          href="/pags/Oportunidades"
+          style={{ fontSize: 13, color: "#3b82f6", textDecoration: "none" }}
+        >
+          Ver todas
+        </Link>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>

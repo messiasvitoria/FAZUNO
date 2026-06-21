@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Sidebar from "../../components/SideBar_cliente";
+import Topbar from "../../components/TopBar_cliente";
 import {
   FaArrowLeft,
   FaArrowRight,
@@ -1885,76 +1887,6 @@ export default function EscolhaContratacao() {
           background: #F5F7FB;
         }
 
-        .choice-sidebar {
-          width: 180px;
-          min-width: 180px;
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-          flex-shrink: 0;
-          background: #0D1B3E;
-          box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
-          z-index: 3;
-        }
-
-        .choice-sidebar-logo {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 16px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .choice-sidebar-logo img {
-          width: 90px;
-          height: auto;
-          display: block;
-        }
-
-        .choice-nav {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-          padding: 12px 8px;
-        }
-
-        .choice-nav-item {
-          width: 100%;
-          display: flex;
-          align-items: flex-start;
-          gap: 10px;
-          padding: 10px 12px;
-          border: 0;
-          border-radius: 12px;
-          background: transparent;
-          color: rgba(255, 255, 255, 0.55);
-          font: inherit;
-          font-size: 13px;
-          font-weight: 500;
-          line-height: 1.3;
-          text-align: left;
-          cursor: pointer;
-          transition: background 0.2s, color 0.2s;
-        }
-
-        .choice-nav-icon {
-          flex: 0 0 auto;
-          margin-top: 1px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .choice-nav-item:hover {
-          background: rgba(255, 255, 255, 0.08);
-        }
-
-        .choice-nav-item--active {
-          background: rgba(255, 255, 255, 0.15);
-          color: #FFFFFF;
-        }
-
         .choice-main {
           flex: 1;
           min-width: 0;
@@ -1962,112 +1894,6 @@ export default function EscolhaContratacao() {
           display: flex;
           flex-direction: column;
           overflow: hidden;
-        }
-
-        .choice-appbar {
-          height: 56px;
-          flex: 0 0 auto;
-          display: flex;
-          align-items: center;
-          justify-content: flex-end;
-          gap: 4px;
-          padding: 0 20px;
-          background: #0D1B3E;
-        }
-
-        .choice-top-action {
-          position: relative;
-          padding: 8px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          border: 0;
-          border-radius: 8px;
-          background: transparent;
-          color: rgba(255, 255, 255, 0.75);
-          cursor: pointer;
-          transition: background 0.2s, color 0.2s;
-        }
-
-        .choice-top-action:hover {
-          background: rgba(255, 255, 255, 0.1);
-          color: #FFFFFF;
-        }
-
-        .choice-notification-badge {
-          position: absolute;
-          top: 4px;
-          right: 4px;
-          width: 16px;
-          height: 16px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          background: #F97316;
-          color: #FFFFFF;
-          font-size: 9px;
-          font-weight: 700;
-          line-height: 1;
-        }
-
-        .choice-top-divider {
-          width: 1px;
-          height: 28px;
-          margin: 0 8px;
-          background: rgba(255, 255, 255, 0.2);
-        }
-
-        .choice-user {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          border: 0;
-          background: transparent;
-          cursor: pointer;
-          padding: 0;
-          color: #FFFFFF;
-        }
-
-        .choice-user-avatar {
-          width: 32px;
-          height: 32px;
-          flex: 0 0 auto;
-          overflow: hidden;
-          border: 2px solid #F97316;
-          border-radius: 50%;
-          background: #FFFFFF;
-        }
-
-        .choice-user-avatar img {
-          width: 100%;
-          height: 100%;
-          display: block;
-          object-fit: cover;
-        }
-
-        .choice-user-name {
-          display: block;
-          color: #FFFFFF;
-          font-size: 12px;
-          font-weight: 600;
-          line-height: 1.2;
-          text-align: left;
-        }
-
-        .choice-user-role {
-          display: block;
-          color: rgba(255, 255, 255, 0.46);
-          font-size: 11px;
-          line-height: 1.2;
-          text-align: left;
-        }
-
-        .choice-user-arrow {
-          color: rgba(255, 255, 255, 0.45);
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
         }
 
         .choice-page {
@@ -3973,33 +3799,6 @@ export default function EscolhaContratacao() {
             overflow: visible;
           }
 
-          .choice-sidebar {
-            width: 100%;
-            min-width: 0;
-            min-height: auto;
-            position: sticky;
-            top: 0;
-          }
-
-          .choice-sidebar-logo {
-            display: none;
-          }
-
-          .choice-nav {
-            flex-direction: row;
-            overflow-x: auto;
-            padding: 8px;
-          }
-
-          .choice-nav-item {
-            min-width: max-content;
-            align-items: center;
-          }
-
-          .choice-appbar {
-            display: none;
-          }
-
           .choice-main,
           .choice-page {
             min-height: auto;
@@ -4009,60 +3808,10 @@ export default function EscolhaContratacao() {
       `}</style>
 
       <div className="choice-layout">
-        <aside className="choice-sidebar" aria-label="Menu do cliente">
-          <div className="choice-sidebar-logo">
-            <img src="/Logo_branca.png" alt="FazUno" />
-          </div>
-          <nav className="choice-nav">
-            {MENU_ITEMS.map((item, index) => {
-              const active = index === 1;
-              const iconColor = active ? "white" : "rgba(255,255,255,0.5)";
-
-              return (
-                <button
-                  key={item.label}
-                  type="button"
-                  className={`choice-nav-item ${active ? "choice-nav-item--active" : ""}`}
-                  onClick={() => {
-                    if (!active) router.push(item.route);
-                  }}
-                >
-                  <span className="choice-nav-icon">
-                    <SidebarIcon name={item.icon} size={17} color={iconColor} strokeWidth={2} />
-                  </span>
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
-          </nav>
-        </aside>
+        <Sidebar />
 
         <div className="choice-main">
-          <div className="choice-appbar">
-            <button type="button" className="choice-top-action" aria-label="Notificações">
-              <SidebarIcon name="bell" size={20} color="rgba(255,255,255,0.75)" strokeWidth={2} />
-              <span className="choice-notification-badge">3</span>
-            </button>
-            <button type="button" className="choice-top-action" aria-label="Ajuda">
-              <SidebarIcon name="help" size={20} color="rgba(255,255,255,0.75)" strokeWidth={2} />
-            </button>
-            <button type="button" className="choice-top-action" aria-label="Configurações">
-              <SidebarIcon name="settings" size={20} color="rgba(255,255,255,0.75)" strokeWidth={2} />
-            </button>
-            <span className="choice-top-divider" />
-            <button type="button" className="choice-user" aria-label="Perfil do cliente Isaac">
-              <span className="choice-user-avatar">
-                <img src="/homem1.avif" alt="Isaac" />
-              </span>
-              <span>
-                <span className="choice-user-name">Isaac</span>
-                <span className="choice-user-role">Cliente</span>
-              </span>
-              <span className="choice-user-arrow">
-                <SidebarIcon name="chevDown" size={14} color="rgba(255,255,255,0.4)" strokeWidth={2} />
-              </span>
-            </button>
-          </div>
+          <Topbar />
           <main className="choice-page">
             <div className="choice-shell">
               {flow === "direta" ? (
