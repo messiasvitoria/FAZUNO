@@ -29,6 +29,7 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
     zap:          ["M13 2L3 14h9l-1 8 10-12h-9l1-8z"],
     eye:          ["M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z", "M12 12m-3 0a3 3 0 106 0 3 3 0 00-6 0"],
     eyeOff:       ["M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24", "M1 1l22 22"],
+    download:     ["M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4", "M7 10l5 5 5-5", "M12 15V3"],
     star:         null,
   };
 
@@ -60,6 +61,513 @@ const contratacao = {
   taxaPlataforma: 17.50,
   descontoPix:    18.75,
 };
+
+// ─── GERADOR DE COMPROVANTE ───────────────────────────────────────────────────
+function gerarComprovante() {
+  const total = (contratacao.valorServico + contratacao.taxaPlataforma).toFixed(2).replace(".", ",");
+  const agora = new Date();
+  const dataHora = `${agora.toLocaleDateString("pt-BR")} às ${agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
+
+  const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Comprovante FazUno — ${contratacao.codigo}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .page {
+      width: 680px;
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(13,27,62,0.15);
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(135deg, #0d1b3e 0%, #1a3060 60%, #0d1b3e 100%);
+      padding: 36px 40px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(249,115,22,0.12);
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: 30px;
+      width: 240px; height: 240px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative; z-index: 1;
+    }
+    .logo-box {
+      width: 42px; height: 42px;
+      background: #f97316;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 900; color: white;
+      letter-spacing: -1px;
+    }
+    .logo-text {
+      font-size: 22px; font-weight: 800; color: white; letter-spacing: -0.5px;
+    }
+    .logo-text span { color: #f97316; }
+    .badge-aprovado {
+      background: rgba(34,197,94,0.18);
+      border: 1.5px solid rgba(34,197,94,0.5);
+      color: #4ade80;
+      font-size: 12px; font-weight: 700;
+      padding: 6px 14px; border-radius: 20px;
+      display: flex; align-items: center; gap: 6px;
+      position: relative; z-index: 1;
+    }
+    .badge-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%; background: #4ade80;
+    }
+    .header-title {
+      position: relative; z-index: 1;
+    }
+    .header-title h1 {
+      font-size: 28px; font-weight: 900; color: white;
+      letter-spacing: -0.5px; margin-bottom: 4px;
+    }
+    .header-title p {
+      font-size: 14px; color: rgba(255,255,255,0.55); font-weight: 400;
+    }
+    .header-meta {
+      display: flex; gap: 32px; margin-top: 22px;
+      position: relative; z-index: 1;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 20px;
+    }
+    .header-meta-item label {
+      font-size: 11px; color: rgba(255,255,255,0.45);
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+      display: block; margin-bottom: 4px;
+    }
+    .header-meta-item span {
+      font-size: 14px; color: white; font-weight: 600;
+    }
+    .header-meta-item span.accent { color: #f97316; }
+
+    /* ── ORANGE BAR ── */
+    .orange-bar {
+      height: 5px;
+      background: linear-gradient(90deg, #f97316, #fb923c, #fdba74, #f97316);
+    }
+
+    /* ── BODY ── */
+    .body { padding: 36px 40px; }
+
+    /* ── SUCCESS BANNER ── */
+    .success-banner {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border: 1.5px solid #86efac;
+      border-radius: 16px;
+      padding: 20px 22px;
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 32px;
+    }
+    .success-icon {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #22c55e;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 6px 20px rgba(34,197,94,0.35);
+    }
+    .success-icon svg { display: block; }
+    .success-text h3 { font-size: 16px; font-weight: 800; color: #15803d; margin-bottom: 3px; }
+    .success-text p  { font-size: 13px; color: #16a34a; line-height: 1.4; }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 28px; }
+    .section-label {
+      font-size: 11px; font-weight: 700; color: #f97316;
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px; background: #f1f5f9;
+    }
+
+    /* ── PRESTADOR CARD ── */
+    .prestador-card {
+      background: #f8faff;
+      border: 1.5px solid #e0e7ff;
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 16px;
+    }
+    .avatar {
+      width: 54px; height: 54px; border-radius: 50%;
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 800; color: white;
+      flex-shrink: 0;
+      border: 2.5px solid #fed7aa;
+    }
+    .prestador-info h4 { font-size: 16px; font-weight: 700; color: #0d1b3e; margin-bottom: 2px; }
+    .prestador-info p  { font-size: 13px; color: #9ca3af; }
+    .verified-badge {
+      margin-left: auto;
+      background: #f0fdf4; border: 1.5px solid #bbf7d0;
+      color: #16a34a; font-size: 12px; font-weight: 700;
+      padding: 5px 12px; border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    /* ── INFO GRID ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .info-cell {
+      background: #f9fafb;
+      border: 1px solid #f1f5f9;
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .info-cell.full { grid-column: 1 / -1; }
+    .info-cell label {
+      font-size: 11px; color: #9ca3af; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.4px;
+      display: block; margin-bottom: 5px;
+    }
+    .info-cell span {
+      font-size: 14px; color: #111827; font-weight: 600;
+      line-height: 1.4; display: block;
+    }
+
+    /* ── VALORES ── */
+    .valores-box {
+      background: #f9fafb;
+      border: 1px solid #f1f5f9;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .valor-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 13px 18px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .valor-row:last-child { border-bottom: none; }
+    .valor-row .vlabel { font-size: 14px; color: #6b7280; font-weight: 500; }
+    .valor-row .vval   { font-size: 14px; color: #111827; font-weight: 700; }
+    .valor-row.total   { background: linear-gradient(135deg, #0d1b3e, #1a3060); }
+    .valor-row.total .vlabel { color: rgba(255,255,255,0.7); font-size: 15px; font-weight: 700; }
+    .valor-row.total .vval   { color: #f97316; font-size: 22px; font-weight: 900; }
+
+    /* ── MÉTODO ── */
+    .metodo-box {
+      background: #f9fafb;
+      border: 1px solid #f1f5f9;
+      border-radius: 14px;
+      padding: 16px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .metodo-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: #0d1b3e;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .metodo-info { flex: 1; margin-left: 12px; }
+    .metodo-info h4 { font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 2px; }
+    .metodo-info p  { font-size: 13px; color: #9ca3af; }
+    .visa-badge {
+      font-size: 11px; font-weight: 800; color: white;
+      background: #1a1f71; padding: 4px 9px; border-radius: 5px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px; background: #f1f5f9; margin: 0 0 28px;
+    }
+
+    /* ── SEGURANCA ── */
+    .seguranca-row {
+      display: flex; gap: 12px;
+    }
+    .seg-card {
+      flex: 1;
+      background: #f9fafb; border: 1px solid #f1f5f9;
+      border-radius: 12px; padding: 14px 16px;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .seg-icon {
+      width: 32px; height: 32px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .seg-icon.green { background: #f0fdf4; }
+    .seg-icon.blue  { background: #eff6ff; }
+    .seg-text h5 { font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 2px; }
+    .seg-text p  { font-size: 11px; color: #9ca3af; line-height: 1.4; }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: #0d1b3e;
+      padding: 22px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-left { display: flex; align-items: center; gap: 10px; }
+    .footer-logo-box {
+      width: 32px; height: 32px; background: #f97316; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 900; color: white;
+    }
+    .footer-brand { font-size: 16px; font-weight: 800; color: white; }
+    .footer-brand span { color: #f97316; }
+    .footer-right { text-align: right; }
+    .footer-right p { font-size: 12px; color: rgba(255,255,255,0.4); }
+    .footer-right span { font-size: 12px; color: rgba(255,255,255,0.25); display: block; margin-top: 2px; }
+
+    /* ── DECORATION DOTS ── */
+    .deco-dots {
+      position: absolute; top: 0; right: 0;
+      pointer-events: none; overflow: hidden;
+      width: 120px; height: 80px;
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .page { box-shadow: none; border-radius: 0; width: 100%; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="logo-area">
+        <div class="logo-box">F</div>
+        <span class="logo-text">Faz<span>Uno</span></span>
+      </div>
+      <div class="badge-aprovado">
+        <div class="badge-dot"></div>
+        Pagamento Aprovado
+      </div>
+    </div>
+    <div class="header-title">
+      <h1>Comprovante de Pagamento</h1>
+      <p>Documento gerado automaticamente pela plataforma FazUno</p>
+    </div>
+    <div class="header-meta">
+      <div class="header-meta-item">
+        <label>Código da contratação</label>
+        <span class="accent">${contratacao.codigo}</span>
+      </div>
+      <div class="header-meta-item">
+        <label>Data e hora</label>
+        <span>${dataHora}</span>
+      </div>
+      <div class="header-meta-item">
+        <label>Cód. da transação</label>
+        <span>TXN-20250606-4587</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORANGE BAR -->
+  <div class="orange-bar"></div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- SUCCESS BANNER -->
+    <div class="success-banner">
+      <div class="success-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6L9 17l-5-5"/>
+        </svg>
+      </div>
+      <div class="success-text">
+        <h3>Pagamento realizado com sucesso!</h3>
+        <p>O prestador <strong>${contratacao.prestador}</strong> foi notificado e seu serviço está confirmado para ${contratacao.dataAgendada}.</p>
+      </div>
+    </div>
+
+    <!-- PRESTADOR -->
+    <div class="section">
+      <div class="section-label">Prestador de serviço</div>
+      <div class="prestador-card">
+        <div class="avatar">JE</div>
+        <div class="prestador-info">
+          <h4>${contratacao.prestador}</h4>
+          <p>${contratacao.prestadorRole}</p>
+        </div>
+        <div class="verified-badge">✓ Verificado</div>
+      </div>
+    </div>
+
+    <!-- DETALHES DO SERVIÇO -->
+    <div class="section">
+      <div class="section-label">Detalhes do serviço</div>
+      <div class="info-grid">
+        <div class="info-cell full">
+          <label>Serviço contratado</label>
+          <span>${contratacao.servico}</span>
+        </div>
+        <div class="info-cell">
+          <label>Data da contratação</label>
+          <span>${contratacao.data}</span>
+        </div>
+        <div class="info-cell">
+          <label>Data agendada</label>
+          <span>${contratacao.dataAgendada}</span>
+        </div>
+        <div class="info-cell full">
+          <label>Endereço do serviço</label>
+          <span>${contratacao.endereco.replace("\n", " — ")}</span>
+        </div>
+        <div class="info-cell full">
+          <label>Descrição</label>
+          <span>${contratacao.descricao}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALORES -->
+    <div class="section">
+      <div class="section-label">Valores</div>
+      <div class="valores-box">
+        <div class="valor-row">
+          <span class="vlabel">Valor do serviço</span>
+          <span class="vval">R$ ${contratacao.valorServico.toFixed(2).replace(".", ",")}</span>
+        </div>
+        <div class="valor-row">
+          <span class="vlabel">Taxa da plataforma</span>
+          <span class="vval">R$ ${contratacao.taxaPlataforma.toFixed(2).replace(".", ",")}</span>
+        </div>
+        <div class="valor-row total">
+          <span class="vlabel">Total pago</span>
+          <span class="vval">R$ ${total}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÉTODO DE PAGAMENTO -->
+    <div class="section">
+      <div class="section-label">Método de pagamento</div>
+      <div class="metodo-box">
+        <div class="metodo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+            <line x1="1" y1="10" x2="23" y2="10"/>
+          </svg>
+        </div>
+        <div class="metodo-info">
+          <h4>Cartão de crédito</h4>
+          <p>•••• •••• •••• 1234</p>
+        </div>
+        <span class="visa-badge">VISA</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- SEGURANÇA -->
+    <div class="section" style="margin-bottom:0">
+      <div class="seguranca-row">
+        <div class="seg-card">
+          <div class="seg-icon green">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          <div class="seg-text">
+            <h5>Dados protegidos</h5>
+            <p>Suas informações financeiras não são compartilhadas com o prestador.</p>
+          </div>
+        </div>
+        <div class="seg-card">
+          <div class="seg-icon blue">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          <div class="seg-text">
+            <h5>Compra garantida</h5>
+            <p>O pagamento só é liberado ao prestador após a conclusão do serviço.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">
+      <div class="footer-logo-box">F</div>
+      <span class="footer-brand">Faz<span>Uno</span></span>
+    </div>
+    <div class="footer-right">
+      <p>fazuno.com.br • suporte@fazuno.com.br</p>
+      <span>© 2026 FazUno. Todos os direitos reservados.</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Impressão automática ao abrir
+  // window.onload = () => window.print();
+</script>
+
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href     = url;
+  a.download = `comprovante-fazuno-${contratacao.codigo.replace("#", "")}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 // ─── STEP INDICATOR ──────────────────────────────────────────────────────────
 function StepIndicator({ currentStep }) {
@@ -469,6 +977,16 @@ function Step3({ onNext, onBack }) {
 // ─── STEP 4 — COMPROVANTE ────────────────────────────────────────────────────
 function Step4({ onRestart }) {
   const router = useRouter();
+  const [baixando, setBaixando] = useState(false);
+
+  function handleBaixar() {
+    setBaixando(true);
+    setTimeout(() => {
+      gerarComprovante();
+      setBaixando(false);
+    }, 400);
+  }
+
   return (
     <div style={{ display: "flex", gap: 28, alignItems: "flex-start" }}>
       <div style={{ flex: 1 }}>
@@ -506,6 +1024,37 @@ function Step4({ onRestart }) {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* ── BOTÃO BAIXAR COMPROVANTE ── */}
+        <div style={{ marginBottom: 18 }}>
+          <button
+            onClick={handleBaixar}
+            style={{
+              width: "100%",
+              padding: "15px 26px",
+              borderRadius: 14,
+              border: "2px dashed #e0e7ff",
+              backgroundColor: baixando ? "#f8faff" : "white",
+              color: "#0d1b3e",
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: "pointer",
+              transition: "all 0.2s",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#f97316"; e.currentTarget.style.backgroundColor = "#fff7ed"; e.currentTarget.style.color = "#f97316"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "#e0e7ff"; e.currentTarget.style.backgroundColor = "white"; e.currentTarget.style.color = "#0d1b3e"; }}
+          >
+            <Icon name="download" size={18} color="currentColor" strokeWidth={2.2} />
+            {baixando ? "Gerando comprovante..." : "Baixar comprovante"}
+          </button>
+          <p style={{ fontSize: 12, color: "#9ca3af", textAlign: "center", marginTop: 8 }}>
+            O comprovante será salvo como arquivo HTML — abra no navegador e use Ctrl+P para imprimir ou salvar em PDF.
+          </p>
         </div>
 
         <div style={{ display: "flex", gap: 14, justifyContent: "center" }}>
