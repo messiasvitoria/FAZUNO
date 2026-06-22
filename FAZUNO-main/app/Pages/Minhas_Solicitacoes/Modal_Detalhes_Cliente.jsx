@@ -1,6 +1,8 @@
 "use client";
-import { useRouter } from "next/navigation"; // ← ADICIONADO
 
+import { useState } from "react";
+import ReagendamentoSolicitadoCliente from "./reagendamento_solicitado_cliente";
+import { useRouter } from "next/navigation"; // ← ADICIONADO
 const STATUS_CONFIG = {
   "Solicitação Enviada":  { color: "#2563EB", bg: "#EFF6FF", border: "#BFDBFE", label: "SOLICITAÇÃO ENVIADA" },
   "Em Análise":           { color: "#EA580C", bg: "#FFF7ED", border: "#FED7AA", label: "EM ANÁLISE" },
@@ -71,7 +73,7 @@ function CheckIcon({ done, active, cancelada }) {
 
 export default function DetalhesModal({ onClose, solicitacao }) {
   const router = useRouter(); // ← ADICIONADO
-
+  const [showReagendamento, setShowReagendamento] = useState(false);
   const sol       = solicitacao || MOCK_SOLICITACAO;
   const status    = sol.status;
   const cfg       = STATUS_CONFIG[status] || STATUS_CONFIG["Em Andamento"];
@@ -280,13 +282,10 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                   </button>
                 )}
                 {status === "Aceita" && (
-                  <div style={{ display: "flex", gap: 10 }}>
-                    <button className="action-btn" style={{ ...btnBase, background: "#F5F3FF", color: "#7C3AED", border: "1.5px solid #DDD6FE" }}>
-                      <i className="ti ti-calendar" style={{ fontSize: 15 }} /> Reagendar
-                    </button>
-                    <button className="action-btn" style={{ ...btnBase, background: "#FEF2F2", color: "#DC2626", border: "1.5px solid #FECACA" }}>
-                      <i className="ti ti-x" style={{ fontSize: 15 }} /> Cancelar
-                    </button>
+                <div style={{ display: "flex", gap: 10 }}>
+                <button className="action-btn" onClick={() => setShowReagendamento(true)} style={{ ...btnBase, background: "#F5F3FF", color: "#7C3AED", border: "1.5px solid #DDD6FE" }}>
+                <i className="ti ti-calendar" style={{ fontSize: 15 }} /> Reagendar
+               </button>
                   </div>
                 )}
                 {status === "Aguardando Pagamento" && (
@@ -388,6 +387,12 @@ export default function DetalhesModal({ onClose, solicitacao }) {
           </div>
         </div>
       </div>
+    {showReagendamento && (
+  <ReagendamentoSolicitadoCliente
+    onClose={() => setShowReagendamento(false)}
+    onConcluir={() => setShowReagendamento(false)}
+  />
+)}
     </>
   );
 }

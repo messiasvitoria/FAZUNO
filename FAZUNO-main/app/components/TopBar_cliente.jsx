@@ -1,7 +1,6 @@
 "use client";
-
 import { useState, useEffect, useRef } from "react";
-
+import { useNotificacoes } from "@/context/NotificacoesContext";
 // ─── ICON COMPONENT ──────────────────────────────────────────────────────────
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
   const paths = {
@@ -149,7 +148,7 @@ export default function TopBar_cliente() {
   const [notifOpen, setNotifOpen]         = useState(false);
   const [notifFilter, setNotifFilter]     = useState("todas");
   const [showAllNotifs, setShowAllNotifs] = useState(false);
-  const [notifs, setNotifs]               = useState(allNotifs);
+  const { notifs, setNotifs } = useNotificacoes();
   const [selectedNotif, setSelectedNotif] = useState(null);
   const notifRef = useRef(null);
 
