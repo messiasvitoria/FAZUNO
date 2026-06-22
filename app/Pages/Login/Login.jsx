@@ -72,7 +72,8 @@ export default function Login() {
           {/* Painel direito */}
           <div className="absolute left-[52%] top-0 w-[48%] h-full z-[3] flex items-center justify-center px-10">
             <div className="w-full max-w-[340px]">
-              <h1 className="text-[2.2rem] font-bold text-[#E6E6E6] tracking-[-1px] mb-8 leading-none"
+              {/* ALTERADO: mb-8 para mb-12 para dar mais espaço */}
+              <h1 className="text-[2.2rem] font-bold text-[#E6E6E6] tracking-[-1px] mb-12 leading-none"
               style={{ fontFamily: "'Sora', sans-serif" }}>
                 Login
               </h1>
@@ -90,7 +91,7 @@ export default function Login() {
                 />
               </div>
 
-              {/* Campo senha - com mt-4 para distanciar levemente do e-mail */}
+              {/* Campo senha */}
               <div className="mb-0 mt-4">
                 <label className="block text-[0.78rem] font-medium text-[#DCDCDC] mb-[7px]">
                   Senha
@@ -171,11 +172,10 @@ export default function Login() {
           {/* Rodapé */}
           <div className="absolute bottom-[26px] right-10 text-[0.7rem] text-[rgba(230,230,230,0.25)] text-right z-[5]">
             <a href="#" className="text-[rgba(230,230,230,0.4)] hover:text-white">
-              Termos de uso
             </a>
             {" · "}
             <a href="#" className="text-[rgba(230,230,230,0.4)] hover:text-white">
-              Privacidade
+              
             </a>
           </div>
         </div>
