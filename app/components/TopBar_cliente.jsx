@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Bell, ChevronDown, User, CreditCard, Heart, Settings, LogOut, BadgeCheck } from "lucide-react";
+import PerfilMenu_Cliente from "./PerfilMenu_Cliente";
 
 // ─── ICON COMPONENT ──────────────────────────────────────────────────────────
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
@@ -43,24 +43,18 @@ function NotifDetailModal({ notif, onClose }) {
   }, [onClose]);
 
   const relatedContent = {
-    doc:     { label: "Ver Solicitação",  description: "Acesse os detalhes completos desta solicitação.",          action: "Abrir solicitação",         color: "#3b82f6" },
-    chat:    { label: "Ir para o Chat",   description: "Visualize a conversa completa e responda ao prestador.",   action: "Abrir conversa",            color: "#22c55e" },
-    payment: { label: "Ver Pagamento",    description: "Acesse os detalhes da transação e comprovante.",           action: "Ver comprovante",            color: "#8b5cf6" },
-    star:    { label: "Avaliar Serviço",  description: "Compartilhe sua experiência avaliando o profissional.",    action: "Avaliar agora",              color: "#f59e0b" },
-    eye:     { label: "Ver Solicitação",  description: "O prestador visualizou sua solicitação. Acompanhe.",       action: "Acompanhar solicitação",     color: "#f97316" },
+    doc:     { label: "Ver Solicitação",  description: "Acesse os detalhes completos desta solicitação.",        action: "Abrir solicitação",      color: "#3b82f6" },
+    chat:    { label: "Ir para o Chat",   description: "Visualize a conversa completa e responda ao prestador.", action: "Abrir conversa",         color: "#22c55e" },
+    payment: { label: "Ver Pagamento",    description: "Acesse os detalhes da transação e comprovante.",         action: "Ver comprovante",         color: "#8b5cf6" },
+    star:    { label: "Avaliar Serviço",  description: "Compartilhe sua experiência avaliando o profissional.",  action: "Avaliar agora",           color: "#f59e0b" },
+    eye:     { label: "Ver Solicitação",  description: "O prestador visualizou sua solicitação. Acompanhe.",     action: "Acompanhar solicitação",  color: "#f97316" },
   };
   const content = relatedContent[notif.icon] || relatedContent.doc;
 
   return (
-    <div
-      onClick={onClose}
-      style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.45)", zIndex: 1100, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(2px)" }}
-    >
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.45)", zIndex: 1100, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(2px)" }}>
       <style>{`@keyframes modalIn { from { opacity:0; transform:scale(0.95) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }`}</style>
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{ backgroundColor: "white", borderRadius: 24, width: 460, maxWidth: "90vw", boxShadow: "0 32px 80px rgba(0,0,0,0.22)", overflow: "hidden", animation: "modalIn 0.2s ease" }}
-      >
+      <div onClick={(e) => e.stopPropagation()} style={{ backgroundColor: "white", borderRadius: 24, width: 460, maxWidth: "90vw", boxShadow: "0 32px 80px rgba(0,0,0,0.22)", overflow: "hidden", animation: "modalIn 0.2s ease" }}>
         <div style={{ backgroundColor: notif.iconBg, padding: "24px 24px 20px", position: "relative" }}>
           <button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "rgba(0,0,0,0.08)", border: "none", borderRadius: 8, width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
             <Icon name="xIcon" size={16} color="#374151" strokeWidth={2.5} />
@@ -94,110 +88,6 @@ function NotifDetailModal({ notif, onClose }) {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-// ─── PERFIL DROPDOWN ─────────────────────────────────────────────────────────
-function PerfilDropdown({
-  userName = "Brenda Nogueira",
-  perfilPath = "/perfil",
-  pagamentosPath = "/pagamentos",
-  favoritosPath = "/favoritos",
-  configuracoesPath = "/configuracoes",
-  onSair = () => console.log("Sair clicado"),
-}) {
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) setOpen(false);
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  return (
-    <div ref={menuRef} style={{ position: "relative" }}>
-      {/* Botão do perfil */}
-      <button
-        onClick={() => setOpen((prev) => !prev)}
-        style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: "0 8px" }}
-      >
-        <div style={{ width: 32, height: 32, borderRadius: "50%", overflow: "hidden", border: "2px solid #f97316", flexShrink: 0 }}>
-          <img
-            src="/homem1.avif"
-            alt={userName}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            onError={(e) => { e.target.style.display = "none"; }}
-          />
-        </div>
-        <div style={{ textAlign: "left" }}>
-          <div style={{ color: "white", fontSize: 12, fontWeight: 600, lineHeight: 1.2 }}>{userName.split(" ")[0]}</div>
-          <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, lineHeight: 1.2 }}>Cliente</div>
-        </div>
-        <ChevronDown
-          size={14}
-          color="rgba(255,255,255,0.4)"
-          style={{ transition: "transform 0.2s", transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
-        />
-      </button>
-
-      {/* Dropdown do perfil */}
-      {open && (
-        <div style={{ position: "fixed", top: 60, right: 20, width: 420, maxWidth: "90vw", backgroundColor: "white", borderRadius: 16, boxShadow: "0 16px 48px rgba(0,0,0,0.18)", zIndex: 999, overflow: "hidden", border: "1px solid #f1f5f9" }}>
-          {/* Cabeçalho */}
-          <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "24px 24px 20px" }}>
-            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 64, height: 64, borderRadius: "50%", backgroundColor: "#e2e8f0", border: "1px solid #e2e8f0" }}>
-              <User size={32} color="#94a3b8" strokeWidth={1.8} />
-            </span>
-            <div>
-              <p style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#0f172a" }}>{userName}</p>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2 }}>
-                <span style={{ color: "#94a3b8", fontSize: 14 }}>Cliente Verificado</span>
-                <BadgeCheck size={18} color="#3b82f6" fill="#3b82f6" strokeWidth={0} />
-              </div>
-            </div>
-          </div>
-
-          <hr style={{ borderColor: "#f1f5f9", margin: 0 }} />
-
-          {/* Itens */}
-          <nav style={{ paddingTop: 8, paddingBottom: 8 }}>
-            {[
-              { href: perfilPath,         Icon: User,      label: "Meu Perfil" },
-              { href: pagamentosPath,      Icon: CreditCard, label: "Pagamentos e Reembolsos" },
-              { href: favoritosPath,       Icon: Heart,     label: "Favoritos" },
-              { href: configuracoesPath,   Icon: Settings,  label: "Configurações da Conta" },
-            ].map(({ href, Icon: ItemIcon, label }) => (
-              <a
-                key={label}
-                href={href}
-                style={{ display: "flex", alignItems: "center", gap: 16, padding: "14px 24px", color: "#0f172a", textDecoration: "none", fontSize: 16, fontWeight: 500 }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f8fafc")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-              >
-                <ItemIcon size={22} strokeWidth={1.8} />
-                {label}
-              </a>
-            ))}
-          </nav>
-
-          <hr style={{ borderColor: "#f1f5f9", margin: 0 }} />
-
-          {/* Sair */}
-          <button
-            onClick={onSair}
-            style={{ width: "100%", display: "flex", alignItems: "center", gap: 16, padding: "16px 24px", color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 500, textAlign: "left" }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fef2f2")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-          >
-            <LogOut size={22} strokeWidth={1.8} />
-            Sair
-          </button>
-        </div>
-      )}
     </div>
   );
 }
@@ -250,8 +140,8 @@ export default function TopBar_cliente({
   }, [notifOpen]);
 
   const baseNotifs =
-    notifFilter === "todas"       ? notifs :
-    notifFilter === "não_lidas"   ? notifs.filter((n) => n.unread) :
+    notifFilter === "todas"     ? notifs :
+    notifFilter === "não_lidas" ? notifs.filter((n) => n.unread) :
     notifs.filter((n) => n.category === notifFilter);
 
   const filteredNotifs = showAllNotifs ? baseNotifs : baseNotifs.slice(0, 5);
@@ -303,7 +193,6 @@ export default function TopBar_cliente({
             )}
           </button>
 
-          {/* Dropdown notificações */}
           {notifOpen && (
             <div style={{ position: "fixed", top: 60, right: 20, width: 420, backgroundColor: "white", borderRadius: 20, boxShadow: "0 16px 48px rgba(0,0,0,0.18)", zIndex: 999, overflow: "hidden", border: "1px solid #f1f5f9" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 20px 12px" }}>
@@ -337,7 +226,8 @@ export default function TopBar_cliente({
                   <div style={{ padding: "32px 20px", textAlign: "center", color: "#94a3b8", fontSize: 13 }}>Nenhuma notificação aqui.</div>
                 ) : (
                   filteredNotifs.map((n, i) => (
-                    <div key={n.id} onClick={() => handleNotifClick(n)} style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "14px 20px", borderTop: i > 0 ? "1px solid #f8fafc" : "none", backgroundColor: n.unread ? "#fafbff" : "white", cursor: "pointer" }}
+                    <div key={n.id} onClick={() => handleNotifClick(n)}
+                      style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "14px 20px", borderTop: i > 0 ? "1px solid #f8fafc" : "none", backgroundColor: n.unread ? "#fafbff" : "white", cursor: "pointer" }}
                       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f1f5f9")}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = n.unread ? "#fafbff" : "white")}
                     >
@@ -389,14 +279,15 @@ export default function TopBar_cliente({
         {/* Divider */}
         <div style={{ width: 1, height: 28, backgroundColor: "rgba(255,255,255,0.2)", margin: "0 8px" }} />
 
-        {/* Perfil com dropdown */}
-        <PerfilDropdown
+        {/* PerfilMenu_Cliente importado */}
+        <PerfilMenu_Cliente
           userName={userName}
           perfilPath={perfilPath}
           pagamentosPath={pagamentosPath}
           favoritosPath={favoritosPath}
           configuracoesPath={configuracoesPath}
           onSair={onSair}
+          showBell={false}
         />
       </div>
     </>
