@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation"; // ← ADICIONADO
 
 const STATUS_CONFIG = {
+  "Pendente":              { color: "#F1670F", bg: "#FFF7ED", border: "#FED7AA", label: "PENDENTE" },
   "Solicitação Enviada":  { color: "#2563EB", bg: "#EFF6FF", border: "#BFDBFE", label: "SOLICITAÇÃO ENVIADA" },
   "Em Análise":           { color: "#EA580C", bg: "#FFF7ED", border: "#FED7AA", label: "EM ANÁLISE" },
   "Aceita":               { color: "#7C3AED", bg: "#F5F3FF", border: "#DDD6FE", label: "ACEITA" },
@@ -274,10 +275,18 @@ export default function DetalhesModal({ onClose, solicitacao }) {
 
               {/* Ações por status */}
               <div>
-                {status === "Solicitação Enviada" && (
-                  <button className="action-btn" style={{ ...btnBase, background: "#FEF2F2", color: "#DC2626", border: "1.5px solid #FECACA" }}>
-                    <i className="ti ti-x" style={{ fontSize: 15 }} /> Cancelar Solicitação
-                  </button>
+                {(status === "Pendente" || status === "Solicitação Enviada") && (
+                  <div style={{ display: "grid", gap: 10 }}>
+                    {status === "Pendente" && (
+                      <div style={{ background: "#FFF7ED", border: "1px solid #FED7AA", borderRadius: 10, padding: "12px 14px", color: "#9A3412", fontSize: "0.78rem", lineHeight: 1.5 }}>
+                        <strong style={{ display: "block", marginBottom: 3, color: "#F1670F" }}>Aguardando aceite do prestador</strong>
+                        Assim que o prestador aceitar, esta solicitação muda de status automaticamente.
+                      </div>
+                    )}
+                    <button className="action-btn" style={{ ...btnBase, background: "#FEF2F2", color: "#DC2626", border: "1.5px solid #FECACA" }}>
+                      <i className="ti ti-x" style={{ fontSize: 15 }} /> Cancelar Solicitação
+                    </button>
+                  </div>
                 )}
                 {status === "Aceita" && (
                   <div style={{ display: "flex", gap: 10 }}>

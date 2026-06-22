@@ -2,10 +2,48 @@
 
 import Sidebar from "../../components/SideBar_cliente";
 import Topbar  from "../../components/TopBar_cliente";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import DetalhesModal from "./Modal_Detalhes_Cliente";
 
+const CLIENT_REQUESTS_KEY = "fazuno_minhas_solicitacoes_extra";
+const LAST_CLIENT_REQUEST_KEY = "fazuno_ultima_solicitacao_cliente";
+
+const SAMPLE_INTERESSADOS = [
+  {
+    nome: "Carlos Mendes",
+    profissao: "Reformas e acabamento",
+    avaliacao: "4.8",
+    avaliacoes: "97",
+    distancia: "2 km",
+    mensagem: "Tenho experiencia em reformas de banheiro e posso iniciar ainda esta semana.",
+    valor: "R$ 1.450,00",
+    foto: "https://randomuser.me/api/portraits/men/11.jpg",
+  },
+  {
+    nome: "Ana Paula Silva",
+    profissao: "Pintura e pequenos reparos",
+    avaliacao: "4.9",
+    avaliacoes: "153",
+    distancia: "3,5 km",
+    mensagem: "Consigo fazer a avaliacao presencial e enviar a lista de materiais.",
+    valor: "R$ 1.600,00",
+    foto: "https://randomuser.me/api/portraits/women/44.jpg",
+  },
+  {
+    nome: "Rafael Oliveira",
+    profissao: "Pedreiro e revestimentos",
+    avaliacao: "4.7",
+    avaliacoes: "88",
+    distancia: "4 km",
+    mensagem: "Posso atender no periodo solicitado e entregar em prazo curto.",
+    valor: "R$ 1.520,00",
+    foto: "https://randomuser.me/api/portraits/men/45.jpg",
+  },
+];
+
 const STATUS_CONFIG = {
+  "Nova":                  { color: "#F1670F", bg: "#FFF7ED", border: "#FED7AA", label: "NOVA" },
+  "Pendente":              { color: "#F1670F", bg: "#FFF7ED", border: "#FED7AA", label: "PENDENTE" },
   "Solicitação Enviada":  { color: "#2563EB", bg: "#EFF6FF", border: "#BFDBFE", label: "SOLICITAÇÃO ENVIADA" },
   "Em Análise":           { color: "#EA580C", bg: "#FFF7ED", border: "#FED7AA", label: "EM ANÁLISE" },
   "Aceita":               { color: "#7C3AED", bg: "#F5F3FF", border: "#DDD6FE", label: "ACEITA" },
@@ -25,8 +63,53 @@ const SOLICITACOES = [
   { id: 7, prestador: { nome: "Carlos Mendes",   avaliacao: 4.6, avaliacoes: 11, avatar: "CM", avatarColor: "#DC2626", foto: "https://randomuser.me/api/portraits/men/11.jpg"   }, servico: "Conserto de Portão",             descricao: "Reparo no motor do portão automático.",              local: "Santana, São Paulo – SP",      data: "02/05/2024 às 08:30", status: "Cancelada",            statusMsg: "Solicitação cancelada pelo cliente.",                                                          valorLabel: "Valor estimado",    valor: "R$ 200,00", acoes: ["novamente"] },
 ];
 
+function loadExtraSolicitacoes() {
+  if (typeof window === "undefined") return [];
+  try {
+    const stored = JSON.parse(window.localStorage.getItem(CLIENT_REQUESTS_KEY) || "[]");
+    if (!Array.isArray(stored)) return [];
+
+    const seen = new Set();
+    const deduped = stored.filter((item) => {
+      const key = item.tipo === "oportunidade" ? "oportunidade-publicada" : item.id;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).map((item) => {
+      if (item.tipo !== "oportunidade") return item;
+      const interessados = item.interessados?.length ? item.interessados : SAMPLE_INTERESSADOS;
+      return {
+        ...item,
+        id: item.id || "OPR-2025-000045",
+        statusMsg: item.statusMsg === "Aguardando interesse de profissionais." ? "Interessados aguardando sua anÃ¡lise." : item.statusMsg,
+        interessados,
+        interessadosCount: interessados.length,
+      };
+    });
+
+    if (deduped.length !== stored.length) {
+      window.localStorage.setItem(CLIENT_REQUESTS_KEY, JSON.stringify(deduped));
+    }
+
+    return deduped;
+  } catch {
+    return [];
+  }
+}
+
+function getInitialOpenSolicitacao(extraSolicitacoes) {
+  if (typeof window === "undefined") return null;
+  const requestId = new URLSearchParams(window.location.search).get("abrir")
+    || window.sessionStorage.getItem(LAST_CLIENT_REQUEST_KEY);
+  if (!requestId) return null;
+  const normalizedRequestId = requestId.replace(/^#/, "");
+  return [...extraSolicitacoes, ...SOLICITACOES].find((item) => String(item.id).replace(/^#/, "") === normalizedRequestId) || null;
+}
+
 const TABS = [
   { label: "Todas",                key: "Todas" },
+  { label: "Oportunidades",        key: "Nova" },
+  { label: "Pendentes",            key: "Pendente" },
   { label: "Solicitação Enviada",  key: "Solicitação Enviada" },
   { label: "Em Análise",           key: "Em Análise" },
   { label: "Aceita",               key: "Aceita" },
@@ -103,6 +186,8 @@ function ActionButton({ type, onClick }) {
     novamente: { label: "Solicitar novamente",  style: "outline" },
     avaliar:   { label: "Avaliar serviço",      style: "outline" },
     cancelar:  { label: "Cancelar solicitação", style: "danger" },
+    interessados: { label: "Ver interessados", style: "outline" },
+    cancelar_oportunidade: { label: "Cancelar oportunidade", style: "danger" },
   };
   const cfg = configs[type] || { label: type, style: "outline" };
   const styles = {
@@ -126,33 +211,79 @@ function ActionButton({ type, onClick }) {
 
 function SolicitacaoCard({ item, delay, onVerDetalhes }) {
   const statusCfg = STATUS_CONFIG[item.status];
+  const isNewDirect = item.origem === "Solicitação Direta" && item.nova;
+  const isOpportunity = item.tipo === "oportunidade";
   return (
     <div
       className="card-in"
-      style={{ animationDelay: `${delay}ms`, display: "grid", gridTemplateColumns: "88px 1fr 200px 168px", gap: "0 20px", alignItems: "center", background: "#fff", border: "1px solid #F3F4F6", borderLeft: `4px solid ${statusCfg.color}`, borderRadius: 14, padding: "20px 22px", boxShadow: "0 1px 4px rgba(0,0,0,0.05)", transition: "box-shadow 0.2s, transform 0.2s" }}
+      style={{
+        animationDelay: `${delay}ms`,
+        display: "grid",
+        gridTemplateColumns: "88px 1fr 200px 168px",
+        gap: "0 20px",
+        alignItems: "center",
+        background: isOpportunity ? "#FFFBF7" : isNewDirect ? "#FFFBF7" : "#fff",
+        border: `1px solid ${isOpportunity ? "#FED7AA" : isNewDirect ? "#FED7AA" : "#F3F4F6"}`,
+        borderLeft: `4px solid ${statusCfg.color}`,
+        borderRadius: 14,
+        padding: "20px 22px",
+        boxShadow: isNewDirect ? "0 10px 28px rgba(241, 103, 15, 0.1)" : "0 1px 4px rgba(0,0,0,0.05)",
+        transition: "box-shadow 0.2s, transform 0.2s",
+        position: "relative",
+      }}
       onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.09)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
       onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)"; e.currentTarget.style.transform = "translateY(0)"; }}
     >
       {/* Coluna 1 — Avatar */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 7 }}>
-        <Avatar initials={item.prestador.avatar} color={item.prestador.avatarColor} foto={item.prestador.foto} />
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "#111827", lineHeight: 1.3 }}>{item.prestador.nome}</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 3, justifyContent: "center", marginTop: 3 }}>
-            <StarIcon />
-            <span style={{ fontSize: "0.7rem", color: "#92400E", fontWeight: 600 }}>{item.prestador.avaliacao}</span>
-          </div>
-          <div style={{ fontSize: "0.62rem", color: "#9CA3AF", marginTop: 1 }}>({item.prestador.avaliacoes} avaliações)</div>
-        </div>
+        {isOpportunity ? (
+          <>
+            <div style={{ width: 54, height: 54, borderRadius: "50%", background: "#FFF7ED", color: "#F1670F", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Sora', sans-serif", fontWeight: 800, fontSize: "0.9rem", boxShadow: "0 2px 8px rgba(241,103,15,0.14)" }}>
+              OP
+            </div>
+            <div style={{ textAlign: "center", fontSize: "0.64rem", color: "#F1670F", fontWeight: 700, lineHeight: 1.3 }}>
+              Oportunidade<br />publicada
+            </div>
+          </>
+        ) : (
+          <>
+            <Avatar initials={item.prestador.avatar} color={item.prestador.avatarColor} foto={item.prestador.foto} />
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "#111827", lineHeight: 1.3 }}>{item.prestador.nome}</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 3, justifyContent: "center", marginTop: 3 }}>
+                <StarIcon />
+                <span style={{ fontSize: "0.7rem", color: "#92400E", fontWeight: 600 }}>{item.prestador.avaliacao}</span>
+              </div>
+              <div style={{ fontSize: "0.62rem", color: "#9CA3AF", marginTop: 1 }}>({item.prestador.avaliacoes} avaliações)</div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Coluna 2 — Serviço */}
       <div>
+        {isOpportunity && (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 8, padding: "4px 9px", borderRadius: 999, background: "#FFF7ED", border: "1px solid #FED7AA", color: "#F1670F", fontSize: "0.62rem", fontWeight: 700, fontFamily: "'Sora', sans-serif", letterSpacing: "0.02em" }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#F1670F" }} />
+            Oportunidade publicada
+          </span>
+        )}
+        {isNewDirect && !isOpportunity && (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 8, padding: "4px 9px", borderRadius: 999, background: "#FFF7ED", border: "1px solid #FED7AA", color: "#F1670F", fontSize: "0.62rem", fontWeight: 700, fontFamily: "'Sora', sans-serif", letterSpacing: "0.02em" }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#F1670F" }} />
+            Nova solicitação direta
+          </span>
+        )}
         <div style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: "0.98rem", color: "#111827", marginBottom: 3 }}>{item.servico}</div>
         <div style={{ fontSize: "0.78rem", color: "#6B7280", marginBottom: 12 }}>{item.descricao}</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.74rem", color: "#6B7280" }}><LocationIcon /> {item.local}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.74rem", color: "#6B7280" }}><CalendarIcon /> {item.data}</div>
+          {isOpportunity && (
+            <div style={{ fontSize: "0.74rem", color: "#F1670F", fontWeight: 700 }}>
+              Interessados: {item.interessadosCount || 0} prestadores
+            </div>
+          )}
         </div>
       </div>
 
@@ -160,6 +291,11 @@ function SolicitacaoCard({ item, delay, onVerDetalhes }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <StatusBadge status={item.status} />
         <p style={{ fontSize: "0.74rem", color: "#6B7280", lineHeight: 1.55, margin: 0 }}>{item.statusMsg}</p>
+        {isOpportunity && (
+          <p style={{ fontSize: "0.72rem", color: "#F1670F", lineHeight: 1.45, margin: 0, fontWeight: 700 }}>
+            {item.opportunityMessage || "Nenhum prestador aceito até o momento."}
+          </p>
+        )}
       </div>
 
       {/* Coluna 4 — Valor + Ações */}
@@ -170,8 +306,132 @@ function SolicitacaoCard({ item, delay, onVerDetalhes }) {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%" }}>
           {item.acoes.map((acao) => (
-            <ActionButton key={acao} type={acao} onClick={acao === "detalhes" ? onVerDetalhes : () => {}} />
+            <ActionButton key={acao} type={acao} onClick={acao === "detalhes" || acao === "interessados" ? () => onVerDetalhes(acao) : () => {}} />
           ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function OpportunityDetailsModal({ oportunidade, initialView = "detalhes", onClose }) {
+  const cfg = STATUS_CONFIG[oportunidade.status] || STATUS_CONFIG.Nova;
+  const interessados = oportunidade.interessados || [];
+  const showInterestedFirst = initialView === "interessados";
+
+  return (
+    <div
+      onClick={onClose}
+      style={{ position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, background: "rgba(0,0,0,0.45)", fontFamily: "'DM Sans', sans-serif" }}
+    >
+      <div
+        onClick={(event) => event.stopPropagation()}
+        style={{ width: "100%", maxWidth: 980, maxHeight: "90vh", overflowY: "auto", background: "#FFFFFF", borderRadius: 16, boxShadow: "0 24px 60px rgba(0,0,0,0.18)" }}
+      >
+        <div style={{ padding: "24px 28px 16px", borderBottom: "1px solid #F3F4F6" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+            <div>
+              <h2 style={{ fontFamily: "'Sora', sans-serif", fontSize: "1.35rem", fontWeight: 700, color: "#111827", margin: 0 }}>
+                Detalhes da Oportunidade
+              </h2>
+              <p style={{ fontSize: "0.8rem", color: "#9CA3AF", margin: "6px 0 0" }}>ID da oportunidade: {oportunidade.id}</p>
+            </div>
+            <button onClick={onClose} style={{ width: 34, height: 34, border: 0, borderRadius: 8, background: "#F9FAFB", color: "#6B7280", cursor: "pointer", fontSize: 20 }}>
+              ×
+            </button>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 14, background: "#F9FAFB", borderRadius: 10, padding: "10px 16px", border: "1px solid #F3F4F6" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color, fontSize: "0.72rem", fontWeight: 700, fontFamily: "'Sora', sans-serif" }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: cfg.color, display: "inline-block" }} />
+              {cfg.label}
+            </span>
+            <span style={{ fontSize: "0.78rem", color: "#6B7280" }}>
+              Última atualização: {oportunidade.ultimaAtualizacao || "Agora"}
+            </span>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 320px", gap: 0 }}>
+          <div style={{ padding: "24px 28px", borderRight: "1px solid #F3F4F6" }}>
+            <section style={{ border: "1px solid #F3F4F6", borderRadius: 12, padding: 20, marginBottom: 18 }}>
+              <h3 style={{ fontFamily: "'Sora', sans-serif", fontSize: "0.95rem", margin: "0 0 16px", color: "#111827" }}>Dados da oportunidade</h3>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 12 }}>
+                {[
+                  ["Categoria", oportunidade.categoria],
+                  ["Valor estimado", oportunidade.valorEstimado],
+                  ["Localização", oportunidade.local],
+                  ["Data e horário", oportunidade.data],
+                ].map(([label, value]) => (
+                  <div key={label} style={{ display: "grid", gap: 5, minWidth: 0, padding: "12px 14px", borderRadius: 10, background: "#F9FAFB", border: "1px solid #F3F4F6" }}>
+                    <small style={{ display: "block", color: "#9CA3AF", fontSize: "0.7rem", fontWeight: 600 }}>{label}</small>
+                    <strong style={{ display: "block", color: "#111827", fontSize: "0.88rem", lineHeight: 1.35, overflowWrap: "anywhere" }}>{value}</strong>
+                  </div>
+                ))}
+              </div>
+              <p style={{ margin: "16px 0 0", color: "#374151", fontSize: "0.84rem", lineHeight: 1.55 }}>{oportunidade.descricao}</p>
+              {oportunidade.observacoes && (
+                <p style={{ margin: "10px 0 0", color: "#6B7280", fontSize: "0.78rem", lineHeight: 1.5 }}>
+                  <strong>Observações:</strong> {oportunidade.observacoes}
+                </p>
+              )}
+            </section>
+
+            <section style={{ border: `1px solid ${showInterestedFirst ? "#FED7AA" : "#F3F4F6"}`, borderRadius: 12, padding: 20, boxShadow: showInterestedFirst ? "0 12px 26px rgba(241,103,15,0.08)" : "none" }}>
+              <h3 style={{ fontFamily: "'Sora', sans-serif", fontSize: "0.95rem", margin: "0 0 16px", color: "#111827" }}>Interessados</h3>
+              {interessados.length === 0 ? (
+                <div style={{ padding: 16, borderRadius: 10, background: "#FFF7ED", border: "1px solid #FED7AA", color: "#F1670F", fontSize: "0.82rem", fontWeight: 700 }}>
+                  Aguardando interesse de profissionais.
+                </div>
+              ) : (
+                interessados.map((interessado) => (
+                  <div key={interessado.nome} style={{ display: "grid", gridTemplateColumns: "44px minmax(0, 1fr) auto", gap: 12, alignItems: "center", padding: "12px 0", borderTop: "1px solid #F3F4F6" }}>
+                    <Avatar initials={interessado.nome?.slice(0, 2) || "PR"} foto={interessado.foto} size={44} color="#0A0B2D" />
+                    <div style={{ minWidth: 0 }}>
+                      <strong style={{ display: "block", color: "#111827", fontSize: "0.86rem", fontFamily: "'Sora', sans-serif" }}>{interessado.nome}</strong>
+                      <span style={{ display: "block", color: "#6B7280", fontSize: "0.74rem", marginTop: 2 }}>{interessado.profissao}</span>
+                      <span style={{ display: "block", color: "#6B7280", fontSize: "0.72rem", marginTop: 4 }}>
+                        {interessado.avaliacao} ({interessado.avaliacoes} avaliações) • {interessado.distancia}
+                      </span>
+                      <p style={{ margin: "7px 0 0", color: "#4B5563", fontSize: "0.74rem", lineHeight: 1.45 }}>{interessado.mensagem}</p>
+                    </div>
+                    <div style={{ textAlign: "right", display: "grid", gap: 8, justifyItems: "end" }}>
+                      <strong style={{ color: "#F1670F", fontSize: "0.84rem", fontFamily: "'Sora', sans-serif" }}>{interessado.valor}</strong>
+                      <button style={{ padding: "8px 12px", borderRadius: 8, border: "1px solid #D1D5DB", background: "#FFFFFF", color: "#0A0B2D", fontWeight: 700, fontSize: "0.72rem", cursor: "pointer" }}>
+                        Ver perfil
+                      </button>
+                      <button style={{ padding: "8px 12px", borderRadius: 8, border: "1px solid #0A0B2D", background: "#0A0B2D", color: "#fff", fontWeight: 700, fontSize: "0.72rem", cursor: "pointer" }}>
+                        Aceitar
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </section>
+          </div>
+
+          <aside style={{ padding: 24 }}>
+            <h3 style={{ fontFamily: "'Sora', sans-serif", fontSize: "0.92rem", fontWeight: 700, color: "#111827", margin: "0 0 20px" }}>Histórico</h3>
+            {(oportunidade.timeline || []).map((item, index) => (
+              <div key={`${item.status}-${index}`} style={{ display: "flex", gap: 12 }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <div style={{ width: 24, height: 24, borderRadius: "50%", background: item.done ? "#F1670F" : item.active ? "#0A0B2D" : "#E5E7EB", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}>
+                    {item.done ? "✓" : ""}
+                  </div>
+                  {index < (oportunidade.timeline || []).length - 1 && <div style={{ width: 2, flex: 1, minHeight: 30, background: item.done ? "#F1670F" : "#E5E7EB", margin: "4px 0" }} />}
+                </div>
+                <div style={{ paddingBottom: 18 }}>
+                  <strong style={{ display: "block", color: item.active ? "#0A0B2D" : "#111827", fontSize: "0.84rem" }}>{item.status}</strong>
+                  {item.data && <span style={{ display: "block", color: "#9CA3AF", fontSize: "0.72rem", marginTop: 2 }}>{item.data}</span>}
+                  <p style={{ margin: "4px 0 0", color: "#6B7280", fontSize: "0.76rem", lineHeight: 1.45 }}>{item.desc}</p>
+                </div>
+              </div>
+            ))}
+
+            <button style={{ width: "100%", marginTop: 10, padding: "11px 14px", borderRadius: 8, border: "1.5px solid #FECACA", background: "#FEF2F2", color: "#DC2626", fontWeight: 700, cursor: "pointer" }}>
+              Cancelar oportunidade
+            </button>
+          </aside>
         </div>
       </div>
     </div>
@@ -183,19 +443,34 @@ function PageContent() {
   const [activeTab, setActiveTab] = useState("Todas");
   const [search, setSearch]       = useState("");
   const [page, setPage]           = useState(1);
-  const [solicitacaoSelecionada, setSolicitacaoSelecionada] = useState(null);
+  const [extraSolicitacoes] = useState(loadExtraSolicitacoes);
+  const [solicitacaoSelecionada, setSolicitacaoSelecionada] = useState(() => getInitialOpenSolicitacao(extraSolicitacoes));
+  const [opportunityModalView, setOpportunityModalView] = useState("detalhes");
 
   const PER_PAGE = 6;
+  const solicitacoes = useMemo(() => [...extraSolicitacoes, ...SOLICITACOES], [extraSolicitacoes]);
 
-  const filtered = SOLICITACOES.filter((s) => {
+  const filtered = solicitacoes.filter((s) => {
     const matchTab    = activeTab === "Todas" || s.status === activeTab;
-    const matchSearch = !search || s.servico.toLowerCase().includes(search.toLowerCase()) || s.prestador.nome.toLowerCase().includes(search.toLowerCase()) || s.status.toLowerCase().includes(search.toLowerCase());
+    const termo = search.toLowerCase();
+    const prestadorNome = s.prestador?.nome || "";
+    const matchSearch = !search || s.servico.toLowerCase().includes(termo) || prestadorNome.toLowerCase().includes(termo) || s.status.toLowerCase().includes(termo);
     return matchTab && matchSearch;
   });
 
+  const openDetails = (item, view = "detalhes") => {
+    setOpportunityModalView(view);
+    setSolicitacaoSelecionada(item);
+  };
+
+  const closeDetails = () => {
+    setSolicitacaoSelecionada(null);
+    setOpportunityModalView("detalhes");
+  };
+
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const paginated  = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
-  const getTabCount = (key) => key === "Todas" ? SOLICITACOES.length : SOLICITACOES.filter((s) => s.status === key).length;
+  const getTabCount = (key) => key === "Todas" ? solicitacoes.length : solicitacoes.filter((s) => s.status === key).length;
 
   return (
     <>
@@ -264,7 +539,7 @@ function PageContent() {
               </div>
             ) : (
               paginated.map((item, i) => (
-                <SolicitacaoCard key={item.id} item={item} delay={i * 55} onVerDetalhes={() => setSolicitacaoSelecionada(item)} />
+                <SolicitacaoCard key={item.id} item={item} delay={i * 55} onVerDetalhes={(acao) => openDetails(item, acao === "interessados" ? "interessados" : "detalhes")} />
               ))
             )}
           </div>
@@ -289,7 +564,11 @@ function PageContent() {
       </div>
 
       {solicitacaoSelecionada && (
-        <DetalhesModal solicitacao={solicitacaoSelecionada} onClose={() => setSolicitacaoSelecionada(null)} />
+        solicitacaoSelecionada.tipo === "oportunidade" ? (
+          <OpportunityDetailsModal oportunidade={solicitacaoSelecionada} initialView={opportunityModalView} onClose={closeDetails} />
+        ) : (
+          <DetalhesModal solicitacao={solicitacaoSelecionada} onClose={closeDetails} />
+        )
       )}
     </>
   );
