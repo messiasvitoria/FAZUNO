@@ -80,6 +80,7 @@ export default function DetalhesModal({ onClose, solicitacao }) {
   const orcamento = sol.orcamento || MOCK_SOLICITACAO.orcamento;
   const endereco  = sol.endereco  || sol.local || "";
   const prestador = sol.prestador || MOCK_SOLICITACAO.prestador;
+  const avaliacao = sol.avaliacaoEnviada;
 
   const btnBase = {
     borderRadius: 8, padding: "10px 16px", fontSize: "0.82rem", fontWeight: 600,
@@ -272,6 +273,29 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                 </div>
               </div>
 
+              <div style={{ background: "#fff", border: "1px solid #F3F4F6", borderRadius: 12, padding: "20px", marginBottom: 20 }}>
+                <h3 style={{ fontFamily: "'Sora', sans-serif", fontSize: "0.92rem", fontWeight: 700, color: "#111827", margin: "0 0 16px", display: "flex", alignItems: "center", gap: 7 }}>
+                  <i className="ti ti-star" style={{ fontSize: 17, color: "#F1670F" }} /> Avaliações
+                </h3>
+                {avaliacao ? (
+                  <div style={{ border: "1px solid #FED7AA", background: "#FFF7ED", borderRadius: 10, padding: 14 }}>
+                    <div style={{ color: "#F1670F", fontSize: "1rem", letterSpacing: 2, marginBottom: 8 }}>
+                      {"★".repeat(avaliacao.nota)}{"☆".repeat(5 - avaliacao.nota)}
+                    </div>
+                    <div style={{ fontSize: "0.82rem", color: "#374151", lineHeight: 1.5, marginBottom: 8 }}>
+                      {avaliacao.comentario || "Sem comentário adicional."}
+                    </div>
+                    <div style={{ fontSize: "0.74rem", color: "#6B7280", fontWeight: 600 }}>
+                      Avaliação enviada em: {avaliacao.data}
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ border: "1px solid #FED7AA", background: "#FFF7ED", borderRadius: 10, padding: 14, color: "#EA580C", fontSize: "0.82rem", fontWeight: 700 }}>
+                    Aguardando sua avaliação. As avaliações são anônimas para as partes.
+                  </div>
+                )}
+              </div>
+
               {/* Ações por status */}
               <div>
                 {status === "Solicitação Enviada" && (
@@ -322,7 +346,7 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                 {status === "Concluída" && (
                   <div style={{ display: "flex", gap: 10 }}>
                     <button className="action-btn" style={{ ...btnBase, background: "#FBBF24", color: "#111827", border: "none" }}>
-                      <i className="ti ti-star" style={{ fontSize: 15 }} /> Avaliar Prestador
+                      <i className="ti ti-star" style={{ fontSize: 15 }} /> Avaliar Cliente
                     </button>
                     <button className="action-btn" style={{ ...btnBase, background: "#fff", color: "#374151", border: "1.5px solid #E5E7EB" }}>
                       <i className="ti ti-refresh" style={{ fontSize: 15 }} /> Pedir Novamente

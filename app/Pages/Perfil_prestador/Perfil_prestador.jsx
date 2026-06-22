@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation"; // ← ADICIONADO
+import { useRouter, useSearchParams } from "next/navigation"; // ← ADICIONADO
 import {
   FaStar, FaStarHalfAlt, FaRegStar,
   FaMapMarkerAlt, FaCheckCircle,
@@ -122,6 +122,8 @@ const secTitle = { fontFamily:"'Sora',sans-serif", fontSize:"1rem", fontWeight:7
 
 export default function PerfilPrestador() {
   const router = useRouter(); // ← ADICIONADO
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo") || "/Pages/Minhas_Solicitacoes";
   const p = PROVIDER;
   const [showAll, setShowAll]       = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
@@ -149,7 +151,7 @@ export default function PerfilPrestador() {
 
             {/* ── BOTÃO VOLTAR ── */}
             <button
-              onClick={() => router.push("/Pages/Minhas_Solicitacoes")}
+              onClick={() => router.push(returnTo)}
               style={{ display:"inline-flex", alignItems:"center", gap:8, marginBottom:18, padding:"8px 14px", borderRadius:8, border:"1.5px solid rgba(255,255,255,0.2)", backgroundColor:"rgba(255,255,255,0.08)", color:"white", fontSize:13, fontWeight:600, cursor:"pointer", transition:"all 0.2s", background:"rgba(255,255,255,0.08)" }}
               onMouseEnter={e => { e.currentTarget.style.backgroundColor="rgba(255,255,255,0.16)"; e.currentTarget.style.borderColor="rgba(255,255,255,0.4)"; }}
               onMouseLeave={e => { e.currentTarget.style.backgroundColor="rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor="rgba(255,255,255,0.2)"; }}

@@ -354,8 +354,153 @@ function StatusFilter({ value, label, count, active, onClick, icon, color }) {
   );
 }
 
-function RequestCard({ item, index, onAction, onVerDetalhes }) {
-  const actionLabel = getActionLabel(item.status);
+function RatingStars({ value, onChange, size = 24 }) {
+  return (
+    <div className="sr-rating-stars">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <button
+          key={star}
+          type="button"
+          className={star <= value ? "sr-star-btn sr-star-btn--active" : "sr-star-btn"}
+          onClick={() => onChange(star)}
+          style={{ fontSize: size }}
+          aria-label={`${star} estrela${star > 1 ? "s" : ""}`}
+        >
+          <FaStar />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function AvaliacaoClienteModal({ solicitacao, avaliacao, onClose, onSubmit }) {
+  const readonly = Boolean(avaliacao);
+  const [nota, setNota] = useState(avaliacao?.nota || 0);
+  const [criterios, setCriterios] = useState(
+    avaliacao?.criterios || {
+      comunicacao: 0,
+      clareza: 0,
+      pontualidade: 0,
+      respeito: 0,
+    },
+  );
+  const [comentario, setComentario] = useState(avaliacao?.comentario || "");
+
+  const criteria = [
+    ["comunicacao", "Comunicação"],
+    ["clareza", "Clareza da solicitação"],
+    ["pontualidade", "Pontualidade"],
+    ["respeito", "Respeito durante o atendimento"],
+  ];
+
+  function updateCriteria(key, value) {
+    if (readonly) return;
+    setCriterios((current) => ({ ...current, [key]: value }));
+  }
+
+  function submitEvaluation() {
+    if (nota < 1) return;
+    onSubmit({
+      nota,
+      criterios,
+      comentario,
+      data: new Date().toLocaleDateString("pt-BR"),
+    });
+  }
+
+  return (
+    <div className="sr-eval-overlay" onClick={onClose}>
+      <section className="sr-eval-modal" onClick={(event) => event.stopPropagation()}>
+        <header className="sr-eval-header">
+          <div>
+            <span className="sr-eval-badge">Avaliação anônima</span>
+            <h2>{readonly ? "Avaliação enviada" : "Avaliar Cliente"}</h2>
+            <p>
+              Sua avaliação ajuda a manter a qualidade da plataforma. A outra parte não verá sua identidade.
+            </p>
+          </div>
+          <button type="button" className="sr-eval-close" onClick={onClose}>
+            <FaTimes />
+          </button>
+        </header>
+
+        <div className="sr-eval-grid">
+          <aside className="sr-eval-summary">
+            <h3>Resumo da contratação</h3>
+            <span>Serviço</span>
+            <strong>{solicitacao.title}</strong>
+            <span>Data do serviço</span>
+            <strong>{solicitacao.date} às {solicitacao.time}</strong>
+            <span>Valor do serviço</span>
+            <strong>R$ {money(solicitacao.value)}</strong>
+            <span>Código da solicitação</span>
+            <strong>#SOL-{String(solicitacao.id).padStart(6, "0")}</strong>
+          </aside>
+
+          <div className="sr-eval-form">
+            <div className="sr-eval-block">
+              <h3>Nota geral</h3>
+              <RatingStars value={nota} onChange={readonly ? () => {} : setNota} size={30} />
+            </div>
+
+            <div className="sr-eval-block">
+              <h3>Critérios de avaliação</h3>
+              <div className="sr-eval-criteria">
+                {criteria.map(([key, label]) => (
+                  <div key={key} className="sr-eval-criterion">
+                    <span>{label}</span>
+                    <RatingStars
+                      value={criterios[key]}
+                      onChange={(value) => updateCriteria(key, value)}
+                      size={20}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <label className="sr-eval-comment">
+              <span>Comentário (opcional)</span>
+              <textarea
+                value={comentario}
+                maxLength={500}
+                readOnly={readonly}
+                placeholder="Compartilhe sua experiência..."
+                onChange={(event) => setComentario(event.target.value)}
+              />
+              <small>{comentario.length}/500</small>
+            </label>
+          </div>
+        </div>
+
+        <footer className="sr-eval-actions">
+          <button type="button" className="sr-btn sr-btn--secondary" onClick={onClose}>
+            {readonly ? "Fechar" : "Cancelar"}
+          </button>
+          {!readonly && (
+            <button
+              type="button"
+              className="sr-btn sr-btn--primary"
+              disabled={nota < 1}
+              onClick={submitEvaluation}
+            >
+              <FaRegStar />
+              Enviar avaliação
+            </button>
+          )}
+        </footer>
+      </section>
+    </div>
+  );
+}
+
+function RequestCard({ item, index, onAction, onVerDetalhes, onAvaliar, avaliacao }) {
+  const isClosed = item.status === "concluida";
+  const actionLabel = isClosed
+    ? avaliacao
+      ? "Ver avaliação"
+      : "Avaliar cliente"
+    : getActionLabel(item.status);
 
   return (
     <article
@@ -413,6 +558,11 @@ function RequestCard({ item, index, onAction, onVerDetalhes }) {
           </div>
           <StatusBadge status={item.status} />
         </div>
+        {isClosed && (
+          <p className={`sr-review-note ${avaliacao ? "sr-review-note--sent" : ""}`}>
+            {avaliacao ? "✓ Avaliação enviada" : "Você ainda não avaliou este serviço."}
+          </p>
+        )}
         <div className="sr-action-row">
           <button
             type="button"
@@ -425,9 +575,9 @@ function RequestCard({ item, index, onAction, onVerDetalhes }) {
             <button
               type="button"
               className="sr-btn sr-btn--secondary"
-              onClick={() => onAction(item.id)}
+              onClick={() => (isClosed ? onAvaliar(item) : onAction(item.id))}
             >
-              {getActionIcon(item.status)}
+              {isClosed && avaliacao ? <FaStar /> : getActionIcon(item.status)}
               {actionLabel}
             </button>
           )}
@@ -499,6 +649,8 @@ export default function Oportunidades() {
   const [currentPage, setCurrentPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [solicitacaoSelecionada, setSolicitacaoSelecionada] = useState(null);
+  const [avaliacoes, setAvaliacoes] = useState({});
+  const [avaliacaoModal, setAvaliacaoModal] = useState(null);
 
   useEffect(() => {
   const transferred = readTransferredOpportunities();
@@ -603,6 +755,14 @@ export default function Oportunidades() {
 
   function handleFecharDetalhes() {
     setSolicitacaoSelecionada(null);
+  }
+
+  function handleSalvarAvaliacao(avaliacao) {
+    setAvaliacoes((current) => ({
+      ...current,
+      [avaliacaoModal.id]: avaliacao,
+    }));
+    setAvaliacaoModal(null);
   }
 
   return (
@@ -1074,6 +1234,219 @@ export default function Oportunidades() {
           transform: translateY(-1px);
         }
 
+        .sr-btn:disabled {
+          cursor: not-allowed;
+          opacity: 0.55;
+          transform: none;
+          box-shadow: none;
+        }
+
+        .sr-review-note {
+          margin: -2px 0 12px;
+          color: #F1670F;
+          font-size: 0.78rem;
+          line-height: 1.35;
+          font-weight: 800;
+        }
+
+        .sr-review-note--sent {
+          color: #16A34A;
+        }
+
+        .sr-rating-stars {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+        }
+
+        .sr-star-btn {
+          width: auto;
+          height: auto;
+          padding: 0;
+          border: 0;
+          background: transparent;
+          color: #CBD5E1;
+          cursor: pointer;
+          line-height: 1;
+          transition: color 0.16s, transform 0.16s;
+        }
+
+        .sr-star-btn--active {
+          color: #F1670F;
+        }
+
+        .sr-star-btn:hover {
+          transform: translateY(-1px);
+        }
+
+        .sr-eval-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 70;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+          background: rgba(6, 16, 74, 0.42);
+        }
+
+        .sr-eval-modal {
+          width: min(880px, 100%);
+          max-height: 92vh;
+          overflow: auto;
+          border: 1px solid #DDE3EE;
+          border-radius: 14px;
+          background: #FFFFFF;
+          box-shadow: 0 24px 70px rgba(6, 16, 74, 0.22);
+        }
+
+        .sr-eval-header {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 16px;
+          padding: 24px 26px 18px;
+          border-bottom: 1px solid #E7EBF3;
+        }
+
+        .sr-eval-header h2 {
+          margin: 10px 0 6px;
+          font-family: 'Sora', sans-serif;
+          font-size: 1.35rem;
+          color: #06104A;
+        }
+
+        .sr-eval-header p {
+          margin: 0;
+          max-width: 620px;
+          color: #647086;
+          font-size: 0.92rem;
+          line-height: 1.5;
+        }
+
+        .sr-eval-badge {
+          display: inline-flex;
+          align-items: center;
+          border-radius: 999px;
+          background: #FFF4EC;
+          color: #F1670F;
+          padding: 6px 12px;
+          font-size: 0.76rem;
+          font-weight: 800;
+        }
+
+        .sr-eval-close {
+          width: 36px;
+          height: 36px;
+          border: 1px solid #E7EBF3;
+          border-radius: 8px;
+          background: #FFFFFF;
+          color: #06104A;
+          cursor: pointer;
+        }
+
+        .sr-eval-grid {
+          display: grid;
+          grid-template-columns: 260px 1fr;
+          gap: 20px;
+          padding: 22px 26px;
+        }
+
+        .sr-eval-summary,
+        .sr-eval-block,
+        .sr-eval-comment {
+          border: 1px solid #E7EBF3;
+          border-radius: 12px;
+          background: #FFFFFF;
+          padding: 18px;
+        }
+
+        .sr-eval-summary h3,
+        .sr-eval-block h3 {
+          margin: 0 0 14px;
+          font-family: 'Sora', sans-serif;
+          font-size: 0.92rem;
+          color: #06104A;
+        }
+
+        .sr-eval-summary span {
+          display: block;
+          margin-top: 12px;
+          color: #7B8497;
+          font-size: 0.76rem;
+          font-weight: 700;
+        }
+
+        .sr-eval-summary strong {
+          display: block;
+          margin-top: 3px;
+          color: #06104A;
+          font-size: 0.9rem;
+        }
+
+        .sr-eval-form {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        .sr-eval-criteria {
+          display: grid;
+          gap: 10px;
+        }
+
+        .sr-eval-criterion {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 14px;
+          border: 1px solid #E7EBF3;
+          border-radius: 10px;
+          padding: 10px 12px;
+        }
+
+        .sr-eval-criterion span,
+        .sr-eval-comment span {
+          color: #06104A;
+          font-size: 0.86rem;
+          font-weight: 700;
+        }
+
+        .sr-eval-comment {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .sr-eval-comment textarea {
+          min-height: 108px;
+          resize: vertical;
+          border: 1px solid #DDE3EE;
+          border-radius: 10px;
+          padding: 12px;
+          color: #06104A;
+          font: inherit;
+          outline: none;
+        }
+
+        .sr-eval-comment small {
+          align-self: flex-end;
+          color: #7B8497;
+          font-weight: 700;
+        }
+
+        .sr-eval-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 12px;
+          padding: 18px 26px 24px;
+          border-top: 1px solid #E7EBF3;
+        }
+
+        .sr-eval-actions .sr-btn {
+          min-width: 180px;
+        }
+
         .sr-more {
           width: 26px;
           height: 40px;
@@ -1367,7 +1740,9 @@ export default function Oportunidades() {
                       key={item.id}
                       item={item}
                       index={index}
+                      avaliacao={avaliacoes[item.id]}
                       onAction={handleAction}
+                      onAvaliar={setAvaliacaoModal}
                       onVerDetalhes={handleVerDetalhes}
                     />
                   ))
@@ -1426,8 +1801,20 @@ export default function Oportunidades() {
 
       {solicitacaoSelecionada && (
         <DetalhesModal
-          solicitacao={solicitacaoSelecionada}
+          solicitacao={{
+            ...solicitacaoSelecionada,
+            avaliacaoEnviada: avaliacoes[solicitacaoSelecionada.id],
+          }}
           onClose={handleFecharDetalhes}
+        />
+      )}
+
+      {avaliacaoModal && (
+        <AvaliacaoClienteModal
+          solicitacao={avaliacaoModal}
+          avaliacao={avaliacoes[avaliacaoModal.id]}
+          onClose={() => setAvaliacaoModal(null)}
+          onSubmit={handleSalvarAvaliacao}
         />
       )}
     </>
