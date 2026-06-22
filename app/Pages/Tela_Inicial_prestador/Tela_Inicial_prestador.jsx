@@ -7,6 +7,7 @@ import OportunidadesParaVoce from "../../components/OportunidadesParaVoce";
 import AgendaDeHoje from "../../components/AgendaDeHoje";
 import SeusServicos from "../../components/SeusServicos";
 import NotificacoesPrestador from "../../components/NotificacoesPrestador";
+import PerfilMenu_Prestador from "../../components/PerfilMenu_Prestador";
 
 // ─── ICON COMPONENT ───────────────────────────────────────────────────────────
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
@@ -260,16 +261,14 @@ export default function Tela_inicio_prestador() {
 
             <div style={{ width: 1, height: 28, backgroundColor: "rgba(255,255,255,0.2)", margin: "0 8px" }} />
 
-            <div style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
-              <div style={{ width: 32, height: 32, borderRadius: "50%", border: "2px solid #f97316", backgroundColor: "#6366f1", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Icon name="user" size={16} color="white" strokeWidth={2} />
-              </div>
-              <div>
-                <div style={{ color: "white", fontSize: 12, fontWeight: 600, lineHeight: 1.2 }}>João Silva</div>
-                <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, lineHeight: 1.2 }}>Prestador</div>
-              </div>
-              <Icon name="chevDown" size={14} color="rgba(255,255,255,0.4)" />
-            </div>
+            {/* ── BOLINHA DE PERFIL → agora ligada ao PerfilMenu_Prestador ── */}
+            <PerfilMenu_Prestador
+              userName="João Silva"
+              showBell={false}
+              perfilPath="/Pages/Perfil_prestador"
+              pagamentosPath="/Pages/Pagamentos_recebimentos"
+              configuracoesPath="/Pages/Configuracoes_perfil"
+            />
           </div>
         </div>
 
