@@ -35,12 +35,12 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
 }
 
 const navItems = [
-  { icon: "home",      label: "Início"                                                          },
-  { icon: "list",      label: "Solicitações Recebidas"                                         },
-  { icon: "zap",       label: "Oportunidades",  route: "/Pages/Oportunidades"                  },
-  { icon: "briefcase", label: "Meus Serviços",  route: "/Pages/Seus_servicos_prestador"        }, // ← rota adicionada
-  { icon: "calendar",  label: "Agenda", route: "/Pages/Tela_Calendario_Prestador" },
-  { icon: "chat",      label: "Chat"                                                            },
+  { icon: "home",      label: "Início"                                                                    },
+  { icon: "list",      label: "Solicitações Recebidas", route: "/Pages/Solicitacao_prestador"             },
+  { icon: "zap",       label: "Oportunidades",          route: "/Pages/Oportunidades"                    },
+  { icon: "briefcase", label: "Meus Serviços",          route: "/Pages/Seus_servicos_prestador"          },
+  { icon: "calendar",  label: "Agenda",                 route: "/Pages/Tela_Calendario_Prestador"        },
+  { icon: "chat",      label: "Chat",                   route: "/Pages/Chat_prestador"                   },
 ];
 
 function StatusDropdown({ isOnline, onChange, onClose }) {
@@ -260,7 +260,10 @@ export default function Tela_inicio_prestador() {
 
             <div style={{ width: 1, height: 28, backgroundColor: "rgba(255,255,255,0.2)", margin: "0 8px" }} />
 
-            <div style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+           <div
+              onClick={() => router.push("/Pages/Meu_perfil_prestador")}
+              style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}
+            >
               <div style={{ width: 32, height: 32, borderRadius: "50%", border: "2px solid #f97316", backgroundColor: "#6366f1", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <Icon name="user" size={16} color="white" strokeWidth={2} />
               </div>

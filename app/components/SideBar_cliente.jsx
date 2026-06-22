@@ -35,7 +35,7 @@ const navItems = [
   { icon: "home", label: "Início",                   route: "/Pages/Tela_inicial_cliente" },
   { icon: "plus", label: "Abrir novas solicitações", route: "/Pages/Escolha_contratacao" },
   { icon: "list", label: "Minhas solicitações",      route: "/Pages/Minhas_Solicitacoes" },
-  { icon: "chat", label: "Chat",                     route: null },
+  { icon: "chat", label: "Chat",                     route: "/Pages/Chat_cliente" },
 ];
 
 // ─── SIDEBAR ──────────────────────────────────────────────────────────────────
@@ -54,6 +54,7 @@ export default function Sidebar() {
       style={{
         width: 180,
         minWidth: 180,
+        maxWidth: 180,   
         height: "100%",
         backgroundColor: "#0d1b3e",
         display: "flex",
@@ -100,7 +101,7 @@ export default function Sidebar() {
                 padding: "10px 12px",
                 borderRadius: 12,
                 border: "none",
-                cursor: item.route ? "pointer" : "default",
+                cursor: "pointer",
                 textAlign: "left",
                 width: "100%",
                 backgroundColor: active ? "rgba(255,255,255,0.15)" : "transparent",
@@ -108,7 +109,7 @@ export default function Sidebar() {
                 transition: "all 0.2s",
               }}
               onMouseEnter={(e) => {
-                if (!active && item.route)
+                if (!active)
                   e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)";
               }}
               onMouseLeave={(e) => {

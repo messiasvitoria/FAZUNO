@@ -6,7 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }: {
   name: string; size?: number; color?: string; strokeWidth?: number;
 }) {
-  const paths: Record<string, string[]> = {
+  const paths: Record <string, string[]> = {
     home:      ["M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z","M9 21V12h6v9"],
     list:      ["M8 6h13","M8 12h13","M8 18h13","M3 6h.01","M3 12h.01","M3 18h.01"],
     briefcase: ["M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z","M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"],
