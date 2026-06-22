@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import TopBar_cliente from "@/app/components/TopBar_cliente";
+import SideBar_cliente from "@/app/components/SideBar_cliente";
 
 // ─── ICON COMPONENT ──────────────────────────────────────────────────────────
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
@@ -44,19 +46,19 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
 
 // ─── STATIC DATA ─────────────────────────────────────────────────────────────
 const contratacao = {
-  prestador:    "João Eletricista",
-  prestadorRole:"Instalação elétrica",
+  prestador:      "João Eletricista",
+  prestadorRole:  "Instalação elétrica",
   prestadorPhoto: "/foto_eletricista2.jpg",
-  verificado:   true,
-  servico:      "Instalação elétrica completa",
-  codigo:       "#CON-4587",
-  data:         "06/06/2025",
-  dataAgendada: "10/06/2025 às 09:00",
-  endereco:     "Rua das Flores, 123 - Centro\nSão Paulo - SP",
-  descricao:    "Instalação elétrica completa em apartamento 3 quartos.",
-  valorServico: 350.00,
+  verificado:     true,
+  servico:        "Instalação elétrica completa",
+  codigo:         "#CON-4587",
+  data:           "06/06/2025",
+  dataAgendada:   "10/06/2025 às 09:00",
+  endereco:       "Rua das Flores, 123 - Centro\nSão Paulo - SP",
+  descricao:      "Instalação elétrica completa em apartamento 3 quartos.",
+  valorServico:   350.00,
   taxaPlataforma: 17.50,
-  descontoPix:  18.75,
+  descontoPix:    18.75,
 };
 
 // ─── STEP INDICATOR ──────────────────────────────────────────────────────────
@@ -71,13 +73,7 @@ function StepIndicator({ currentStep }) {
         return (
           <div key={i} style={{ display: "flex", alignItems: "center", flex: i < steps.length - 1 ? 1 : "none" }}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 7, flexShrink: 0 }}>
-              <div style={{
-                width: 38, height: 38, borderRadius: "50%",
-                backgroundColor: done ? "#22c55e" : active ? "#0d1b3e" : "#e5e7eb",
-                color: done || active ? "white" : "#9ca3af",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 15, fontWeight: 700, transition: "all 0.3s",
-              }}>
+              <div style={{ width: 38, height: 38, borderRadius: "50%", backgroundColor: done ? "#22c55e" : active ? "#0d1b3e" : "#e5e7eb", color: done || active ? "white" : "#9ca3af", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 700, transition: "all 0.3s" }}>
                 {done ? <Icon name="check" size={17} color="white" strokeWidth={2.5} /> : idx}
               </div>
               <span style={{ fontSize: 12, fontWeight: active ? 700 : 500, color: active ? "#0d1b3e" : done ? "#22c55e" : "#9ca3af", whiteSpace: "nowrap" }}>{label}</span>
@@ -92,11 +88,11 @@ function StepIndicator({ currentStep }) {
   );
 }
 
-// ─── RESUMO CARD (sidebar direita) ───────────────────────────────────────────
+// ─── RESUMO CARD ─────────────────────────────────────────────────────────────
 function ResumoCard({ title = "Resumo da contratação", showProvider = true, showPix = true, children }) {
   const total = contratacao.valorServico + contratacao.taxaPlataforma - (showPix ? contratacao.descontoPix : 0);
   return (
-    <div style={{ backgroundColor: "white", borderRadius: 18, padding: 26, boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1.5px solid #f1f5f9", width: 340, flexShrink: 0 }}>
+    <div style={{ backgroundColor: "white", borderRadius: 18, padding: 26, boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1.5px solid #f1f5f9", width: 320, flexShrink: 0 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <h3 style={{ fontSize: 17, fontWeight: 700, color: "#0d1b3e", margin: 0 }}>{title}</h3>
         {showProvider && <button style={{ fontSize: 14, color: "#6366f1", fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>Ver detalhes</button>}
@@ -183,6 +179,27 @@ function Row({ label, value, small }) {
   );
 }
 
+// ─── SHARED BUTTON ───────────────────────────────────────────────────────────
+function NavBtn({ children, onClick, secondary }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "13px 26px", borderRadius: 12, border: secondary ? "1.5px solid #e5e7eb" : "none", backgroundColor: secondary ? "white" : hovered ? "#f97316" : "#0d1b3e", color: secondary ? "#374151" : "white", fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "all 0.2s", boxShadow: !secondary ? "0 4px 14px rgba(13,27,62,0.25)" : "none" }}
+    >
+      {children}
+    </button>
+  );
+}
+
+const inputStyle = {
+  width: "100%", boxSizing: "border-box", padding: "12px 14px",
+  fontSize: 15, color: "#374151", backgroundColor: "white",
+  border: "1.5px solid #e5e7eb", borderRadius: 12, outline: "none",
+};
+
 // ─── STEP 1 — MÉTODO DE PAGAMENTO ────────────────────────────────────────────
 function Step1({ onNext }) {
   const [method, setMethod]     = useState("credit");
@@ -198,9 +215,8 @@ function Step1({ onNext }) {
 
   return (
     <div style={{ display: "flex", gap: 28, alignItems: "flex-start" }}>
-      {/* LEFT */}
       <div style={{ flex: 1 }}>
-        <h2 style={{ fontSize: 28, fontWeight: 800, color: "#0d1b3e", margin: "0 0 6px" }}>Realizar Pagamento</h2>
+        <h2 style={{ fontSize: 26, fontWeight: 800, color: "#0d1b3e", margin: "0 0 6px" }}>Realizar Pagamento</h2>
         <p style={{ fontSize: 15, color: "#9ca3af", margin: "0 0 28px" }}>Finalize o pagamento para confirmar sua contratação.</p>
 
         <StepIndicator currentStep={1} />
@@ -308,7 +324,6 @@ function Step1({ onNext }) {
         </div>
       </div>
 
-      {/* RIGHT */}
       <ResumoCard showPix={method === "pix"} />
     </div>
   );
@@ -319,7 +334,7 @@ function Step2({ onNext, onBack }) {
   return (
     <div style={{ display: "flex", gap: 28, alignItems: "flex-start" }}>
       <div style={{ flex: 1 }}>
-        <h2 style={{ fontSize: 28, fontWeight: 800, color: "#0d1b3e", margin: "0 0 6px" }}>Revisão do pagamento</h2>
+        <h2 style={{ fontSize: 26, fontWeight: 800, color: "#0d1b3e", margin: "0 0 6px" }}>Revisão do pagamento</h2>
         <p style={{ fontSize: 15, color: "#9ca3af", margin: "0 0 28px" }}>Confira os detalhes da sua contratação e do pagamento.</p>
 
         <StepIndicator currentStep={2} />
@@ -338,7 +353,6 @@ function Step2({ onNext, onBack }) {
               <p style={{ margin: 0, fontSize: 13, color: "#9ca3af" }}>{contratacao.prestadorRole}</p>
             </div>
           </div>
-
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {[
               { icon: "fileText", label: "Serviço",               value: contratacao.servico },
@@ -395,32 +409,29 @@ function Step2({ onNext, onBack }) {
   );
 }
 
-// ─── STEP 3 — CONFIRMAÇÃO (PROCESSANDO) ──────────────────────────────────────
+// ─── STEP 3 — CONFIRMAÇÃO ────────────────────────────────────────────────────
 function Step3({ onNext, onBack }) {
   return (
     <div style={{ display: "flex", gap: 28, alignItems: "flex-start" }}>
       <div style={{ flex: 1 }}>
-        <h2 style={{ fontSize: 28, fontWeight: 800, color: "#0d1b3e", margin: "0 0 6px" }}>Confirmação do pagamento</h2>
+        <h2 style={{ fontSize: 26, fontWeight: 800, color: "#0d1b3e", margin: "0 0 6px" }}>Confirmação do pagamento</h2>
         <p style={{ fontSize: 15, color: "#9ca3af", margin: "0 0 28px" }}>Aguarde enquanto processamos o seu pagamento.</p>
 
         <StepIndicator currentStep={3} />
 
         <div style={{ backgroundColor: "white", borderRadius: 18, padding: 48, border: "1.5px solid #f1f5f9", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", marginBottom: 18, textAlign: "center" }}>
-          {/* Animated lock */}
           <div style={{ position: "relative", width: 116, height: 116, margin: "0 auto 24px" }}>
             <div style={{ position: "absolute", inset: 0, borderRadius: "50%", backgroundColor: "#ede9fe", animation: "pulse 2s infinite" }} />
             <div style={{ position: "absolute", inset: 9, borderRadius: "50%", backgroundColor: "#ddd6fe", animation: "pulse 2s infinite 0.3s" }} />
             <div style={{ position: "absolute", inset: 18, borderRadius: "50%", backgroundColor: "#6366f1", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Icon name="lock" size={32} color="white" strokeWidth={2} />
             </div>
-            {/* Dots around */}
             {[0, 60, 120, 180, 240, 300].map((deg, i) => (
               <div key={i} style={{ position: "absolute", width: 7, height: 7, borderRadius: "50%", backgroundColor: i % 2 === 0 ? "#f97316" : "#6366f1", top: "50%", left: "50%", transform: `rotate(${deg}deg) translateX(58px) translateY(-50%)` }} />
             ))}
           </div>
           <h3 style={{ fontSize: 20, fontWeight: 800, color: "#0d1b3e", margin: "0 0 7px" }}>Processando pagamento...</h3>
           <p style={{ fontSize: 15, color: "#9ca3af", margin: "0 0 32px" }}>Isso pode levar alguns segundos. Não feche esta página.</p>
-
           <div style={{ backgroundColor: "#f9fafb", borderRadius: 14, padding: 18, textAlign: "left" }}>
             {[
               { label: "Método de pagamento", value: "Cartão de crédito" },
@@ -461,13 +472,12 @@ function Step4({ onRestart }) {
   return (
     <div style={{ display: "flex", gap: 28, alignItems: "flex-start" }}>
       <div style={{ flex: 1 }}>
-        <h2 style={{ fontSize: 28, fontWeight: 800, color: "#0d1b3e", margin: "0 0 6px" }}>Pagamento realizado com sucesso!</h2>
+        <h2 style={{ fontSize: 26, fontWeight: 800, color: "#0d1b3e", margin: "0 0 6px" }}>Pagamento realizado com sucesso!</h2>
         <p style={{ fontSize: 15, color: "#9ca3af", margin: "0 0 28px" }}>Seu pagamento foi aprovado e o prestador foi notificado.</p>
 
         <StepIndicator currentStep={4} />
 
         <div style={{ backgroundColor: "white", borderRadius: 18, padding: 38, border: "1.5px solid #f1f5f9", boxShadow: "0 2px 12px rgba(0,0,0,0.06)", marginBottom: 18, textAlign: "center" }}>
-          {/* Success icon */}
           <div style={{ position: "relative", width: 104, height: 104, margin: "0 auto 18px" }}>
             <div style={{ position: "absolute", inset: 0, borderRadius: "50%", backgroundColor: "#dcfce7" }} />
             <div style={{ position: "absolute", inset: 11, borderRadius: "50%", backgroundColor: "#22c55e", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -479,7 +489,6 @@ function Step4({ onRestart }) {
           </div>
           <h3 style={{ fontSize: 20, fontWeight: 800, color: "#0d1b3e", margin: "0 0 5px" }}>Pagamento aprovado!</h3>
           <p style={{ fontSize: 15, color: "#9ca3af", margin: "0 0 28px" }}>Obrigado! Seu pagamento foi realizado com sucesso.<br/>O prestador {contratacao.prestador} foi notificado.</p>
-
           <div style={{ backgroundColor: "#f9fafb", borderRadius: 14, padding: 18, textAlign: "left" }}>
             {[
               { label: "Código da transação", value: "PIX123456789O" },
@@ -525,60 +534,45 @@ function Step4({ onRestart }) {
   );
 }
 
-// ─── SHARED BUTTON ───────────────────────────────────────────────────────────
-function NavBtn({ children, onClick, secondary }) {
-  const [hovered, setHovered] = useState(false);
-  return (
-    <button
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        display: "inline-flex", alignItems: "center", gap: 8,
-        padding: "13px 26px", borderRadius: 12, border: secondary ? "1.5px solid #e5e7eb" : "none",
-        backgroundColor: secondary ? "white" : hovered ? "#f97316" : "#0d1b3e",
-        color: secondary ? "#374151" : "white",
-        fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "all 0.2s",
-        boxShadow: !secondary ? "0 4px 14px rgba(13,27,62,0.25)" : "none",
-      }}
-    >
-      {children}
-    </button>
-  );
-}
-
-const inputStyle = {
-  width: "100%", boxSizing: "border-box", padding: "12px 14px",
-  fontSize: 15, color: "#374151", backgroundColor: "white",
-  border: "1.5px solid #e5e7eb", borderRadius: 12, outline: "none",
-};
-
 // ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function Pagamento() {
   const [step, setStep] = useState(1);
 
   return (
-    <div style={{ width: "100%", minHeight: "100vh", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f9fafb" }}>
+    <div style={{ width: "100%", height: "100vh", overflow: "hidden", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f9fafb", display: "flex", flexDirection: "column" }}>
       <style>{`
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.05)} }
         input:focus { border-color: #f97316 !important; box-shadow: 0 0 0 3px rgba(249,115,22,0.15) !important; }
       `}</style>
 
-      <div style={{ maxWidth: 1080, margin: "0 auto", padding: "44px 28px" }}>
-        {step === 1 && <Step1 onNext={() => setStep(2)} />}
-        {step === 2 && <Step2 onNext={() => setStep(3)} onBack={() => setStep(1)} />}
-        {step === 3 && <Step3 onNext={() => setStep(4)} onBack={() => setStep(2)} />}
-        {step === 4 && <Step4 onRestart={() => setStep(1)} />}
-      </div>
+      {/* TOPBAR */}
+      <TopBar_cliente />
 
-      <footer style={{ backgroundColor: "#0d1b3e", color: "white", marginTop: 40 }}>
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", padding: "16px 40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <img src="/Logo_branca.png" alt="Fazuno" style={{ height: 36, width: "auto", display: "block" }} />
-            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginLeft: 8 }}>© 2026 FazUno. Todos os direitos reservados.</span>
+      {/* BODY */}
+      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        {/* SIDEBAR */}
+        <SideBar_cliente />
+
+        {/* SCROLL AREA */}
+        <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+          <div style={{ maxWidth: 1080, margin: "0 auto", padding: "36px 28px" }}>
+            {step === 1 && <Step1 onNext={() => setStep(2)} />}
+            {step === 2 && <Step2 onNext={() => setStep(3)} onBack={() => setStep(1)} />}
+            {step === 3 && <Step3 onNext={() => setStep(4)} onBack={() => setStep(2)} />}
+            {step === 4 && <Step4 onRestart={() => setStep(1)} />}
           </div>
+
+          {/* FOOTER */}
+          <footer style={{ backgroundColor: "#0d1b3e", color: "white", marginTop: 40 }}>
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", padding: "16px 40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <img src="/Logo_branca.png" alt="Fazuno" style={{ height: 36, width: "auto", display: "block" }} />
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginLeft: 8 }}>© 2026 FazUno. Todos os direitos reservados.</span>
+              </div>
+            </div>
+          </footer>
         </div>
-      </footer>
+      </div>
     </div>
   );
 }

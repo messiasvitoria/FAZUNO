@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import TopBar_cliente from "@/app/components/TopBar_cliente";
+import SideBar_cliente from "@/app/components/SideBar_cliente";
 
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
   const paths = {
@@ -239,207 +241,218 @@ export default function MeuPerfilCliente() {
 
   return (
     <div style={{ width: "100%", height: "100vh", overflow: "hidden", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f9fafb", display: "flex", flexDirection: "column" }}>
-      <div className="perfil-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", backgroundColor: "#f9fafb" }}>
+      {/* TOPBAR */}
+      <TopBar_cliente />
 
-        {/* HERO */}
-        <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 55%, #1e40af 100%)", padding: "28px 32px 32px", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 90% 50%, rgba(249,115,22,0.15) 0%, transparent 55%)" }} />
+      {/* BODY: sidebar + conteúdo */}
+      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        {/* SIDEBAR */}
+        <SideBar_cliente />
 
-          {/* Botões topo */}
-          <div style={{ position: "relative", zIndex: 3, display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
-            <button
-              onClick={() => router.back()}
-              style={btnStyle}
-              onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.2)"; }}
-              onMouseLeave={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"; }}
-            >
-              <Icon name="arrowLeft" size={14} color="white" strokeWidth={2} />
-              Voltar
-            </button>
-            <button
-              onClick={() => router.push("/cliente/editar-perfil")}
-              style={btnStyle}
-              onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.2)"; }}
-              onMouseLeave={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"; }}
-            >
-              <Icon name="pencil" size={14} color="white" strokeWidth={2} />
-              Editar Perfil
-            </button>
-          </div>
+        {/* SCROLL AREA */}
+        <div className="perfil-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", backgroundColor: "#f9fafb" }}>
 
-          {/* Perfil info */}
-          <div style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "flex-start", gap: 22 }}>
-            <div style={{ position: "relative", flexShrink: 0 }}>
-              <div style={{ width: 90, height: 90, borderRadius: "50%", overflow: "hidden", border: "3px solid #f97316", boxShadow: "0 0 0 3px rgba(249,115,22,0.25)" }}>
-                <img src={c.avatar} alt={c.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
-              </div>
-              <button style={{ position: "absolute", bottom: 2, left: 2, width: 24, height: 24, borderRadius: "50%", backgroundColor: "#f97316", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-                  <circle cx="12" cy="13" r="4"/>
-                </svg>
+          {/* HERO */}
+          <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 55%, #1e40af 100%)", padding: "28px 32px 32px", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 90% 50%, rgba(249,115,22,0.15) 0%, transparent 55%)" }} />
+
+            {/* Botões topo */}
+            <div style={{ position: "relative", zIndex: 3, display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
+              <button
+                onClick={() => router.back()}
+                style={btnStyle}
+                onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.2)"; }}
+                onMouseLeave={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"; }}
+              >
+                <Icon name="arrowLeft" size={14} color="white" strokeWidth={2} />
+                Voltar
               </button>
-              {c.verified && (
-                <div style={{ position: "absolute", bottom: 2, right: 2, width: 22, height: 22, borderRadius: "50%", backgroundColor: "#22c55e", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Icon name="checkCircle" size={12} color="white" strokeWidth={2.5} />
-                </div>
-              )}
+              <button
+                onClick={() => router.push("/cliente/editar-perfil")}
+                style={btnStyle}
+                onMouseEnter={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.2)"; }}
+                onMouseLeave={e => { e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"; }}
+              >
+                <Icon name="pencil" size={14} color="white" strokeWidth={2} />
+                Editar Perfil
+              </button>
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                <h1 style={{ color: "white", fontSize: 22, fontWeight: 800, margin: "0 0 3px" }}>{c.name}</h1>
-                {c.verified && <Icon name="checkCircle" size={18} color="#22c55e" strokeWidth={2.5} />}
-              </div>
-              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, margin: "0 0 10px" }}>Cliente desde {c.memberSince}</p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginBottom: 10 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  <Icon name="mapPin" size={12} color="rgba(255,255,255,0.55)" strokeWidth={2} />
-                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{c.location}</span>
+
+            {/* Perfil info */}
+            <div style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "flex-start", gap: 22 }}>
+              <div style={{ position: "relative", flexShrink: 0 }}>
+                <div style={{ width: 90, height: 90, borderRadius: "50%", overflow: "hidden", border: "3px solid #f97316", boxShadow: "0 0 0 3px rgba(249,115,22,0.25)" }}>
+                  <img src={c.avatar} alt={c.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  <Icon name="star" size={12} color="#f59e0b" />
-                  <span style={{ fontSize: 12, fontWeight: 700, color: "white" }}>{c.rating}</span>
-                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>Avaliação média</span>
-                </div>
+                <button style={{ position: "absolute", bottom: 2, left: 2, width: 24, height: 24, borderRadius: "50%", backgroundColor: "#f97316", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                </button>
                 {c.verified && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                    <Icon name="shieldCheck" size={12} color="#22c55e" strokeWidth={2} />
-                    <span style={{ fontSize: 12, color: "#4ade80", fontWeight: 600 }}>Perfil Verificado</span>
+                  <div style={{ position: "absolute", bottom: 2, right: 2, width: 22, height: 22, borderRadius: "50%", backgroundColor: "#22c55e", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Icon name="checkCircle" size={12} color="white" strokeWidth={2.5} />
                   </div>
                 )}
               </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                  <h1 style={{ color: "white", fontSize: 22, fontWeight: 800, margin: "0 0 3px" }}>{c.name}</h1>
+                  {c.verified && <Icon name="checkCircle" size={18} color="#22c55e" strokeWidth={2.5} />}
+                </div>
+                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, margin: "0 0 10px" }}>Cliente desde {c.memberSince}</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginBottom: 10 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                    <Icon name="mapPin" size={12} color="rgba(255,255,255,0.55)" strokeWidth={2} />
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{c.location}</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                    <Icon name="star" size={12} color="#f59e0b" />
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "white" }}>{c.rating}</span>
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>Avaliação média</span>
+                  </div>
+                  {c.verified && (
+                    <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                      <Icon name="shieldCheck" size={12} color="#22c55e" strokeWidth={2} />
+                      <span style={{ fontSize: 12, color: "#4ade80", fontWeight: 600 }}>Perfil Verificado</span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
+
+          {/* CONTEÚDO */}
+          <div style={{ padding: "22px 32px", boxSizing: "border-box" }}>
+
+            {/* STATS */}
+            <div style={{ display: "flex", gap: 14, marginBottom: 22 }}>
+              {c.stats.map((stat, i) => <StatCard key={i} stat={stat} />)}
+            </div>
+
+            {/* SOLICITAÇÕES + PRESTADORES */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 22 }}>
+              <SectionCard>
+                <SectionTitle title="Solicitações Recentes" link="Ver todas" onLink={() => router.push("/Pages/Minhas_Solicitacoes")} />
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {c.recentRequests.map((req, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < c.recentRequests.length - 1 ? "1px solid #f9fafb" : "none" }}>
+                      <div style={{ width: 34, height: 34, borderRadius: 10, backgroundColor: "#fff7ed", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <Icon name={req.icon} size={16} color={req.color} strokeWidth={1.8} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{req.label}</p>
+                        <StatusBadge status={req.status} color={req.statusColor} bg={req.statusBg} />
+                      </div>
+                      <span style={{ fontSize: 11, color: "#9ca3af", flexShrink: 0 }}>{req.date}</span>
+                    </div>
+                  ))}
+                </div>
+              </SectionCard>
+
+              <SectionCard>
+                <SectionTitle title="Prestadores Contratados Recentemente" link="Ver todos" />
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {c.hiredProviders.map((p, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < c.hiredProviders.length - 1 ? "1px solid #f9fafb" : "none" }}>
+                      <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "2px solid #fed7aa" }}>
+                        <img src={p.photo} alt={p.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#111827" }}>{p.name}</p>
+                        <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>{p.role}</p>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 3, flexShrink: 0 }}>
+                        <Icon name="star" size={12} color="#f59e0b" />
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#374151" }}>{p.rating.toFixed(1)}</span>
+                      </div>
+                      <button style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }}>
+                        <Icon name="chevRight" size={14} color="#9ca3af" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </SectionCard>
+            </div>
+
+            {/* AVALIAÇÕES CARROSSEL */}
+            <ReviewsCarousel reviews={c.reviews} />
+
+            {/* SEGURANÇA + CONQUISTAS */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 22 }}>
+              <SectionCard>
+                <SectionTitle title="Segurança e Verificação" />
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {c.verifications.map((v, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 9, backgroundColor: "#dcfce7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <Icon name={v.icon} size={15} color="#16a34a" strokeWidth={2} />
+                      </div>
+                      <div>
+                        <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#111827" }}>{v.label}</p>
+                        <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>{v.sub}</p>
+                      </div>
+                      <div style={{ marginLeft: "auto" }}>
+                        <Icon name="checkCircle" size={16} color="#22c55e" strokeWidth={2.5} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </SectionCard>
+
+              <SectionCard>
+                <SectionTitle title="Conquistas e Reputação" />
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  {c.achievements.map((a, i) => (
+                    <div key={i} style={{ backgroundColor: "#f9fafb", borderRadius: 12, padding: "12px 10px", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, textAlign: "center" }}>
+                      <div style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: a.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <Icon name={a.icon} size={17} color={a.color} strokeWidth={2} />
+                      </div>
+                      <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "#111827", lineHeight: 1.3 }}>{a.label}</p>
+                      <p style={{ margin: 0, fontSize: 10, color: "#9ca3af", lineHeight: 1.3 }}>{a.sub}</p>
+                    </div>
+                  ))}
+                </div>
+              </SectionCard>
+            </div>
+
+            {/* BANNER CTA */}
+            <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 100%)", borderRadius: 16, padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, position: "relative", overflow: "hidden", marginBottom: 8 }}>
+              <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 100% 50%, rgba(249,115,22,0.12) 0%, transparent 60%)" }} />
+              <div style={{ display: "flex", alignItems: "center", gap: 16, zIndex: 2 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Icon name="trendUp" size={24} color="#f97316" strokeWidth={1.7} />
+                </div>
+                <div>
+                  <p style={{ margin: "0 0 3px", fontSize: 14, fontWeight: 700, color: "white" }}>Acompanhe sua jornada na FazUno</p>
+                  <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.6)", lineHeight: 1.5, maxWidth: 400 }}>
+                    Continue contratando e avaliando o serviço que você utilizou. Sua participação ajuda a tornar a plataforma cada vez melhor para você!
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => router.push("/Pages/Tela_inicial_cliente")}
+                style={{ flexShrink: 0, zIndex: 2, padding: "10px 20px", borderRadius: 10, backgroundColor: "#f97316", border: "none", color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", transition: "opacity 0.2s" }}
+                onMouseEnter={e => e.currentTarget.style.opacity = "0.85"}
+                onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+              >
+                Explorar serviços
+              </button>
+            </div>
+          </div>
+
+          {/* FOOTER */}
+          <footer style={{ backgroundColor: "#0d1b3e", color: "white", marginTop: 8 }}>
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <img src="/Logo_branca.png" alt="Fazuno" style={{ height: 36, width: "auto", display: "block" }} />
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginLeft: 8 }}>© 2026 FazUno. Todos os direitos reservados.</span>
+              </div>
+            </div>
+          </footer>
+
         </div>
-
-        {/* CONTEÚDO */}
-        <div style={{ padding: "22px 32px", boxSizing: "border-box" }}>
-
-          {/* STATS */}
-          <div style={{ display: "flex", gap: 14, marginBottom: 22 }}>
-            {c.stats.map((stat, i) => <StatCard key={i} stat={stat} />)}
-          </div>
-
-          {/* SOLICITAÇÕES + PRESTADORES */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 22 }}>
-            <SectionCard>
-              <SectionTitle title="Solicitações Recentes" link="Ver todas" onLink={() => router.push("/cliente/minhas-solicitacoes")} />
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {c.recentRequests.map((req, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < c.recentRequests.length - 1 ? "1px solid #f9fafb" : "none" }}>
-                    <div style={{ width: 34, height: 34, borderRadius: 10, backgroundColor: "#fff7ed", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <Icon name={req.icon} size={16} color={req.color} strokeWidth={1.8} />
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#111827", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{req.label}</p>
-                      <StatusBadge status={req.status} color={req.statusColor} bg={req.statusBg} />
-                    </div>
-                    <span style={{ fontSize: 11, color: "#9ca3af", flexShrink: 0 }}>{req.date}</span>
-                  </div>
-                ))}
-              </div>
-            </SectionCard>
-
-            <SectionCard>
-              <SectionTitle title="Prestadores Contratados Recentemente" link="Ver todos" />
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {c.hiredProviders.map((p, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < c.hiredProviders.length - 1 ? "1px solid #f9fafb" : "none" }}>
-                    <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "2px solid #fed7aa" }}>
-                      <img src={p.photo} alt={p.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#111827" }}>{p.name}</p>
-                      <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>{p.role}</p>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 3, flexShrink: 0 }}>
-                      <Icon name="star" size={12} color="#f59e0b" />
-                      <span style={{ fontSize: 12, fontWeight: 700, color: "#374151" }}>{p.rating.toFixed(1)}</span>
-                    </div>
-                    <button style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }}>
-                      <Icon name="chevRight" size={14} color="#9ca3af" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </SectionCard>
-          </div>
-
-          {/* AVALIAÇÕES CARROSSEL */}
-          <ReviewsCarousel reviews={c.reviews} />
-
-          {/* SEGURANÇA + CONQUISTAS */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 22 }}>
-            <SectionCard>
-              <SectionTitle title="Segurança e Verificação" />
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {c.verifications.map((v, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <div style={{ width: 32, height: 32, borderRadius: 9, backgroundColor: "#dcfce7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <Icon name={v.icon} size={15} color="#16a34a" strokeWidth={2} />
-                    </div>
-                    <div>
-                      <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#111827" }}>{v.label}</p>
-                      <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>{v.sub}</p>
-                    </div>
-                    <div style={{ marginLeft: "auto" }}>
-                      <Icon name="checkCircle" size={16} color="#22c55e" strokeWidth={2.5} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </SectionCard>
-
-            <SectionCard>
-              <SectionTitle title="Conquistas e Reputação" />
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                {c.achievements.map((a, i) => (
-                  <div key={i} style={{ backgroundColor: "#f9fafb", borderRadius: 12, padding: "12px 10px", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, textAlign: "center" }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: a.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <Icon name={a.icon} size={17} color={a.color} strokeWidth={2} />
-                    </div>
-                    <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "#111827", lineHeight: 1.3 }}>{a.label}</p>
-                    <p style={{ margin: 0, fontSize: 10, color: "#9ca3af", lineHeight: 1.3 }}>{a.sub}</p>
-                  </div>
-                ))}
-              </div>
-            </SectionCard>
-          </div>
-
-          {/* BANNER CTA */}
-          <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 100%)", borderRadius: 16, padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, position: "relative", overflow: "hidden", marginBottom: 8 }}>
-            <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 100% 50%, rgba(249,115,22,0.12) 0%, transparent 60%)" }} />
-            <div style={{ display: "flex", alignItems: "center", gap: 16, zIndex: 2 }}>
-              <div style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Icon name="trendUp" size={24} color="#f97316" strokeWidth={1.7} />
-              </div>
-              <div>
-                <p style={{ margin: "0 0 3px", fontSize: 14, fontWeight: 700, color: "white" }}>Acompanhe sua jornada na FazUno</p>
-                <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.6)", lineHeight: 1.5, maxWidth: 400 }}>
-                  Continue contratando e avaliando o serviço que você utilizou. Sua participação ajuda a tornar a plataforma cada vez melhor para você!
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => router.push("/cliente")}
-              style={{ flexShrink: 0, zIndex: 2, padding: "10px 20px", borderRadius: 10, backgroundColor: "#f97316", border: "none", color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", transition: "opacity 0.2s" }}
-              onMouseEnter={e => e.currentTarget.style.opacity = "0.85"}
-              onMouseLeave={e => e.currentTarget.style.opacity = "1"}
-            >
-              Explorar serviços
-            </button>
-          </div>
-        </div>
-
-        {/* FOOTER */}
-        <footer style={{ backgroundColor: "#0d1b3e", color: "white", marginTop: 8 }}>
-          <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <img src="/Logo_branca.png" alt="Fazuno" style={{ height: 36, width: "auto", display: "block" }} />
-              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginLeft: 8 }}>© 2026 FazUno. Todos os direitos reservados.</span>
-            </div>
-          </div>
-        </footer>
       </div>
     </div>
   );
