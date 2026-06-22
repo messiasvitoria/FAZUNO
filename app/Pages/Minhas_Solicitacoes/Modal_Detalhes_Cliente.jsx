@@ -81,6 +81,7 @@ export default function DetalhesModal({ onClose, solicitacao }) {
   const orcamento = sol.orcamento || MOCK_SOLICITACAO.orcamento;
   const endereco  = sol.endereco  || sol.local || "";
   const prestador = sol.prestador || MOCK_SOLICITACAO.prestador;
+  const avaliacao = sol.avaliacaoEnviada;
 
   const btnBase = {
     borderRadius: 8, padding: "10px 16px", fontSize: "0.82rem", fontWeight: 600,
@@ -271,6 +272,23 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                 <div style={{ fontSize: "0.78rem", color: "#1E40AF", lineHeight: 1.6 }}>
                   O valor apresentado é uma estimativa. Caso sejam identificadas necessidades adicionais, o prestador poderá solicitar uma revisão de orçamento que deverá ser aprovada pelo cliente.
                 </div>
+              </div>
+
+              <div style={{ border: "1px solid #E5E7EB", borderRadius: 12, padding: "16px 20px", marginBottom: 20 }}>
+                <h4 style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: "0.9rem", color: "#111827", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 6 }}>
+                  <i className="ti ti-star" style={{ fontSize: 16, color: "#F59E0B" }} /> Avaliações
+                </h4>
+                {avaliacao ? (
+                  <div style={{ background: "#F9FAFB", border: "1px solid #F3F4F6", borderRadius: 10, padding: 14 }}>
+                    <div style={{ color: "#F59E0B", fontSize: "1.1rem", marginBottom: 6 }}>{"★".repeat(avaliacao.nota)}{"☆".repeat(5 - avaliacao.nota)}</div>
+                    <p style={{ margin: "0 0 8px", color: "#374151", fontSize: "0.82rem", lineHeight: 1.5 }}>{avaliacao.comentario || "Sem comentário adicional."}</p>
+                    <span style={{ color: "#6B7280", fontSize: "0.72rem" }}>Avaliação enviada em: {avaliacao.data}</span>
+                  </div>
+                ) : (
+                  <div style={{ background: "#FFF7ED", border: "1px solid #FED7AA", borderRadius: 10, padding: 14, color: "#9A3412", fontSize: "0.82rem", fontWeight: 700 }}>
+                    Aguardando sua avaliação.
+                  </div>
+                )}
               </div>
 
               {/* Ações por status */}

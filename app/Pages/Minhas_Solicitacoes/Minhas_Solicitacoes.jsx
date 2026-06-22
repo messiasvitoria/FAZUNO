@@ -4,6 +4,7 @@ import Sidebar from "../../components/SideBar_cliente";
 import Topbar  from "../../components/TopBar_cliente";
 import { useMemo, useState } from "react";
 import DetalhesModal from "./Modal_Detalhes_Cliente";
+import { FaBullhorn } from "react-icons/fa";
 
 const CLIENT_REQUESTS_KEY = "fazuno_minhas_solicitacoes_extra";
 const LAST_CLIENT_REQUEST_KEY = "fazuno_ultima_solicitacao_cliente";
@@ -81,17 +82,30 @@ function loadExtraSolicitacoes() {
       return {
         ...item,
         id: item.id || "OPR-2025-000045",
-        statusMsg: item.statusMsg === "Aguardando interesse de profissionais." ? "Interessados aguardando sua anÃ¡lise." : item.statusMsg,
+        statusMsg: item.statusMsg === "Aguardando interesse de profissionais." ? "Interessados aguardando sua análise." : item.statusMsg,
         interessados,
         interessadosCount: interessados.length,
       };
     });
 
-    if (deduped.length !== stored.length) {
-      window.localStorage.setItem(CLIENT_REQUESTS_KEY, JSON.stringify(deduped));
-    }
+    const normalized = deduped.map((item) => {
+      if (item.tipo !== "oportunidade") return item;
 
-    return deduped;
+      const interessados = item.interessados?.length ? item.interessados : SAMPLE_INTERESSADOS;
+      const hasInteressados = interessados.length > 0;
+
+      return {
+        ...item,
+        status: hasInteressados ? "Em Análise" : item.status,
+        statusMsg: hasInteressados ? "Interessados aguardando sua análise." : item.statusMsg,
+        interessados,
+        interessadosCount: interessados.length,
+      };
+    });
+
+    window.localStorage.setItem(CLIENT_REQUESTS_KEY, JSON.stringify(normalized));
+
+    return normalized;
   } catch {
     return [];
   }
@@ -184,7 +198,8 @@ function ActionButton({ type, onClick }) {
     pagamento: { label: "Realizar pagamento",   style: "warning" },
     andamento: { label: "Ver andamento",        style: "outline" },
     novamente: { label: "Solicitar novamente",  style: "outline" },
-    avaliar:   { label: "Avaliar serviço",      style: "outline" },
+    avaliar:   { label: "Avaliar Prestador",    style: "outline" },
+    ver_avaliacao: { label: "Ver avaliação",    style: "outline" },
     cancelar:  { label: "Cancelar solicitação", style: "danger" },
     interessados: { label: "Ver interessados", style: "outline" },
     cancelar_oportunidade: { label: "Cancelar oportunidade", style: "danger" },
@@ -209,10 +224,116 @@ function ActionButton({ type, onClick }) {
   );
 }
 
-function SolicitacaoCard({ item, delay, onVerDetalhes }) {
+function RatingStars({ value, onChange, size = 26 }) {
+  return (
+    <div style={{ display: "flex", gap: 6 }}>
+      {[1, 2, 3, 4, 5].map((star) => (
+        <button
+          key={star}
+          type="button"
+          onClick={() => onChange?.(star)}
+          style={{ border: 0, background: "transparent", color: star <= value ? "#F59E0B" : "#D1D5DB", fontSize: size, cursor: onChange ? "pointer" : "default", lineHeight: 1 }}
+          aria-label={`${star} estrela${star > 1 ? "s" : ""}`}
+        >
+          ★
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function AvaliacaoModal({ solicitacao, avaliacao, onClose, onSubmit }) {
+  const [nota, setNota] = useState(avaliacao?.nota || 5);
+  const [criterios, setCriterios] = useState(avaliacao?.criterios || {
+    qualidade: 5,
+    pontualidade: 5,
+    comunicacao: 5,
+    profissionalismo: 5,
+  });
+  const [comentario, setComentario] = useState(avaliacao?.comentario || "");
+  const readonly = Boolean(avaliacao);
+  const criteriosLabels = [
+    ["qualidade", "Qualidade do serviço"],
+    ["pontualidade", "Pontualidade"],
+    ["comunicacao", "Comunicação"],
+    ["profissionalismo", "Profissionalismo"],
+  ];
+
+  const handleSubmit = () => {
+    onSubmit({
+      nota,
+      criterios,
+      comentario,
+      data: new Date().toLocaleDateString("pt-BR"),
+    });
+  };
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 1100, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+      <div onClick={(event) => event.stopPropagation()} style={{ width: "100%", maxWidth: 820, maxHeight: "92vh", overflowY: "auto", background: "#fff", borderRadius: 16, boxShadow: "0 24px 70px rgba(0,0,0,0.2)", fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ padding: "22px 26px", borderBottom: "1px solid #F3F4F6", display: "flex", justifyContent: "space-between", gap: 16 }}>
+          <div>
+            <h2 style={{ margin: 0, color: "#0A0B2D", fontFamily: "'Sora', sans-serif", fontSize: "1.25rem" }}>{readonly ? "Avaliação enviada" : "Avaliar Prestador"}</h2>
+            <p style={{ margin: "6px 0 0", color: "#6B7280", fontSize: "0.84rem" }}>As avaliações são anônimas para ambas as partes.</p>
+          </div>
+          <button onClick={onClose} style={{ width: 34, height: 34, border: 0, borderRadius: 8, background: "#F9FAFB", color: "#6B7280", cursor: "pointer", fontSize: 20 }}>×</button>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "240px 1fr", gap: 20, padding: 26 }}>
+          <aside style={{ border: "1px solid #E5E7EB", borderRadius: 12, padding: 18, background: "#FBFCFE" }}>
+            <h3 style={{ margin: "0 0 14px", fontFamily: "'Sora', sans-serif", fontSize: "0.88rem", color: "#0A0B2D" }}>Resumo da contratação</h3>
+            {[
+              ["Serviço", solicitacao.servico],
+              ["Data do serviço", solicitacao.data],
+              ["Valor do serviço", solicitacao.valor],
+              ["Código da solicitação", `#SOL-${String(solicitacao.id).padStart(6, "0")}`],
+            ].map(([label, value]) => (
+              <div key={label} style={{ marginBottom: 12 }}>
+                <div style={{ color: "#9CA3AF", fontSize: "0.7rem", fontWeight: 700 }}>{label}</div>
+                <div style={{ color: "#111827", fontSize: "0.82rem", fontWeight: 700, lineHeight: 1.35 }}>{value}</div>
+              </div>
+            ))}
+          </aside>
+          <section>
+            <div style={{ marginBottom: 18 }}>
+              <h3 style={{ margin: "0 0 8px", fontFamily: "'Sora', sans-serif", fontSize: "0.9rem", color: "#0A0B2D" }}>Nota geral</h3>
+              <RatingStars value={nota} onChange={readonly ? null : setNota} size={30} />
+            </div>
+            <div style={{ border: "1px solid #E5E7EB", borderRadius: 12, overflow: "hidden", marginBottom: 18 }}>
+              {criteriosLabels.map(([key, label]) => (
+                <div key={key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "12px 14px", borderBottom: key === "profissionalismo" ? 0 : "1px solid #F3F4F6" }}>
+                  <span style={{ color: "#374151", fontSize: "0.82rem", fontWeight: 700 }}>{label}</span>
+                  <RatingStars value={criterios[key]} onChange={readonly ? null : (value) => setCriterios((current) => ({ ...current, [key]: value }))} size={20} />
+                </div>
+              ))}
+            </div>
+            <label style={{ display: "block", color: "#374151", fontSize: "0.82rem", fontWeight: 700, marginBottom: 8 }}>Comentário opcional</label>
+            <textarea
+              value={comentario}
+              onChange={(event) => setComentario(event.target.value.slice(0, 500))}
+              disabled={readonly}
+              placeholder="Compartilhe sua experiência..."
+              style={{ width: "100%", minHeight: 110, resize: "vertical", border: "1px solid #E5E7EB", borderRadius: 12, padding: 14, fontFamily: "'DM Sans', sans-serif", fontSize: "0.84rem", outline: "none" }}
+            />
+            <div style={{ textAlign: "right", color: "#6B7280", fontSize: "0.72rem", marginTop: 4 }}>{comentario.length}/500</div>
+            <div style={{ display: "flex", gap: 12, marginTop: 18 }}>
+              <button onClick={onClose} style={{ flex: 1, padding: "12px 14px", borderRadius: 10, border: "1.5px solid #D1D5DB", background: "#fff", color: "#374151", fontWeight: 800, cursor: "pointer" }}>Cancelar</button>
+              {!readonly && (
+                <button onClick={handleSubmit} style={{ flex: 1.4, padding: "12px 14px", borderRadius: 10, border: "1.5px solid #0A0B2D", background: "#0A0B2D", color: "#fff", fontWeight: 800, cursor: "pointer" }}>Enviar Avaliação</button>
+              )}
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
   const statusCfg = STATUS_CONFIG[item.status];
   const isNewDirect = item.origem === "Solicitação Direta" && item.nova;
   const isOpportunity = item.tipo === "oportunidade";
+  const isClosed = item.status === "Concluída" || item.status === "Encerrada";
+  const actions = isClosed && !isOpportunity ? ["detalhes", avaliacao ? "ver_avaliacao" : "avaliar"] : item.acoes;
   return (
     <div
       className="card-in"
@@ -239,7 +360,7 @@ function SolicitacaoCard({ item, delay, onVerDetalhes }) {
         {isOpportunity ? (
           <>
             <div style={{ width: 54, height: 54, borderRadius: "50%", background: "#FFF7ED", color: "#F1670F", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Sora', sans-serif", fontWeight: 800, fontSize: "0.9rem", boxShadow: "0 2px 8px rgba(241,103,15,0.14)" }}>
-              OP
+              <FaBullhorn size={22} />
             </div>
             <div style={{ textAlign: "center", fontSize: "0.64rem", color: "#F1670F", fontWeight: 700, lineHeight: 1.3 }}>
               Oportunidade<br />publicada
@@ -291,6 +412,11 @@ function SolicitacaoCard({ item, delay, onVerDetalhes }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <StatusBadge status={item.status} />
         <p style={{ fontSize: "0.74rem", color: "#6B7280", lineHeight: 1.55, margin: 0 }}>{item.statusMsg}</p>
+        {isClosed && !isOpportunity && (
+          <p style={{ fontSize: "0.72rem", color: avaliacao ? "#16A34A" : "#F1670F", lineHeight: 1.45, margin: 0, fontWeight: 700 }}>
+            {avaliacao ? "✓ Avaliação enviada" : "Você ainda não avaliou este serviço."}
+          </p>
+        )}
         {isOpportunity && (
           <p style={{ fontSize: "0.72rem", color: "#F1670F", lineHeight: 1.45, margin: 0, fontWeight: 700 }}>
             {item.opportunityMessage || "Nenhum prestador aceito até o momento."}
@@ -305,8 +431,8 @@ function SolicitacaoCard({ item, delay, onVerDetalhes }) {
           <div style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: "1.05rem", color: "#111827" }}>{item.valor}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%" }}>
-          {item.acoes.map((acao) => (
-            <ActionButton key={acao} type={acao} onClick={acao === "detalhes" || acao === "interessados" ? () => onVerDetalhes(acao) : () => {}} />
+          {actions.map((acao) => (
+            <ActionButton key={acao} type={acao} onClick={acao === "detalhes" || acao === "interessados" ? () => onVerDetalhes(acao) : acao === "avaliar" || acao === "ver_avaliacao" ? () => onAvaliar(item, acao === "ver_avaliacao") : () => {}} />
           ))}
         </div>
       </div>
@@ -446,6 +572,8 @@ function PageContent() {
   const [extraSolicitacoes] = useState(loadExtraSolicitacoes);
   const [solicitacaoSelecionada, setSolicitacaoSelecionada] = useState(() => getInitialOpenSolicitacao(extraSolicitacoes));
   const [opportunityModalView, setOpportunityModalView] = useState("detalhes");
+  const [avaliacoes, setAvaliacoes] = useState({});
+  const [avaliacaoModal, setAvaliacaoModal] = useState(null);
 
   const PER_PAGE = 6;
   const solicitacoes = useMemo(() => [...extraSolicitacoes, ...SOLICITACOES], [extraSolicitacoes]);
@@ -466,6 +594,15 @@ function PageContent() {
   const closeDetails = () => {
     setSolicitacaoSelecionada(null);
     setOpportunityModalView("detalhes");
+  };
+
+  const openAvaliacao = (item) => {
+    setAvaliacaoModal(item);
+  };
+
+  const saveAvaliacao = (avaliacao) => {
+    setAvaliacoes((current) => ({ ...current, [avaliacaoModal.id]: avaliacao }));
+    setAvaliacaoModal(null);
   };
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
@@ -539,7 +676,14 @@ function PageContent() {
               </div>
             ) : (
               paginated.map((item, i) => (
-                <SolicitacaoCard key={item.id} item={item} delay={i * 55} onVerDetalhes={(acao) => openDetails(item, acao === "interessados" ? "interessados" : "detalhes")} />
+                <SolicitacaoCard
+                  key={item.id}
+                  item={item}
+                  delay={i * 55}
+                  avaliacao={avaliacoes[item.id]}
+                  onAvaliar={openAvaliacao}
+                  onVerDetalhes={(acao) => openDetails(item, acao === "interessados" ? "interessados" : "detalhes")}
+                />
               ))
             )}
           </div>
@@ -567,8 +711,16 @@ function PageContent() {
         solicitacaoSelecionada.tipo === "oportunidade" ? (
           <OpportunityDetailsModal oportunidade={solicitacaoSelecionada} initialView={opportunityModalView} onClose={closeDetails} />
         ) : (
-          <DetalhesModal solicitacao={solicitacaoSelecionada} onClose={closeDetails} />
+          <DetalhesModal solicitacao={{ ...solicitacaoSelecionada, avaliacaoEnviada: avaliacoes[solicitacaoSelecionada.id] }} onClose={closeDetails} />
         )
+      )}
+      {avaliacaoModal && (
+        <AvaliacaoModal
+          solicitacao={avaliacaoModal}
+          avaliacao={avaliacoes[avaliacaoModal.id]}
+          onClose={() => setAvaliacaoModal(null)}
+          onSubmit={saveAvaliacao}
+        />
       )}
     </>
   );
