@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNotifications } from "../hooks/useNotifications";
 import { markAsRead, markAllAsRead, getNotificationMeta, timeAgo } from "../lib/notifications";
 >>>>>>> origin/Cancelamento_cliente
+import { useRouter } from "next/navigation";
 
 // ─── ICON COMPONENT ──────────────────────────────────────────────────────────
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
@@ -158,6 +159,7 @@ const allNotifs = [
 >>>>>>> origin/Cancelamento_cliente
 // ─── TOPBAR COMPONENT ─────────────────────────────────────────────────────────
 export default function TopBar_cliente() {
+  const router = useRouter();
   const [notifOpen, setNotifOpen]         = useState(false);
   const [notifFilter, setNotifFilter]     = useState("todas");
   const [showAllNotifs, setShowAllNotifs] = useState(false);
@@ -376,7 +378,10 @@ export default function TopBar_cliente() {
         <div style={{ width: 1, height: 28, backgroundColor: "rgba(255,255,255,0.2)", margin: "0 8px" }} />
 
         {/* User */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+        <div
+          onClick={() => router.push("/Pages/Meu_perfil_cliente")}
+          style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}
+        >
           <div style={{ width: 32, height: 32, borderRadius: "50%", overflow: "hidden", border: "2px solid #f97316", flexShrink: 0 }}>
             <img
               src="/homem1.avif"
