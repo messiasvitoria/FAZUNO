@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Sora, DM_Sans } from "next/font/google";
 import "./globals.css";
+import { NotificacoesProvider } from "@/context/NotificacoesContext";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -30,7 +31,9 @@ export default function RootLayout({
       className={`${sora.variable} ${dmSans.variable} antialiased`}
     >
       <body className="w-full">
-        {children}
+        <NotificacoesProvider>
+          {children}
+        </NotificacoesProvider>
       </body>
     </html>
   );

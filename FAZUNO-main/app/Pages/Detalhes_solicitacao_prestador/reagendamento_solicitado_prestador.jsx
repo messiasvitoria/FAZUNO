@@ -1,14 +1,13 @@
 "use client";
-
 import { useState } from "react";
-
+import { useNotificacoes } from "@/context/NotificacoesContext";
 export default function ReagendamentoSolicitadoPrestador({ onClose, onConcluir }) {
   const [step, setStep] = useState(1);
   const [novaData, setNovaData] = useState("");
   const [novoHorario, setNovoHorario] = useState("");
   const [motivo, setMotivo] = useState("");
   const [observacao, setObservacao] = useState("");
-
+  const { addNotificacao } = useNotificacoes();
   const IconCalendar = () => (
     <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
   );
@@ -151,7 +150,22 @@ export default function ReagendamentoSolicitadoPrestador({ onClose, onConcluir }
 
               <div style={{ display: "flex", gap: 12, marginTop: 24 }}>
                 <button onClick={() => setStep(1)} style={{ flex: 1, padding: "12px", border: "1.5px solid #E5E7EB", borderRadius: 10, background: "#fff", color: "#374151", fontWeight: 600, fontSize: 14, cursor: "pointer" }}>Voltar</button>
-                <button onClick={() => setStep(3)} style={{ flex: 2, padding: "12px", border: "none", borderRadius: 10, background: "#7C3AED", color: "#fff", fontWeight: 600, fontSize: 14, cursor: "pointer" }}>Confirmar e enviar</button>
+                <button
+                onClick={() => {
+                  setStep(3);
+                  addNotificacao({
+                    icon: "doc",
+                    iconColor: "#7C3AED",
+                    iconBg: "#F5F3FF",
+                    title: "Reagendamento solicitado",
+                    desc: `Você solicitou reagendar para ${novaData} às ${novoHorario}. Aguardando resposta do cliente.`,
+                    category: "solicitações",
+                  });
+                }}
+                style={{ flex: 2, padding: "12px", border: "none", borderRadius: 10, background: "#7C3AED", color: "#fff", fontWeight: 600, fontSize: 14, cursor: "pointer" }}
+              >
+                Confirmar e enviar
+              </button>
               </div>
             </div>
           </>
