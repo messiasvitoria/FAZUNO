@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { FaFileAlt, FaCommentAlt, FaClock, FaCheckCircle, FaMoneyBillWave } from "react-icons/fa";
+<<<<<<< HEAD
 
 const categorias = ["Todas", "Não lidas", "Solicitações", "Serviços", "Financeiro", "Sistema"];
 
@@ -70,6 +71,46 @@ const notificacoes = [
 export default function NotificacoesPrestador({ onClose }) {
   const [categoriaAtiva, setCategoriaAtiva] = useState("Todas");
   const [lista, setLista] = useState(notificacoes);
+=======
+import { useNotifications } from "../hooks/useNotifications";
+import { markAsRead, markAllAsRead, getNotificationMeta, timeAgo } from "../lib/notifications";
+
+const categorias = ["Todas", "Não lidas", "Solicitações", "Serviços", "Financeiro", "Sistema"];
+
+// Mapeia o "icon" salvo na notificação (lib/notifications.js) para o
+// componente de ícone do react-icons usado visualmente nesta tela.
+const ICONS = {
+  doc: FaFileAlt,
+  chat: FaCommentAlt,
+  payment: FaMoneyBillWave,
+  star: FaCheckCircle,
+  eye: FaClock,
+};
+
+export default function NotificacoesPrestador({ onClose }) {
+  const [categoriaAtiva, setCategoriaAtiva] = useState("Todas");
+
+  // Notificações reais, vindas do localStorage via lib/notifications.js,
+  // atualizadas automaticamente quando addNotification() é chamado
+  // em qualquer aba/tela (ex: cancelamento feito pelo cliente).
+  const rawNotifs = useNotifications("prestador");
+
+  const lista = rawNotifs.map((n) => {
+    const meta = getNotificationMeta(n.type);
+    return {
+      id: n.id,
+      titulo: n.title,
+      descricao: n.message,
+      link: "Ver detalhes",
+      tempo: timeAgo(n.createdAt),
+      lida: n.read,
+      categoria: meta.category,
+      icon: ICONS[meta.icon] || FaFileAlt,
+      iconBg: meta.iconBg,
+      iconColor: meta.iconColor,
+    };
+  });
+>>>>>>> origin/Cancelamento_cliente
 
   const filtradas = lista.filter((n) => {
     if (categoriaAtiva === "Todas") return true;
@@ -83,7 +124,15 @@ export default function NotificacoesPrestador({ onClose }) {
     return lista.filter((n) => n.categoria === cat).length;
   };
 
+<<<<<<< HEAD
   const marcarTodasLidas = () => setLista(lista.map((n) => ({ ...n, lida: true })));
+=======
+  const marcarTodasLidas = () => markAllAsRead("prestador");
+
+  const handleNotifClick = (n) => {
+    markAsRead(n.id);
+  };
+>>>>>>> origin/Cancelamento_cliente
 
   return (
     <div style={{
@@ -135,6 +184,7 @@ export default function NotificacoesPrestador({ onClose }) {
 
       {/* Lista */}
       <div style={{ maxHeight: 380, overflowY: "auto" }}>
+<<<<<<< HEAD
         {filtradas.map((n, i) => {
           const Icon = n.icon;
           return (
@@ -169,6 +219,52 @@ export default function NotificacoesPrestador({ onClose }) {
             </div>
           );
         })}
+=======
+        {filtradas.length === 0 ? (
+          <div style={{ padding: "32px 20px", textAlign: "center", color: "#9ca3af", fontSize: 13 }}>
+            Nenhuma notificação aqui.
+          </div>
+        ) : (
+          filtradas.map((n, i) => {
+            const Icon = n.icon;
+            return (
+              <div
+                key={n.id}
+                onClick={() => handleNotifClick(n)}
+                style={{
+                  display: "flex", gap: 12, padding: "14px 20px",
+                  borderTop: "0.5px solid #f3f4f6",
+                  background: n.lida ? "#fff" : "#f8faff",
+                  cursor: "pointer",
+                }}
+              >
+                {/* Bolinha não lida */}
+                <div style={{ width: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  {!n.lida && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#3b82f6" }} />}
+                </div>
+
+                {/* Ícone */}
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: n.iconBg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Icon size={18} color={n.iconColor} />
+                </div>
+
+                {/* Conteúdo */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontWeight: 600, fontSize: 14, color: "#111827", margin: "0 0 2px" }}>{n.titulo}</p>
+                  <p style={{ fontSize: 13, color: "#6b7280", margin: "0 0 4px", lineHeight: 1.4 }}>{n.descricao}</p>
+                  <a href="#" style={{ fontSize: 13, color: "#3b82f6", textDecoration: "none", fontWeight: 500 }}>{n.link}</a>
+                </div>
+
+                {/* Tempo + bolinha direita */}
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8, flexShrink: 0 }}>
+                  <span style={{ fontSize: 12, color: "#9ca3af", whiteSpace: "nowrap" }}>{n.tempo}</span>
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: n.lida ? "#d1d5db" : "#3b82f6" }} />
+                </div>
+              </div>
+            );
+          })
+        )}
+>>>>>>> origin/Cancelamento_cliente
       </div>
 
       {/* Footer */}
@@ -179,4 +275,8 @@ export default function NotificacoesPrestador({ onClose }) {
       </div>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/Cancelamento_cliente

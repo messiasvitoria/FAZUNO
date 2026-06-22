@@ -1,6 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+<<<<<<< HEAD
+=======
+import { useNotifications } from "../hooks/useNotifications";
+import { markAsRead, markAllAsRead, getNotificationMeta, timeAgo } from "../lib/notifications";
+>>>>>>> origin/Cancelamento_cliente
 
 // ─── ICON COMPONENT ──────────────────────────────────────────────────────────
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
@@ -120,7 +125,11 @@ function NotifDetailModal({ notif, onClose }) {
   );
 }
 
+<<<<<<< HEAD
 // ─── STATIC DATA ─────────────────────────────────────────────────────────────
+=======
+// ─── FILTROS (apenas visuais — categoria real vem da notificação) ───────────
+>>>>>>> origin/Cancelamento_cliente
 const filters = ["Todas", "Não lidas", "Solicitações", "Serviços", "Pagamentos"];
 
 const filterKey = (label, index) => {
@@ -129,6 +138,7 @@ const filterKey = (label, index) => {
   return label.toLowerCase();
 };
 
+<<<<<<< HEAD
 const allNotifs = [
   { id: 1,  icon: "doc",     title: "Serviço Aceito",                        desc: "O prestador João Silva aceitou sua solicitação de Instalação de Ar Condicionado.",   time: "Há 5 min",       sortOrder: 1,  unread: true,  category: "solicitações", iconColor: "#3b82f6", iconBg: "#dbeafe" },
   { id: 2,  icon: "chat",    title: "Nova Mensagem",                          desc: "Você recebeu uma nova mensagem do prestador João Silva.",                            time: "Há 20 min",      sortOrder: 2,  unread: true,  category: "serviços",     iconColor: "#22c55e", iconBg: "#dcfce7" },
@@ -144,15 +154,43 @@ const allNotifs = [
   { id: 12, icon: "payment", title: "Reembolso Processado",                   desc: "Seu reembolso de R$ 90,00 foi processado e será creditado em até 5 dias úteis.",   time: "Há 5 dias",      sortOrder: 13, unread: false, category: "pagamentos",   iconColor: "#8b5cf6", iconBg: "#ede9fe" },
 ].sort((a, b) => a.sortOrder - b.sortOrder);
 
+=======
+>>>>>>> origin/Cancelamento_cliente
 // ─── TOPBAR COMPONENT ─────────────────────────────────────────────────────────
 export default function TopBar_cliente() {
   const [notifOpen, setNotifOpen]         = useState(false);
   const [notifFilter, setNotifFilter]     = useState("todas");
   const [showAllNotifs, setShowAllNotifs] = useState(false);
+<<<<<<< HEAD
   const [notifs, setNotifs]               = useState(allNotifs);
   const [selectedNotif, setSelectedNotif] = useState(null);
   const notifRef = useRef(null);
 
+=======
+  const [selectedNotif, setSelectedNotif] = useState(null);
+  const notifRef = useRef(null);
+
+  // Notificações reais, vindas do localStorage via lib/notifications.js,
+  // atualizadas automaticamente quando addNotification() é chamado
+  // em qualquer aba/tela (ex: cancelamento feito pelo prestador).
+  const rawNotifs = useNotifications("cliente");
+
+  const notifs = rawNotifs.map((n) => {
+    const meta = getNotificationMeta(n.type);
+    return {
+      id: n.id,
+      icon: meta.icon,
+      iconColor: meta.iconColor,
+      iconBg: meta.iconBg,
+      category: meta.category.toLowerCase(),
+      title: n.title,
+      desc: n.message,
+      time: timeAgo(n.createdAt),
+      unread: !n.read,
+    };
+  });
+
+>>>>>>> origin/Cancelamento_cliente
   useEffect(() => {
     if (!notifOpen) return;
     const handler = (e) => {
@@ -181,6 +219,7 @@ export default function TopBar_cliente() {
     const key = filterKey(label, index);
     setNotifFilter(key);
     setShowAllNotifs(false);
+<<<<<<< HEAD
     setNotifs((prev) =>
       prev.map((n) => {
         if (index === 0 || index === 1) return { ...n, unread: false };
@@ -191,6 +230,12 @@ export default function TopBar_cliente() {
 
   const handleNotifClick = (n) => {
     setNotifs((prev) => prev.map((x) => (x.id === n.id ? { ...x, unread: false } : x)));
+=======
+  };
+
+  const handleNotifClick = (n) => {
+    markAsRead(n.id);
+>>>>>>> origin/Cancelamento_cliente
     setSelectedNotif(n);
   };
 
@@ -229,7 +274,11 @@ export default function TopBar_cliente() {
                   </p>
                 </div>
                 <button
+<<<<<<< HEAD
                   onClick={() => setNotifs((prev) => prev.map((n) => ({ ...n, unread: false })))}
+=======
+                  onClick={() => markAllAsRead("cliente")}
+>>>>>>> origin/Cancelamento_cliente
                   style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#f97316" }}
                 >
                   Marcar todas como lidas
