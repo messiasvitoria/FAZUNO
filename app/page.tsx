@@ -1,5 +1,5 @@
-import  MeusServicosPage_prestador from '../app/Pages/Seus_servicos_prestador/page'
+import Login from '../app/Pages/Login/Login'
 
 export default function Home() {
-  return < MeusServicosPage_prestador />;
+  return < Login />;
 }

@@ -1,5 +1,7 @@
 "use client";
 
+
+import { useNotificacoes } from "@/context/NotificacoesContext";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "../../components/SideBar_cliente";
@@ -413,6 +415,8 @@ const DIRECT_SERVICES = [
     address: "Atendimento remoto",
   },
 ];
+
+
 
 const CONTRACT_FLOW_KEY = "fazuno_tipo_contratacao";
 const DIRECT_STEP_KEY = "fazuno_solicitacao_direta_etapa";
@@ -1853,12 +1857,20 @@ export default function EscolhaContratacao() {
     }
   }
 
-  function handleDirectScheduleConfirm(schedule) {
-    const request = saveClientRequest(selectedService, schedule);
-    setDirectSchedule(schedule);
-    setCreatedRequest(request);
-    handleDirectStep(5);
-  }
+ function handleDirectScheduleConfirm(schedule) {
+  const request = saveClientRequest(selectedService, schedule);
+  setDirectSchedule(schedule);
+  setCreatedRequest(request);
+  handleDirectStep(5);
+  addNotificacao({
+    icon: "doc",
+    iconColor: "#F1670F",
+    iconBg: "#FFF4EC",
+    title: "Solicitação enviada",
+    desc: `Você solicitou "${selectedService.title}" com ${selectedService.professional} para ${schedule.date} às ${schedule.time}. Aguardando confirmação.`,
+    category: "solicitações",
+  });
+}
 
   function handlePublishOpportunity() {
     const opportunity = savePublishedOpportunity(opportunityForm);

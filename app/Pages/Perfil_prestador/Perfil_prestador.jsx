@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation"; // ← ADICIONADO
+import { useRouter } from "next/navigation"; 
 import {
   FaStar, FaStarHalfAlt, FaRegStar,
   FaMapMarkerAlt, FaCheckCircle,
@@ -201,12 +201,6 @@ export default function PerfilPrestador() {
                 </p>
               </div>
 
-              <button
-                onMouseEnter={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.7)"; e.currentTarget.style.background="rgba(255,255,255,0.08)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
-                style={{ height:40, padding:"0 18px", background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", borderRadius:8, color:"#fff", fontSize:".84rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:7, flexShrink:0, transition:"all 0.15s" }}>
-                <FaEdit size={13}/> Editar perfil
-              </button>
             </div>
           </div>
         </div>

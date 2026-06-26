@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import DetalhesModal from "./Modal_Detalhes_Cliente";
 import { FaBullhorn } from "react-icons/fa";
+import { useNotificacoes } from "@/context/NotificacoesContext";
 
 const CLIENT_REQUESTS_KEY = "fazuno_minhas_solicitacoes_extra";
 const LAST_CLIENT_REQUEST_KEY = "fazuno_ultima_solicitacao_cliente";
@@ -194,7 +195,6 @@ function StatusBadge({ status }) {
   );
 }
 
-// ─── ACTION BUTTON com navegação ──────────────────────────────────────────────
 function ActionButton({ type, onClick }) {
   const router = useRouter();
 
@@ -226,6 +226,10 @@ function ActionButton({ type, onClick }) {
     }
     if (type === "pagamento") {
       router.push("/Pages/Pagamento_cliente");
+      return;
+    }
+    if (type === "conversar") {
+      router.push("/Pages/Chat_cliente");
       return;
     }
     onClick?.();
@@ -375,7 +379,6 @@ function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
       onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.09)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
       onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)"; e.currentTarget.style.transform = "translateY(0)"; }}
     >
-      {/* Coluna 1 — Avatar */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 7 }}>
         {isOpportunity ? (
           <div style={{ width: 54, height: 54, borderRadius: "50%", background: "#FFF7ED", color: "#F1670F", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Sora', sans-serif", fontWeight: 800, fontSize: "0.9rem", boxShadow: "0 2px 8px rgba(241,103,15,0.14)" }}>
@@ -396,7 +399,6 @@ function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
         )}
       </div>
 
-      {/* Coluna 2 — Serviço */}
       <div>
         {isOpportunity && (
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 8, padding: "4px 9px", borderRadius: 999, background: "#FFF7ED", border: "1px solid #FED7AA", color: "#F1670F", fontSize: "0.62rem", fontWeight: 700, fontFamily: "'Sora', sans-serif", letterSpacing: "0.02em" }}>
@@ -423,7 +425,6 @@ function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
         </div>
       </div>
 
-      {/* Coluna 3 — Status */}
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <StatusBadge status={item.status} />
         <p style={{ fontSize: "0.74rem", color: "#6B7280", lineHeight: 1.55, margin: 0 }}>{item.statusMsg}</p>
@@ -434,7 +435,6 @@ function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
         )}
       </div>
 
-      {/* Coluna 4 — Valor + Ações */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
         <div style={{ textAlign: "right" }}>
           <div style={{ fontSize: "0.66rem", color: "#9CA3AF", marginBottom: 2 }}>{item.valorLabel}</div>
@@ -588,7 +588,6 @@ function OpportunityDetailsModal({ oportunidade, initialView = "detalhes", onClo
   );
 }
 
-// ─── PAGE CONTENT ─────────────────────────────────────────────────────────────
 function PageContent() {
   const [activeTab, setActiveTab] = useState("Todas");
   const [search, setSearch]       = useState("");
@@ -598,6 +597,7 @@ function PageContent() {
   const [opportunityModalView, setOpportunityModalView] = useState("detalhes");
   const [avaliacoes, setAvaliacoes] = useState({});
   const [avaliacaoModal, setAvaliacaoModal] = useState(null);
+  const { addNotificacao } = useNotificacoes();
 
   const PER_PAGE = 6;
   const solicitacoes = useMemo(() => [...extraSolicitacoes, ...SOLICITACOES], [extraSolicitacoes]);
@@ -626,6 +626,14 @@ function PageContent() {
 
   const saveAvaliacao = (avaliacao) => {
     setAvaliacoes((current) => ({ ...current, [avaliacaoModal.id]: avaliacao }));
+    addNotificacao({
+      icon: "doc",
+      iconColor: "#F59E0B",
+      iconBg: "#FFFBEB",
+      title: "Avaliação enviada!",
+      desc: `Você avaliou "${avaliacaoModal.servico}" com ${avaliacao.nota} estrela${avaliacao.nota !== 1 ? "s" : ""}. Obrigado pelo feedback!`,
+      category: "solicitações",
+    });
     setAvaliacaoModal(null);
   };
 
@@ -638,7 +646,6 @@ function PageContent() {
       <div style={{ flex: 1, overflowY: "auto", background: "#F9FAFB", fontFamily: "'DM Sans', sans-serif", color: "#111827" }}>
         <div style={{ maxWidth: 1120, margin: "0 auto", padding: "36px 24px 60px" }}>
 
-          {/* Header */}
           <div className="page-in" style={{ marginBottom: 28 }}>
             <h1 style={{ fontFamily: "'Sora', sans-serif", fontSize: "1.75rem", fontWeight: 700, color: "#111827", margin: 0, marginBottom: 5 }}>
               Minhas Solicitações
@@ -648,7 +655,6 @@ function PageContent() {
             </p>
           </div>
 
-          {/* Search + Filtros */}
           <div className="page-in" style={{ animationDelay: "50ms", display: "flex", gap: 10, marginBottom: 20 }}>
             <div style={{ flex: 1, position: "relative" }}>
               <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: "0.95rem", color: "#9CA3AF" }}>🔍</span>
@@ -674,7 +680,6 @@ function PageContent() {
             </button>
           </div>
 
-          {/* Tabs */}
           <div className="page-in" style={{ animationDelay: "80ms", display: "flex", gap: 6, marginBottom: 22, flexWrap: "wrap" }}>
             {TABS.map((tab) => {
               const isActive = activeTab === tab.key;
@@ -692,7 +697,6 @@ function PageContent() {
             })}
           </div>
 
-          {/* Cards */}
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {paginated.length === 0 ? (
               <div style={{ textAlign: "center", padding: "64px 20px", background: "#fff", borderRadius: 14, border: "1px solid #F3F4F6", color: "#9CA3AF", fontSize: "0.9rem" }}>
@@ -712,7 +716,6 @@ function PageContent() {
             )}
           </div>
 
-          {/* Paginação */}
           <div className="page-in" style={{ animationDelay: "200ms", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28 }}>
             <span style={{ fontSize: "0.78rem", color: "#9CA3AF" }}>
               Mostrando {Math.min((page - 1) * PER_PAGE + 1, filtered.length)} a {Math.min(page * PER_PAGE, filtered.length)} de {filtered.length} solicitações
@@ -750,7 +753,6 @@ function PageContent() {
   );
 }
 
-// ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function MinhasSolicitacoes() {
   return (
     <>
@@ -769,19 +771,10 @@ export default function MinhasSolicitacoes() {
       `}</style>
 
       <div style={{ display: "flex", width: "100%", height: "100vh", overflow: "hidden", fontFamily: "'Segoe UI', sans-serif" }}>
-
-        {/* SIDEBAR */}
         <Sidebar />
-
-        {/* MAIN */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden" }}>
-
-          {/* TOPBAR */}
           <Topbar />
-
-          {/* PAGE CONTENT */}
           <PageContent />
-
         </div>
       </div>
     </>

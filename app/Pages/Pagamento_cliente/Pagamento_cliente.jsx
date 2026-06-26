@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import TopBar_cliente from "@/app/components/TopBar_cliente";
 import SideBar_cliente from "@/app/components/SideBar_cliente";
+import { useNotificacoes } from "@/context/NotificacoesContext";
 
 // ─── ICON COMPONENT ──────────────────────────────────────────────────────────
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
@@ -267,7 +268,6 @@ function ResumoCard({ title = "Resumo da contratação", showProvider = true, sh
   const total = contratacao.valorServico + contratacao.taxaPlataforma - (showPix ? contratacao.descontoPix : 0);
   return (
     <div style={{ backgroundColor: "white", borderRadius: 18, padding: 26, boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1.5px solid #f1f5f9", width: 320, flexShrink: 0 }}>
-      {/* ↓ gap: 12 corrige o "colado" entre título e "Ver detalhes" */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 20 }}>
         <h3 style={{ fontSize: 17, fontWeight: 700, color: "#0d1b3e", margin: 0 }}>{title}</h3>
         {showProvider && <button style={{ fontSize: 14, color: "#6366f1", fontWeight: 600, background: "none", border: "none", cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>Ver detalhes</button>}
@@ -392,7 +392,6 @@ function Step1({ onNext }) {
   return (
     <div style={{ display: "flex", gap: 28, alignItems: "flex-start" }}>
       <div style={{ flex: 1 }}>
-        {/* ── BREADCRUMB / BOTÃO VOLTAR AO INÍCIO ── */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
           <button
             onClick={() => router.push("/Pages/Tela_inicial_cliente")}
@@ -604,6 +603,8 @@ function Step2({ onNext, onBack }) {
 
 // ─── STEP 3 — CONFIRMAÇÃO ────────────────────────────────────────────────────
 function Step3({ onNext, onBack }) {
+  const { addNotificacao } = useNotificacoes(); // ← hook adicionado
+
   return (
     <div style={{ display: "flex", gap: 28, alignItems: "flex-start" }}>
       <div style={{ flex: 1 }}>
@@ -648,7 +649,18 @@ function Step3({ onNext, onBack }) {
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", marginTop: 24 }}>
-          <NavBtn onClick={onNext}>
+          {/* ↓ onClick agora dispara a notificação antes de avançar */}
+          <NavBtn onClick={() => {
+            addNotificacao({
+              icon: "doc",
+              iconColor: "#22c55e",
+              iconBg: "#F0FDF4",
+              title: "Pagamento aprovado!",
+              desc: `Seu pagamento de R$ 348,75 foi aprovado. O prestador ${contratacao.prestador} foi notificado e seu serviço está confirmado para ${contratacao.dataAgendada}.`,
+              category: "solicitações",
+            });
+            onNext();
+          }}>
             Ver comprovante <Icon name="arrowRight" size={15} color="white" strokeWidth={2} />
           </NavBtn>
         </div>
@@ -711,7 +723,6 @@ function Step4({ onRestart }) {
           </div>
         </div>
 
-        {/* ── BOTÃO BAIXAR COMPROVANTE ── */}
         <div style={{ marginBottom: 18 }}>
           <button
             onClick={handleBaixar}
@@ -764,17 +775,13 @@ export default function Pagamento() {
         input:focus { border-color: #f97316 !important; box-shadow: 0 0 0 3px rgba(249,115,22,0.15) !important; }
       `}</style>
 
-      {/* TOPBAR */}
       <TopBar_cliente />
 
-      {/* BODY */}
-        <div style={{ display: "flex", flex: 1, overflow: "hidden", alignItems: "stretch" }}>
-          {/* SIDEBAR */}
-          <div style={{ flexShrink: 0 }}>
-            <SideBar_cliente />
-          </div>
+      <div style={{ display: "flex", flex: 1, overflow: "hidden", alignItems: "stretch" }}>
+        <div style={{ flexShrink: 0 }}>
+          <SideBar_cliente />
+        </div>
 
-        {/* SCROLL AREA */}
         <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
           <div style={{ maxWidth: 1080, margin: "0 auto", padding: "36px 28px" }}>
             {step === 1 && <Step1 onNext={() => setStep(2)} />}
@@ -783,7 +790,6 @@ export default function Pagamento() {
             {step === 4 && <Step4 onRestart={() => setStep(1)} />}
           </div>
 
-          {/* FOOTER */}
           <footer style={{ backgroundColor: "#0d1b3e", color: "white", marginTop: 40 }}>
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", padding: "16px 40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

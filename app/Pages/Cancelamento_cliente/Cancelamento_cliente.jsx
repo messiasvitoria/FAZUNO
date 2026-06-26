@@ -2,56 +2,31 @@
 
 import React, { useState } from "react";
 import {
-  FaArrowLeft,
-  FaEllipsisH,
-  FaTimes,
-  FaExclamationTriangle,
-  FaCheckCircle,
-  FaBell,
-  FaStar,
-  FaMapMarkerAlt,
-  FaCalendarAlt,
-  FaMoneyBillWave,
-  FaCommentDots,
-  FaShieldAlt,
-  FaQuestionCircle,
-  FaClipboardList,
-  FaRedoAlt,
-  FaHome,
+  FaArrowLeft, FaEllipsisH, FaTimes, FaExclamationTriangle,
+  FaCheckCircle, FaStar, FaMapMarkerAlt, FaCalendarAlt,
+  FaMoneyBillWave, FaCommentDots, FaShieldAlt, FaClipboardList,
+  FaRedoAlt, FaHome,
 } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { addNotification } from "../../lib/notifications";
+import { useNotificacoes } from "@/context/NotificacoesContext"; // ← substituído
 import SideBar_cliente from "../../components/SideBar_cliente";
 import TopBar_cliente from "../../components/TopBar_cliente";
 
 const C = {
-  navy: "#06104A",
-  band: "#143660",
-  orange: "#f1670f",
-  muted: "#6975A8",
-  border: "#E2E7F0",
-  purple: "#7C5CFC",
-  green: "#16A34A",
-  star: "#F59E0B",
-  red: "#DC2626",
-  redBg: "#FEF2F2",
-  blue: "#2563EB",
-  blueBg: "#EEF4FF",
-  bg: "#F6F7FB",
-  white: "#FFFFFF",
+  navy: "#06104A", band: "#143660", orange: "#f1670f", muted: "#6975A8",
+  border: "#E2E7F0", purple: "#7C5CFC", green: "#16A34A", star: "#F59E0B",
+  red: "#DC2626", redBg: "#FEF2F2", blue: "#2563EB", blueBg: "#EEF4FF",
+  bg: "#F6F7FB", white: "#FFFFFF",
 };
 
-const FONTS = {
-  heading: "'Sora', sans-serif",
-  body: "'DM Sans', sans-serif",
-};
+const FONTS = { heading: "'Sora', sans-serif", body: "'DM Sans', sans-serif" };
 
 const STEPS_INFO = [
-  { id: 1, title: "Acessar solicitação",       desc: "Cliente acessa os detalhes da solicitação." },
-  { id: 2, title: "Solicitar cancelamento",    desc: "Cliente escolhe o motivo do cancelamento." },
-  { id: 3, title: "Confirmar cancelamento",    desc: "Cliente revisa as informações e confirma." },
-  { id: 4, title: "Cancelamento realizado",    desc: "Sistema registra e notifica o prestador." },
-  { id: 5, title: "Status atualizado",         desc: "Solicitação é atualizada para cancelada." },
+  { id: 1, title: "Acessar solicitação",    desc: "Cliente acessa os detalhes da solicitação." },
+  { id: 2, title: "Solicitar cancelamento", desc: "Cliente escolhe o motivo do cancelamento." },
+  { id: 3, title: "Confirmar cancelamento", desc: "Cliente revisa as informações e confirma." },
+  { id: 4, title: "Cancelamento realizado", desc: "Sistema registra e notifica o prestador." },
+  { id: 5, title: "Status atualizado",      desc: "Solicitação é atualizada para cancelada." },
 ];
 
 const MOTIVOS = [
@@ -75,15 +50,17 @@ const REQUEST = {
 function statusStyle(status) {
   const map = {
     "Em andamento": { bg: C.blueBg, fg: C.blue },
-    Cancelada: { bg: C.redBg, fg: C.red },
+    Cancelada:      { bg: C.redBg,  fg: C.red  },
   };
   return map[status] || { bg: "#F1F2F6", fg: C.muted };
 }
 
 export default function CancelamentoCliente() {
-  const [step, setStep] = useState(1);
-  const [motivo, setMotivo] = useState("");
-  const [obs, setObs] = useState("");
+  const [step, setStep]           = useState(1);
+  const [motivo, setMotivo]       = useState("");
+  const [obs, setObs]             = useState("");
+  const [notifOpen, setNotifOpen] = useState(true);
+  const { addNotificacao } = useNotificacoes(); // ← hook adicionado
 
   const irPara = (n) => setStep(n);
 
@@ -91,25 +68,32 @@ export default function CancelamentoCliente() {
     setStep(1);
     setMotivo("");
     setObs("");
+    setNotifOpen(true);
   };
 
   const confirmarCancelamento = () => {
-    addNotification({
-      audience: "prestador",
-      type: "cancelamento",
-      title: "Solicitação cancelada pelo cliente",
-      message: `${REQUEST.cliente.nome} cancelou "${REQUEST.servico}". Motivo: ${motivo}.`,
-      requestId: REQUEST.servico,
+    // ← substituído: agora usa addNotificacao do contexto
+    addNotificacao({
+      icon: "doc",
+      iconColor: C.red,
+      iconBg: C.redBg,
+      title: "Solicitação cancelada",
+      desc: `Você cancelou "${REQUEST.servico}". Motivo: ${motivo}.`,
+      category: "solicitações",
     });
     irPara(4);
   };
 
   const podeContinuar = motivo !== "";
-  const status = step >= 6 ? "Cancelada" : "Em andamento";
-  const statusColors = statusStyle(status);
+  const status        = step >= 6 ? "Cancelada" : "Em andamento";
+  const statusColors  = statusStyle(status);
 
   return (
-    <div style={{ width: "100%", height: "100vh", overflow: "hidden", display: "flex", flexDirection: "column", fontFamily: FONTS.body, backgroundColor: C.bg }}>
+    <div style={{
+      width: "100%", height: "100vh", overflow: "hidden",
+      display: "flex", flexDirection: "column",
+      fontFamily: FONTS.body, backgroundColor: C.bg,
+    }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap');
         @keyframes cancelStepFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -118,17 +102,18 @@ export default function CancelamentoCliente() {
         .cancel-textarea::placeholder { color: ${C.muted}; }
       `}</style>
 
-      {/* TOPBAR */}
+      {/* ── TOPBAR ── */}
       <TopBar_cliente />
 
-      {/* BODY */}
+      {/* ── BODY ── */}
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        {/* SIDEBAR */}
+
+        {/* ── SIDEBAR ── */}
         <div style={{ flexShrink: 0 }}>
           <SideBar_cliente />
         </div>
 
-        {/* SCROLL AREA */}
+        {/* ── SCROLL AREA ── */}
         <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto", padding: "36px 28px 64px" }}>
 
@@ -148,7 +133,7 @@ export default function CancelamentoCliente() {
             {/* Stepper */}
             <div style={{ display: "flex", gap: 4, overflowX: "auto", paddingBottom: 14, marginBottom: 24 }}>
               {STEPS_INFO.map((s, idx) => {
-                const isDone = step > s.id;
+                const isDone    = step > s.id;
                 const isCurrent = step === s.id;
                 return (
                   <div key={s.id} style={{ display: "flex", alignItems: "center", minWidth: 168, flex: 1 }}>
@@ -156,10 +141,8 @@ export default function CancelamentoCliente() {
                       <div style={{ width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, fontFamily: FONTS.heading, flexShrink: 0, background: isDone ? C.green : isCurrent ? C.orange : C.white, color: isDone || isCurrent ? C.white : C.muted, border: isDone || isCurrent ? "none" : `1.5px solid ${C.border}` }}>
                         {isDone ? <FaCheckCircle size={13} /> : s.id}
                       </div>
-                      <div>
-                        <div style={{ fontSize: 12.5, fontWeight: 700, color: isCurrent ? C.navy : C.muted, fontFamily: FONTS.heading, whiteSpace: "nowrap" }}>
-                          {s.title}
-                        </div>
+                      <div style={{ fontSize: 12.5, fontWeight: 700, color: isCurrent ? C.navy : C.muted, fontFamily: FONTS.heading, whiteSpace: "nowrap" }}>
+                        {s.title}
                       </div>
                     </div>
                     {idx < STEPS_INFO.length - 1 && (
@@ -170,17 +153,17 @@ export default function CancelamentoCliente() {
               })}
             </div>
 
-            {/* Conteúdo principal + sidebar */}
+            {/* Conteúdo + sidebar informativa */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 24, alignItems: "start" }}>
               <div key={step} className="cancel-step-anim">
                 {step === 1 && <Step1 status={status} statusColors={statusColors} onCancelar={() => irPara(2)} />}
                 {step === 2 && <Step2 motivo={motivo} setMotivo={setMotivo} obs={obs} setObs={setObs} podeContinuar={podeContinuar} onVoltar={() => irPara(1)} onContinuar={() => irPara(3)} />}
                 {step === 3 && <Step3 motivo={motivo} obs={obs} onVoltar={() => irPara(2)} onConfirmar={confirmarCancelamento} />}
-                {step === 4 && <Step4 motivo={motivo} onContinuar={() => irPara(5)} onReiniciar={reiniciar} />}
+                {step === 4 && <Step4 motivo={motivo} onContinuar={() => irPara(5)} />}
                 {step === 5 && <Step5 motivo={motivo} statusColors={statusStyle("Cancelada")} onReiniciar={reiniciar} />}
               </div>
 
-              <SidebarInfo step={step} />
+              <Sidebar step={step} />
             </div>
 
             <FooterNotes />
@@ -228,8 +211,9 @@ const iconBtnStyle = {
 };
 
 const btnBase = {
-  fontFamily: FONTS.heading, fontWeight: 700, fontSize: 14, borderRadius: 10,
-  padding: "11px 20px", cursor: "pointer", border: "none", transition: "filter 0.15s ease",
+  fontFamily: FONTS.heading, fontWeight: 700, fontSize: 14,
+  borderRadius: 10, padding: "11px 20px", cursor: "pointer",
+  border: "none", transition: "filter 0.15s ease",
 };
 
 function PrimaryButton({ children, onClick, color = C.navy, disabled, full }) {
@@ -277,7 +261,7 @@ function Avatar({ iniciais, color }) {
 function Step1({ status, statusColors, onCancelar }) {
   return (
     <Card>
-      <CardHeader title="Detalhes da solicitação" />
+      <CardHeader title="Detalhes da solicitação" onClose={null} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
         <span style={{ display: "inline-block", background: statusColors.bg, color: statusColors.fg, fontSize: 12.5, fontWeight: 700, padding: "5px 12px", borderRadius: 999, marginBottom: 16 }}>
           {status}
@@ -299,8 +283,8 @@ function Step1({ status, statusColors, onCancelar }) {
           </div>
         </div>
       </div>
-      <InfoRow icon={<FaCalendarAlt size={14} />} label="Data agendada" value={REQUEST.dataAgendada} />
-      <InfoRow icon={<FaMapMarkerAlt size={14} />} label="Endereço" value={REQUEST.endereco} />
+      <InfoRow icon={<FaCalendarAlt size={14} />}   label="Data agendada"    value={REQUEST.dataAgendada} />
+      <InfoRow icon={<FaMapMarkerAlt size={14} />}  label="Endereço"         value={REQUEST.endereco} />
       <InfoRow icon={<FaMoneyBillWave size={14} />} label="Valor do serviço" value={REQUEST.valor} valueColor={C.orange} />
       <div style={{ display: "flex", gap: 12, marginTop: 18 }}>
         <OutlineButton color={C.purple}>
@@ -354,12 +338,12 @@ function Step3({ motivo, obs, onVoltar, onConfirmar }) {
       </div>
       <div style={{ border: `1px solid ${C.border}`, borderRadius: 14, padding: 18, marginBottom: 22 }}>
         <div style={{ fontSize: 12.5, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 14 }}>Resumo da solicitação</div>
-        <SummaryLine label="Serviço" value={REQUEST.servico} />
-        <SummaryLine label="Prestador" value={REQUEST.prestador.nome} />
-        <SummaryLine label="Data agendada" value={REQUEST.dataAgendada} />
-        <SummaryLine label="Valor do serviço" value={REQUEST.valor} />
+        <SummaryLine label="Serviço"                value={REQUEST.servico} />
+        <SummaryLine label="Prestador"              value={REQUEST.prestador.nome} />
+        <SummaryLine label="Data agendada"          value={REQUEST.dataAgendada} />
+        <SummaryLine label="Valor do serviço"       value={REQUEST.valor} />
         <SummaryLine label="Motivo do cancelamento" value={motivo} />
-        <SummaryLine label="Observação" value={obs || "Não preencheu observação."} last />
+        <SummaryLine label="Observação"             value={obs || "Não preencheu observação."} last />
       </div>
       <div style={{ display: "flex", gap: 12 }}>
         <OutlineButton onClick={onVoltar}>Voltar</OutlineButton>
@@ -379,8 +363,7 @@ function SummaryLine({ label, value, last }) {
 }
 
 /* ── STEP 4 ── */
-function Step4({ motivo, onContinuar, onReiniciar }) {
-  const router = useRouter();
+function Step4({ motivo, onContinuar }) {
   return (
     <Card style={{ textAlign: "center" }}>
       <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#E9F8EF", display: "flex", alignItems: "center", justifyContent: "center", margin: "8px auto 18px" }}>
@@ -391,12 +374,10 @@ function Step4({ motivo, onContinuar, onReiniciar }) {
       <div style={{ border: `1px solid ${C.border}`, borderRadius: 14, padding: 18, textAlign: "left", marginBottom: 22 }}>
         <div style={{ fontSize: 12.5, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 0.4, marginBottom: 14 }}>Resumo do cancelamento</div>
         <SummaryLine label="Data do cancelamento" value={REQUEST.canceladoEm} />
-        <SummaryLine label="Cancelado por" value={`${REQUEST.cliente.nome} (Cliente)`} />
-        <SummaryLine label="Motivo" value={motivo} last />
+        <SummaryLine label="Cancelado por"        value={`${REQUEST.cliente.nome} (Cliente)`} />
+        <SummaryLine label="Motivo"               value={motivo} last />
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <PrimaryButton full onClick={onContinuar}>Ver minhas solicitações</PrimaryButton>
-      </div>
+      <PrimaryButton full onClick={onContinuar}>Ver minhas solicitações</PrimaryButton>
     </Card>
   );
 }
@@ -406,7 +387,7 @@ function Step5({ motivo, statusColors, onReiniciar }) {
   const router = useRouter();
   return (
     <Card>
-      <CardHeader title="Detalhes da solicitação" />
+      <CardHeader title="Detalhes da solicitação" onClose={null} />
       <span style={{ display: "inline-block", background: statusColors.bg, color: statusColors.fg, fontSize: 12.5, fontWeight: 700, padding: "5px 12px", borderRadius: 999, marginBottom: 16 }}>
         Cancelada
       </span>
@@ -418,20 +399,20 @@ function Step5({ motivo, statusColors, onReiniciar }) {
         <Avatar iniciais={REQUEST.prestador.iniciais} color={C.purple} />
         <div style={{ fontWeight: 700, color: C.navy, fontSize: 14.5 }}>{REQUEST.prestador.nome}</div>
       </div>
-      <InfoRow icon={<FaCalendarAlt size={14} />} label="Data agendada" value={REQUEST.dataAgendada} />
-      <InfoRow icon={<FaMapMarkerAlt size={14} />} label="Endereço" value={REQUEST.endereco} />
-      <InfoRow icon={<FaMoneyBillWave size={14} />} label="Valor do serviço" value={REQUEST.valor} valueColor={C.orange} />
-      <InfoRow icon={<FaCalendarAlt size={14} />} label="Cancelada em" value={REQUEST.canceladoEm} />
-      <InfoRow icon={<FaExclamationTriangle size={14} />} label="Motivo" value={motivo} />
+      <InfoRow icon={<FaCalendarAlt size={14} />}         label="Data agendada"    value={REQUEST.dataAgendada} />
+      <InfoRow icon={<FaMapMarkerAlt size={14} />}        label="Endereço"         value={REQUEST.endereco} />
+      <InfoRow icon={<FaMoneyBillWave size={14} />}       label="Valor do serviço" value={REQUEST.valor} valueColor={C.orange} />
+      <InfoRow icon={<FaCalendarAlt size={14} />}         label="Cancelada em"     value={REQUEST.canceladoEm} />
+      <InfoRow icon={<FaExclamationTriangle size={14} />} label="Motivo"           value={motivo} />
+
       <div style={{ display: "flex", gap: 12, marginTop: 18, flexWrap: "wrap" }}>
         <PrimaryButton color={C.navy} onClick={() => router.push("/Pages/Minhas_Solicitacoes")}>
           Ver minhas solicitações
         </PrimaryButton>
-        {/* ── BOTÃO VOLTAR AO INÍCIO ── */}
         <button
           onClick={() => router.push("/Pages/Tela_inicial_cliente")}
           style={{ padding: "11px 20px", borderRadius: 10, border: `1.5px solid ${C.border}`, background: C.white, color: C.navy, fontFamily: FONTS.heading, fontWeight: 700, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, transition: "all 0.2s" }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = C.navy; e.currentTarget.style.background = "#F6F7FB"; }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = C.navy; e.currentTarget.style.background = C.bg; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.background = C.white; }}
         >
           <FaHome size={14} color={C.navy} /> Voltar ao início
@@ -445,12 +426,12 @@ function Step5({ motivo, statusColors, onReiniciar }) {
 }
 
 /* ── Sidebar informativa ── */
-function SidebarInfo({ step }) {
+function Sidebar({ step }) {
   const itens = [
-    { label: "Nova", ativo: true },
-    { label: "Aceita", ativo: true },
-    { label: "Em andamento", ativo: true },
-    { label: "Aguardando confirmação do cliente", ativo: true },
+    { label: "Nova" },
+    { label: "Aceita" },
+    { label: "Em andamento" },
+    { label: "Aguardando confirmação do cliente" },
   ];
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -490,6 +471,7 @@ function FooterNotes() {
           Todas as ações de cancelamento ficam registradas no histórico da solicitação e podem ser consultadas por ambas as partes.
         </span>
       </div>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 10, flex: "1 1 220px" }} />
     </div>
   );
 }
