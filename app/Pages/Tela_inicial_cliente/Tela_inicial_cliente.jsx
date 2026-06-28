@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Sidebar from "../../components/SideBar_cliente";
 import Topbar  from "../../components/TopBar_cliente";
 
@@ -8,6 +8,7 @@ import Topbar  from "../../components/TopBar_cliente";
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
   const paths = {
     chevRight:    ["M9 18l6-6-6-6"],
+    chevLeft:     ["M15 18l-6-6 6-6"],
     mapPin:       ["M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z","M12 10m-3 0a3 3 0 106 0 3 3 0 00-6 0"],
     checkCircle:  ["M22 11.08V12a10 10 0 11-5.93-9.14","M22 4L12 14.01l-3-3"],
     search:       ["M11 11m-8 0a8 8 0 1016 0 8 8 0 00-16 0","M21 21l-4.35-4.35"],
@@ -45,16 +46,171 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
   );
 }
 
-// ─── HOME PAGE SUB-COMPONENTS ────────────────────────────────────────────────
+// ─── INFINITE CAROUSEL ───────────────────────────────────────────────────────
+function InfiniteCarousel({ items, renderItem, itemWidth, gap = 16, visibleCount }) {
+  const CLONE_COUNT = visibleCount + 1;
+  const cloned = [
+    ...items.slice(-CLONE_COUNT),
+    ...items,
+    ...items.slice(0, CLONE_COUNT),
+  ];
+  const realStart = CLONE_COUNT;
+  const step = itemWidth + gap;
+
+  const [index, setIndex] = useState(realStart);
+  const [animating, setAnimating] = useState(true);
+  const lockRef = useRef(false);
+
+  const handleTransitionEnd = useCallback(() => {
+    if (index < realStart) {
+      setAnimating(false);
+      setIndex(index + items.length);
+    } else if (index >= realStart + items.length) {
+      setAnimating(false);
+      setIndex(index - items.length);
+    }
+  }, [index, items.length, realStart]);
+
+  useEffect(() => {
+    if (!animating) {
+      const id = requestAnimationFrame(() => setAnimating(true));
+      return () => cancelAnimationFrame(id);
+    }
+  }, [animating]);
+
+  const go = (dir) => {
+    if (lockRef.current) return;
+    lockRef.current = true;
+    setAnimating(true);
+    setIndex(i => i + dir);
+    setTimeout(() => { lockRef.current = false; }, 380);
+  };
+
+  const offset = -(index * step);
+
+  // Setas como faixas laterais semi-transparentes com botão central
+  const ArrowBtn = ({ dir }) => (
+    <div
+      style={{
+        position: "absolute",
+        top: "50%",
+        transform: "translateY(-50%)",
+        [dir === -1 ? "left" : "right"]: 0,
+        zIndex: 10,
+        width: 40,
+        height: 40,
+      }}
+      onClick={() => go(dir)}
+    >
+      <button
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          border: "2px solid #e5e7eb",
+          background: "white",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.14)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          transition: "background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.15s",
+          flexShrink: 0,
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.background = "#f97316";
+          e.currentTarget.style.borderColor = "#f97316";
+          e.currentTarget.style.boxShadow = "0 6px 20px rgba(249,115,22,0.4)";
+          e.currentTarget.style.transform = "scale(1.08)";
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.background = "white";
+          e.currentTarget.style.borderColor = "#e5e7eb";
+          e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.14)";
+          e.currentTarget.style.transform = "scale(1)";
+        }}
+      >
+        <Icon name={dir === -1 ? "chevLeft" : "chevRight"} size={18} color="#0d1b3e" strokeWidth={2.5} />
+      </button>
+    </div>
+  );
+
+  return (
+    <div style={{ position: "relative" }}>
+      <div style={{
+        overflow: "hidden",
+        margin: "0 28px",
+        paddingTop: 8,
+        paddingBottom: 12,
+      }}>
+        <div
+          onTransitionEnd={handleTransitionEnd}
+          style={{
+            display: "flex",
+            gap,
+            transform: `translateX(${offset}px)`,
+            transition: animating ? "transform 0.35s cubic-bezier(0.4,0,0.2,1)" : "none",
+            willChange: "transform",
+          }}
+        >
+          {cloned.map((item, i) => (
+            <div key={i} style={{ flexShrink: 0, width: itemWidth }}>
+              {renderItem(item, i)}
+            </div>
+          ))}
+        </div>
+      </div>
+      <ArrowBtn dir={-1} />
+      <ArrowBtn dir={1} />
+    </div>
+  );
+}
+
+// ─── CARDS ───────────────────────────────────────────────────────────────────
 function CategoryCard({ cat }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, cursor: "pointer" }}
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
-      <div style={{ width: "60%", aspectRatio: "1", borderRadius: 12, backgroundColor: "white", border: hovered ? "2px solid #f97316" : "2px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", transform: hovered ? "translateY(-5px)" : "translateY(0)", boxShadow: hovered ? "0 8px 24px rgba(249,115,22,0.22)" : "0 2px 8px rgba(0,0,0,0.06)", transition: "all 0.25s ease" }}>
+      <div style={{ width: 60, height: 60, borderRadius: 14, backgroundColor: "white", border: hovered ? "2px solid #f97316" : "2px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", transform: hovered ? "translateY(-5px)" : "translateY(0)", boxShadow: hovered ? "0 8px 24px rgba(249,115,22,0.22)" : "0 2px 8px rgba(0,0,0,0.06)", transition: "all 0.25s ease" }}>
         <Icon name={cat.icon} size={26} color="#0d1b3e" strokeWidth={1.7} />
       </div>
       <span style={{ fontSize: 12, color: "#4b5563", fontWeight: 500, textAlign: "center", lineHeight: 1.2 }}>{cat.label}</span>
+    </div>
+  );
+}
+
+function ProfessionalCard({ pro }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      style={{ backgroundColor: "white", borderRadius: 18, padding: 16, boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.18)" : "0 0 0 1.5px #e5e7eb, 0 2px 12px rgba(0,0,0,0.07)", transform: hovered ? "translateY(-6px)" : "translateY(0)", transition: "all 0.25s ease", cursor: "pointer" }}
+      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+    >
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
+        <div style={{ width: 56, height: 56, borderRadius: "50%", overflow: "hidden", border: "2px solid #fed7aa", flexShrink: 0 }}>
+          <img src={pro.photo} alt={pro.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
+        </div>
+      </div>
+      <p style={{ fontWeight: 700, fontSize: 13, color: "#111827", textAlign: "center", margin: "0 0 2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pro.name}</p>
+      <p style={{ fontSize: 12, color: "#9ca3af", textAlign: "center", margin: "0 0 8px" }}>{pro.role}</p>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginBottom: 4 }}>
+        <Icon name="star" size={13} color="#f59e0b" />
+        <span style={{ fontSize: 12, fontWeight: 700, color: "#374151" }}>{pro.rating}</span>
+        <span style={{ fontSize: 12, color: "#9ca3af" }}>({pro.reviews})</span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginBottom: 4 }}>
+        <Icon name="mapPin" size={12} color="#9ca3af" />
+        <span style={{ fontSize: 11, color: "#9ca3af" }}>{pro.distance}</span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginBottom: 12 }}>
+        <Icon name="checkCircle" size={13} color="#22c55e" />
+        <span style={{ fontSize: 12, color: "#16a34a", fontWeight: 500 }}>Verificada</span>
+      </div>
+      <button style={{ width: "100%", backgroundColor: "#0d1b3e", color: "white", fontWeight: 700, fontSize: 12, padding: "9px 0", borderRadius: 12, border: "none", cursor: "pointer", transition: "background 0.2s" }}
+        onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f97316"}
+        onMouseLeave={e => e.currentTarget.style.backgroundColor = "#0d1b3e"}
+      >Contratar</button>
     </div>
   );
 }
@@ -64,7 +220,7 @@ function ServiceCard({ svc }) {
   const images = { faxina: "/foto_faxineira1.avif", eletrica: "/foto_eletricista.jpg", encanador: "/foto_encanador.jpg", moveis: "/foto_montador_moveis.avif", pintora: "/foto_pintora.avif" };
   const iconToKey = { "broomCat": "faxina", "zap": "eletrica", "droplet": "encanador", "wrench2": "moveis", "heartIcon": "pintora" };
   return (
-    <div style={{ backgroundColor: "white", borderRadius: 18, overflow: "hidden", boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.18)" : "0 2px 12px rgba(0,0,0,0.08)", border: `1.5px solid ${hovered ? "#f97316" : "transparent"}`, transform: hovered ? "translateY(-6px)" : "translateY(0)", transition: "all 0.25s ease", cursor: "pointer" }}
+    <div style={{ backgroundColor: "white", borderRadius: 18, overflow: "hidden", boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.18)" : "0 0 0 1.5px #e5e7eb, 0 2px 12px rgba(0,0,0,0.08)", transform: hovered ? "translateY(-6px)" : "translateY(0)", transition: "all 0.25s ease", cursor: "pointer" }}
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
       <div style={{ height: 120, overflow: "hidden", position: "relative" }}>
         <img src={images[iconToKey[svc.icon] || "faxina"]} alt={svc.label} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} onError={e => { e.target.style.display = "none"; e.target.parentNode.style.background = `linear-gradient(135deg, ${svc.bg} 0%, ${svc.color}22 100%)`; }} />
@@ -77,6 +233,30 @@ function ServiceCard({ svc }) {
           <span style={{ fontSize: 13, fontWeight: 700, color: "#111827", lineHeight: 1.2 }}>{svc.label}</span>
         </div>
         <p style={{ fontSize: 12, color: "#9ca3af", margin: 0 }}>A partir de {svc.price}</p>
+      </div>
+    </div>
+  );
+}
+
+function ReviewCard({ r }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      style={{ backgroundColor: "white", borderRadius: 18, padding: 16, boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.15)" : "0 0 0 1.5px #e5e7eb, 0 2px 12px rgba(0,0,0,0.06)", cursor: "pointer", transition: "transform 0.25s, box-shadow 0.25s", transform: hovered ? "translateY(-4px)" : "translateY(0)" }}
+      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+    >
+      <div style={{ display: "flex", gap: 2, marginBottom: 10 }}>
+        {Array.from({ length: r.rating }).map((_, j) => <Icon key={j} name="star" size={15} color="#f59e0b" />)}
+      </div>
+      <p style={{ fontSize: 12, color: "#4b5563", lineHeight: 1.6, margin: "0 0 12px" }}>&ldquo;{r.text}&rdquo;</p>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, paddingTop: 12, borderTop: "1px solid #f9fafb" }}>
+        <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "1px solid #f3f4f6" }}>
+          <img src={r.photo} alt={r.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
+        </div>
+        <div>
+          <p style={{ fontSize: 12, fontWeight: 700, color: "#111827", margin: 0 }}>{r.name}</p>
+          <p style={{ fontSize: 11, color: "#9ca3af", margin: 0 }}>{r.role}</p>
+        </div>
       </div>
     </div>
   );
@@ -97,11 +277,13 @@ const categories = [
 ];
 
 const professionals = [
-  { name: "Ana Silva",     role: "Faxineira",   rating: 4.9, reviews: 120, distance: "2 km de você",   photo: "/foto_faxineira2.avif" },
-  { name: "Carlos Lima",   role: "Eletricista", rating: 4.8, reviews: 98,  distance: "3 km de você",   photo: "/foto_eletricista2.jpg" },
-  { name: "Juliana Costa", role: "Cuidadora",   rating: 4.9, reviews: 76,  distance: "1,5 km de você", photo: "/foto_cuidadora.jpg" },
-  { name: "Roberto Souza", role: "Encanador",   rating: 4.7, reviews: 143, distance: "4 km de você",   photo: "/foto_encanador2.jpg" },
-  { name: "Fernanda Reis", role: "Pintora",     rating: 5.0, reviews: 55,  distance: "2,5 km de você", photo: "/foto_pintora2.avif" },
+  { name: "Ana Silva",      role: "Faxineira",   rating: 4.9, reviews: 120, distance: "2 km de você",   photo: "/foto_faxineira2.avif" },
+  { name: "Carlos Lima",    role: "Eletricista", rating: 4.8, reviews: 98,  distance: "3 km de você",   photo: "/foto_eletricista2.jpg" },
+  { name: "Juliana Costa",  role: "Cuidadora",   rating: 4.9, reviews: 76,  distance: "1,5 km de você", photo: "/foto_cuidadora.jpg" },
+  { name: "Roberto Souza",  role: "Encanador",   rating: 4.7, reviews: 143, distance: "4 km de você",   photo: "/foto_encanador2.jpg" },
+  { name: "Fernanda Reis",  role: "Pintora",     rating: 5.0, reviews: 55,  distance: "2,5 km de você", photo: "/foto_pintora2.avif" },
+  { name: "Marcos Antunes", role: "Jardineiro",  rating: 4.8, reviews: 61,  distance: "3,5 km de você", photo: "/foto_encanador.jpg" },
+  { name: "Patrícia Melo",  role: "Cozinheira",  rating: 4.9, reviews: 88,  distance: "1 km de você",   photo: "/foto_faxineira1.avif" },
 ];
 
 const services = [
@@ -110,6 +292,8 @@ const services = [
   { icon: "droplet",   label: "Encanador",           price: "R$ 90",  color: "#3b82f6", bg: "#dbeafe" },
   { icon: "wrench2",   label: "Montagem de Móveis",  price: "R$ 70",  color: "#f97316", bg: "#ffedd5" },
   { icon: "heartIcon", label: "Pintora",             price: "R$ 150", color: "#8b5cf6", bg: "#ede9fe" },
+  { icon: "leafIcon",  label: "Jardinagem",          price: "R$ 100", color: "#16a34a", bg: "#dcfce7" },
+  { icon: "carIcon",   label: "Automotivo",          price: "R$ 130", color: "#0284c7", bg: "#dbeafe" },
 ];
 
 const reviews = [
@@ -117,7 +301,47 @@ const reviews = [
   { name: "Patrícia M.", role: "Eletricista",         text: "Atendimento rápido e muito atencioso. Resolveu meu problema em minutos!",            rating: 5, photo: "/mulher 1.avif" },
   { name: "Luciana S.",  role: "Cuidadora",           text: "Ótima profissional, cuidadosa e muito dedicada. Minha mãe adorou!",                  rating: 5, photo: "/mulher2.jpg" },
   { name: "Felipe R.",   role: "Encanador",           text: "Resolveu o problema rapidinho, preço justo e muito educado. Recomendo!",              rating: 5, photo: "/homem3.avif" },
+  { name: "Camila T.",   role: "Pintura",             text: "Resultado impecável, muito cuidadosa com os detalhes. Ficou lindo!",                  rating: 5, photo: "/foto_faxineira1.avif" },
+  { name: "Eduardo L.",  role: "Jardinagem",          text: "Jardim ficou uma obra de arte. Pontual e super profissional.",                        rating: 5, photo: "/foto_encanador.jpg" },
 ];
+
+// ─── SECTION WRAPPER COM CAROUSEL ────────────────────────────────────────────
+function CarouselSection({ title, items, renderItem, itemWidth, gap = 16, visibleCount }) {
+  return (
+    <section style={{ marginBottom: 36 }}>
+      <div style={{ marginBottom: 16 }}>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>{title}</h3>
+      </div>
+      <InfiniteCarousel
+        items={items}
+        renderItem={renderItem}
+        itemWidth={itemWidth}
+        gap={gap}
+        visibleCount={visibleCount}
+      />
+    </section>
+  );
+}
+
+// ─── CATEGORIAS EM GRID FIXO ─────────────────────────────────────────────────
+function CategoriesGrid() {
+  return (
+    <section style={{ marginBottom: 36 }}>
+      <div style={{ marginBottom: 16 }}>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>Categorias</h3>
+      </div>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(10, 1fr)",
+        gap: 12,
+      }}>
+        {categories.map((cat, i) => (
+          <CategoryCard key={i} cat={cat} />
+        ))}
+      </div>
+    </section>
+  );
+}
 
 // ─── HOME PAGE ────────────────────────────────────────────────────────────────
 function HomePage() {
@@ -181,96 +405,38 @@ function HomePage() {
           </span>
         </div>
 
-        <section style={{ marginBottom: 36 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>Categorias</h3>
-            <button style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 14, fontWeight: 600, color: "#f97316", background: "none", border: "none", cursor: "pointer" }}>Ver todas <Icon name="chevRight" size={14} color="#f97316" /></button>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 12 }}>
-            {categories.map((cat, i) => <CategoryCard key={i} cat={cat} />)}
-          </div>
-        </section>
+        {/* CATEGORIAS — grid fixo sem carrossel */}
+        <CategoriesGrid />
 
-        <section style={{ marginBottom: 36 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>Profissionais perto de você</h3>
-            <button style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 14, fontWeight: 600, color: "#f97316", background: "none", border: "none", cursor: "pointer" }}>Ver todas <Icon name="chevRight" size={14} color="#f97316" /></button>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 16 }}>
-            {professionals.map((pro, i) => (
-              <div key={i}
-                style={{ backgroundColor: "white", borderRadius: 18, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.07)", border: "1.5px solid transparent", transition: "transform 0.25s, box-shadow 0.25s, border-color 0.25s", cursor: "pointer" }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-6px)"; e.currentTarget.style.boxShadow = "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.18)"; e.currentTarget.style.borderColor = "#f97316"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.07)"; e.currentTarget.style.borderColor = "transparent"; }}
-              >
-                <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
-                  <div style={{ width: 56, height: 56, borderRadius: "50%", overflow: "hidden", border: "2px solid #fed7aa", flexShrink: 0 }}>
-                    <img src={pro.photo} alt={pro.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
-                  </div>
-                </div>
-                <p style={{ fontWeight: 700, fontSize: 13, color: "#111827", textAlign: "center", margin: "0 0 2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pro.name}</p>
-                <p style={{ fontSize: 12, color: "#9ca3af", textAlign: "center", margin: "0 0 8px" }}>{pro.role}</p>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginBottom: 4 }}>
-                  <Icon name="star" size={13} color="#f59e0b" />
-                  <span style={{ fontSize: 12, fontWeight: 700, color: "#374151" }}>{pro.rating}</span>
-                  <span style={{ fontSize: 12, color: "#9ca3af" }}>({pro.reviews})</span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginBottom: 4 }}>
-                  <Icon name="mapPin" size={12} color="#9ca3af" />
-                  <span style={{ fontSize: 11, color: "#9ca3af" }}>{pro.distance}</span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, marginBottom: 12 }}>
-                  <Icon name="checkCircle" size={13} color="#22c55e" />
-                  <span style={{ fontSize: 12, color: "#16a34a", fontWeight: 500 }}>Verificada</span>
-                </div>
-                <button style={{ width: "100%", backgroundColor: "#0d1b3e", color: "white", fontWeight: 700, fontSize: 12, padding: "9px 0", borderRadius: 12, border: "none", cursor: "pointer", transition: "background 0.2s" }}
-                  onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f97316"}
-                  onMouseLeave={e => e.currentTarget.style.backgroundColor = "#0d1b3e"}
-                >Contratar</button>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* PROFISSIONAIS — carrossel com 5 visíveis */}
+        <CarouselSection
+          title="Profissionais perto de você"
+          items={professionals}
+          itemWidth={195}
+          gap={16}
+          visibleCount={5}
+          renderItem={(pro) => <ProfessionalCard pro={pro} />}
+        />
 
-        <section style={{ marginBottom: 36 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>Serviços mais solicitados</h3>
-            <button style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 14, fontWeight: 600, color: "#f97316", background: "none", border: "none", cursor: "pointer" }}>Ver todos <Icon name="chevRight" size={14} color="#f97316" /></button>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 16 }}>
-            {services.map((svc, i) => <ServiceCard key={i} svc={svc} />)}
-          </div>
-        </section>
+        {/* SERVIÇOS — carrossel com 5 visíveis */}
+        <CarouselSection
+          title="Serviços mais solicitados"
+          items={services}
+          itemWidth={195}
+          gap={16}
+          visibleCount={5}
+          renderItem={(svc) => <ServiceCard svc={svc} />}
+        />
 
-        <section style={{ marginBottom: 8 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>O que nossos clientes dizem</h3>
-            <button style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 14, fontWeight: 600, color: "#f97316", background: "none", border: "none", cursor: "pointer" }}>Ver todas <Icon name="chevRight" size={14} color="#f97316" /></button>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 16 }}>
-            {reviews.map((r, i) => (
-              <div key={i}
-                style={{ backgroundColor: "white", borderRadius: 18, padding: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", border: "1.5px solid transparent", cursor: "pointer", transition: "transform 0.25s, box-shadow 0.25s, border-color 0.25s" }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.15)"; e.currentTarget.style.borderColor = "#f97316"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.06)"; e.currentTarget.style.borderColor = "transparent"; }}
-              >
-                <div style={{ display: "flex", gap: 2, marginBottom: 10 }}>
-                  {Array.from({ length: r.rating }).map((_, j) => <Icon key={j} name="star" size={15} color="#f59e0b" />)}
-                </div>
-                <p style={{ fontSize: 12, color: "#4b5563", lineHeight: 1.6, margin: "0 0 12px" }}>&ldquo;{r.text}&rdquo;</p>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, paddingTop: 12, borderTop: "1px solid #f9fafb" }}>
-                  <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "1px solid #f3f4f6" }}>
-                    <img src={r.photo} alt={r.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
-                  </div>
-                  <div>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: "#111827", margin: 0 }}>{r.name}</p>
-                    <p style={{ fontSize: 11, color: "#9ca3af", margin: 0 }}>{r.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* AVALIAÇÕES — carrossel com 4 visíveis */}
+        <CarouselSection
+          title="O que nossos clientes dizem"
+          items={reviews}
+          itemWidth={248}
+          gap={16}
+          visibleCount={4}
+          renderItem={(r) => <ReviewCard r={r} />}
+        />
       </div>
 
       <footer style={{ backgroundColor: "#0d1b3e", color: "white", marginTop: 16 }}>
@@ -296,17 +462,9 @@ export default function TelainicialCliente() {
 
   return (
     <div style={{ display: "flex", width: "100%", height: "100vh", overflow: "hidden", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f9fafb" }}>
-
-      {/* SIDEBAR */}
       <Sidebar />
-
-      {/* MAIN */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden" }}>
-
-        {/* TOPBAR */}
         <Topbar />
-
-        {/* PAGE CONTENT */}
         <HomePage />
       </div>
     </div>
