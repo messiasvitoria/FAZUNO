@@ -88,7 +88,7 @@ const navItems = [
     label: "Agenda",
     route: "/Pages/Tela_Calendario_Prestador",
   },
-  { icon: "chat", label: "Chat", route: "/Pages/Chat_prestador" },
+  { icon: "chat", label: "Chat", route: "/Pages/Chat?perfil=prestador" },
 ];
 
 function StatusDropdown({ isOnline, onChange, onClose }) {

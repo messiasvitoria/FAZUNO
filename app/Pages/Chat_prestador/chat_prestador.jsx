@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
-const ME_AVATAR = "https://randomuser.me/api/portraits/men/32.jpg";
+const ME_AVATAR = "https://i.pravatar.cc/150?img=12";
 
 const conversations = [
   { id: 1, name: "Brenda Santos", service: "Instalação elétrica", time: "10:30", preview: "Perfeito! Pode ser amanhã às 9h.", unread: 2, online: true, avatar: "https://i.pravatar.cc/150?img=47", badge: "Cliente • desde Mai/2025" },
@@ -13,9 +14,9 @@ const conversations = [
 ];
 
 const initialMessages = [
-  { id: 1, from: "other", text: "Olá, João! Tudo bem?", time: "10:15" },
+  { id: 1, from: "other", text: "Olá, Brenda! Tudo bem?", time: "10:15" },
   { id: 2, from: "other", text: "Gostaria de confirmar se você pode me receber amanhã às 9h para fazermos a instalação elétrica.", time: "10:16" },
-  { id: 3, from: "me", text: "Olá, Brenda! Tudo ótimo 😊\nPosso sim, amanhã às 9h está perfeito.", time: "10:18", read: true },
+  { id: 3, from: "me", text: "Olá, João! Tudo ótimo 😊\nPosso sim, amanhã às 9h está perfeito.", time: "10:18", read: true },
   { id: 4, from: "me", text: "Só para confirmar, o endereço é o mesmo que está na contratação, certo?", time: "10:19", read: true },
   { id: 5, from: "other", text: "Isso mesmo! Rua das Flores, 123 - Centro. Qualquer coisa, me aviso por aqui.", time: "10:20" },
   { id: 6, from: "me", text: "Perfeito! Obrigada 😊", time: "10:30", read: true, reaction: "❤️" },
@@ -34,12 +35,40 @@ function Avatar({ name, src, color, letter, size = 40, online = false }) {
 }
 
 export default function ChatPrestador() {
-  const [activeId, setActiveId] = useState(1);
+  const searchParams = useSearchParams();
+  const incomingName = searchParams.get("nome");
+  const incomingService = searchParams.get("servico") || "Solicitação";
+  const incomingAvatar = searchParams.get("foto");
+  const incomingId = incomingName ? "incoming" : 1;
+  const [activeId, setActiveId] = useState(incomingId);
   const [tab, setTab] = useState("Todas");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState(initialMessages);
 
-  const active = conversations.find((c) => c.id === activeId);
+  const visibleConversations = useMemo(() => {
+    if (!incomingName) return conversations;
+
+    return [
+      {
+        id: "incoming",
+        name: incomingName,
+        service: incomingService,
+        time: "Agora",
+        preview: "Conversa da solicitação selecionada.",
+        unread: 0,
+        online: true,
+        avatar: incomingAvatar,
+        badge: "Cliente",
+      },
+      ...conversations.filter((conv) => conv.name !== incomingName),
+    ];
+  }, [incomingAvatar, incomingName, incomingService]);
+
+  useEffect(() => {
+    if (incomingName) setActiveId("incoming");
+  }, [incomingName]);
+
+  const active = visibleConversations.find((c) => c.id === activeId) || visibleConversations[0];
 
   function sendMessage() {
     if (!message.trim()) return;
@@ -76,7 +105,7 @@ export default function ChatPrestador() {
         </div>
 
         <div style={{ flex: 1, overflowY: "auto" }}>
-          {conversations.map((conv) => (
+          {visibleConversations.map((conv) => (
             <div key={conv.id} onClick={() => setActiveId(conv.id)} style={{ display: "flex", gap: 12, padding: "12px 16px", cursor: "pointer", background: activeId === conv.id ? "#F5F3FF" : "transparent", borderLeft: activeId === conv.id ? "3px solid #7C3AED" : "3px solid transparent" }}>
               <Avatar name={conv.name} src={conv.avatar} color={conv.avatarColor} letter={conv.avatarLetter} size={44} online={conv.online} />
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -160,7 +189,7 @@ export default function ChatPrestador() {
                     )}
                   </div>
                 </div>
-                {isMe && <Avatar name="João Silva" src={ME_AVATAR} size={32} />}
+                {isMe && <Avatar name="João Eletricista" src={ME_AVATAR} size={32} />}
               </div>
             );
           })}

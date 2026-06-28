@@ -44,6 +44,7 @@ const PROVIDER = {
 const CATEGORIES = ["Todas as categorias", "Residencial", "Comercial", "Manutenção", "Instalação", "Emergencial"];
 const SORT_OPTIONS = ["Mais contratados", "Menor preço", "Maior avaliação"];
 const ITEMS_PER_PAGE = 8;
+const EXTERNAL_DIRECT_SERVICE_KEY = "fazuno_solicitacao_direta_servico_externo";
 
 const SERVICES = [
   { id:1,  title:"Instalação elétrica residencial completa", category:"Residencial", desc:"Instalações elétricas residenciais e comerciais completas, do projeto à execução.", price:120, rating:4.9, reviews:32, contratacoes:23, Icon:FaBolt, destaque:true, photo:SERVICE_PHOTOS[0] },
@@ -109,6 +110,40 @@ export default function TodosServicosPrestador({ onVoltar }) {
   function updateCategory(v) { setCategory(v); setPage(1); }
   function updateSort(v)     { setSort(v); setPage(1); }
 
+  function buildDirectService(service) {
+    return {
+      id: 8000 + service.id,
+      title: service.title,
+      professional: PROVIDER.name,
+      rating: String(service.rating),
+      reviews: String(service.reviews),
+      price: `R$ ${service.price.toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`,
+      distance: "3 km",
+      eta: "10 min",
+      image: service.photo,
+      profilePhoto: PHOTO_PROVIDER,
+      profileRoute: "/Pages/Perfil_prestador",
+      category: "Elétrica",
+      subcategory: service.category,
+      description: service.desc,
+      included: ["Avaliação do ponto elétrico", "Execução do serviço contratado", "Teste de segurança ao finalizar"],
+      excluded: ["Materiais não combinados", "Mudanças estruturais fora do escopo"],
+      serviceFor: "Residências, comércios e pequenos condomínios",
+      chargingType: "Por serviço",
+      attendanceMode: "Presencial",
+      executionTime: "Conforme complexidade do serviço",
+      serviceArea: "São Paulo e regiões próximas",
+      nextAvailability: "Hoje após 14h",
+      completedServices: `${service.contratacoes} contratações`,
+      address: "Rua das Flores, 123, Vila Madalena, São Paulo - SP",
+    };
+  }
+
+  function openDirectFlow(service, step) {
+    window.sessionStorage.setItem(EXTERNAL_DIRECT_SERVICE_KEY, JSON.stringify(buildDirectService(service)));
+    router.push(`/Pages/Escolha_contratacao?fluxo=direta&etapa=${step}&servicoExterno=1`);
+  }
+
   const headerBtnBase = { height:40, padding:"0 18px", borderRadius:8, fontSize:".84rem", fontWeight:700, fontFamily:"'Sora',sans-serif", cursor:"pointer", display:"flex", alignItems:"center", gap:7, transition:"all 0.15s", whiteSpace:"nowrap" };
 
   return (
@@ -166,7 +201,7 @@ export default function TodosServicosPrestador({ onVoltar }) {
 
               <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                 <button
-                  onClick={() => router.push("/Pages/Chat_cliente")}
+                  onClick={() => router.push(`/Pages/Chat?nome=${encodeURIComponent(PROVIDER.name)}&tipo=prestador&servico=${encodeURIComponent("Servicos do prestador")}&origem=perfil-prestador`)}
                   onMouseEnter={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.7)"; e.currentTarget.style.background="rgba(255,255,255,0.08)"; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
                   style={{ ...headerBtnBase, background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", color:"#fff" }}>
@@ -232,7 +267,7 @@ export default function TodosServicosPrestador({ onVoltar }) {
                     <div style={{ position:"relative", width:"100%", aspectRatio:"4/3" }}>
                       <img src={s.photo} alt={s.title} style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
                         onError={e => { e.target.src=`https://picsum.photos/seed/serv${s.id}/400/300`; }}/>
-                      <span style={{ position:"absolute", top:9, left:9, background:C.purple, color:"#fff", fontSize:".66rem", fontWeight:700, borderRadius:999, padding:"4px 10px" }}>
+                      <span style={{ position:"absolute", top:9, left:9, background:C.navy, color:"#fff", fontSize:".66rem", fontWeight:700, borderRadius:999, padding:"4px 10px" }}>
                         {s.category}
                       </span>
                       {s.destaque && (
@@ -260,8 +295,8 @@ export default function TodosServicosPrestador({ onVoltar }) {
                         R$ {s.price.toLocaleString("pt-BR",{minimumFractionDigits:2})}
                       </div>
                       <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
-                        <button style={{ width:"100%", padding:"9px 0", borderRadius:8, border:"none", background:C.purple, color:"#fff", fontSize:".8rem", fontWeight:700, fontFamily:"'Sora',sans-serif", cursor:"pointer" }}>Solicitar serviço</button>
-                        <button style={{ width:"100%", padding:"9px 0", borderRadius:8, border:`1.5px solid ${C.border2}`, background:"#fff", color:C.navy, fontSize:".8rem", fontWeight:700, fontFamily:"'Sora',sans-serif", cursor:"pointer" }}>Ver detalhes</button>
+                        <button type="button" onClick={() => openDirectFlow(s, 4)} style={{ width:"100%", padding:"9px 0", borderRadius:8, border:"none", background:C.navy, color:"#fff", fontSize:".8rem", fontWeight:700, fontFamily:"'Sora',sans-serif", cursor:"pointer" }}>Solicitar serviço</button>
+                        <button type="button" onClick={() => openDirectFlow(s, 3)} style={{ width:"100%", padding:"9px 0", borderRadius:8, border:`1.5px solid ${C.border2}`, background:"#fff", color:C.navy, fontSize:".8rem", fontWeight:700, fontFamily:"'Sora',sans-serif", cursor:"pointer" }}>Ver detalhes</button>
                       </div>
                     </div>
                   </div>

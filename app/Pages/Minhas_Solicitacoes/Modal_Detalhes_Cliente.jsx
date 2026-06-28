@@ -82,6 +82,24 @@ export default function DetalhesModal({ onClose, solicitacao }) {
   const orcamento = sol.orcamento || MOCK_SOLICITACAO.orcamento;
   const endereco  = sol.endereco  || sol.local || "";
   const prestador = sol.prestador || MOCK_SOLICITACAO.prestador;
+  const perfilPrestadorUrl = `/Pages/Perfil_prestador?${new URLSearchParams({
+    nome: prestador?.nome || "Prestador",
+    tipo: "prestador",
+    servico: sol.servico || "Solicitacao",
+    avaliacao: String(prestador?.avaliacao || ""),
+    avaliacoes: String(prestador?.avaliacoes || ""),
+    origem: "detalhes-minhas-solicitacoes",
+    id: String(sol.id || ""),
+    ...(prestador?.foto ? { foto: prestador.foto } : {}),
+  }).toString()}`;
+  const chatUrl = `/Pages/Chat?${new URLSearchParams({
+    nome: prestador?.nome || "Prestador",
+    tipo: "prestador",
+    servico: sol.servico || "Solicitacao",
+    origem: "detalhes-minhas-solicitacoes",
+    id: String(sol.id || ""),
+    ...(prestador?.foto ? { foto: prestador.foto } : {}),
+  }).toString()}`;
 
   const btnBase = {
     borderRadius: 8, padding: "10px 16px", fontSize: "0.82rem", fontWeight: 600,
@@ -252,12 +270,16 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                     {/* ── CORRIGIDO: redireciona para Perfil_prestador ao clicar ── */}
                     <button
                       className="action-btn"
-                      onClick={() => router.push("/Pages/Perfil_prestador")}
+                      onClick={() => router.push(perfilPrestadorUrl)}
                       style={{ ...btnBase, background: "#fff", color: "#374151", border: "1.5px solid #E5E7EB", width: "auto", padding: "10px 18px" }}
                     >
                       <i className="ti ti-user" style={{ fontSize: 15 }} /> Ver perfil
                     </button>
-                    <button className="action-btn" style={{ ...btnBase, background: "#fff", color: "#374151", border: "1.5px solid #E5E7EB", width: "auto", padding: "10px 18px" }}>
+                    <button
+                      className="action-btn"
+                      onClick={() => router.push(chatUrl)}
+                      style={{ ...btnBase, background: "#fff", color: "#374151", border: "1.5px solid #E5E7EB", width: "auto", padding: "10px 18px" }}
+                    >
                       <i className="ti ti-message" style={{ fontSize: 15 }} /> Enviar mensagem
                     </button>
                   </div>
@@ -312,7 +334,11 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                       <button className="action-btn" style={{ ...btnBase, background: "#FEF2F2", color: "#DC2626", border: "1.5px solid #FECACA" }}>
                         <i className="ti ti-x" style={{ fontSize: 15 }} /> Recusar Novo Valor
                       </button>
-                      <button className="action-btn" style={{ ...btnBase, background: "#fff", color: "#374151", border: "1.5px solid #E5E7EB" }}>
+                      <button
+                        className="action-btn"
+                        onClick={() => router.push(chatUrl)}
+                        style={{ ...btnBase, background: "#fff", color: "#374151", border: "1.5px solid #E5E7EB" }}
+                      >
                         <i className="ti ti-message" style={{ fontSize: 15 }} /> Conversar
                       </button>
                     </div>

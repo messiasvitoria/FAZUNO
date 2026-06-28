@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Sidebar from "../../components/SideBar_cliente";
 import Topbar from "../../components/TopBar_cliente";
 import {
@@ -73,7 +73,7 @@ const MENU_ITEMS = [
   { icon: "home", label: "Início", route: "/Pages/Tela_inicial_cliente" },
   { icon: "plus", label: "Abrir novas solicitações", route: "/Pages/Escolha_contratacao" },
   { icon: "list", label: "Minhas solicitações", route: "/Pages/Tela_inicial_cliente" },
-  { icon: "chat", label: "Chat", route: "/Pages/Tela_inicial_cliente" },
+  { icon: "chat", label: "Chat", route: "/Pages/Chat?perfil=cliente" },
 ];
 
 const DIRECT_STEPS = [
@@ -418,6 +418,7 @@ const CONTRACT_FLOW_KEY = "fazuno_tipo_contratacao";
 const DIRECT_STEP_KEY = "fazuno_solicitacao_direta_etapa";
 const DIRECT_MAX_STEP_KEY = "fazuno_solicitacao_direta_etapa_maxima";
 const DIRECT_SERVICE_KEY = "fazuno_solicitacao_direta_servico";
+const EXTERNAL_DIRECT_SERVICE_KEY = "fazuno_solicitacao_direta_servico_externo";
 const CLIENT_REQUESTS_KEY = "fazuno_minhas_solicitacoes_extra";
 const LAST_CLIENT_REQUEST_KEY = "fazuno_ultima_solicitacao_cliente";
 const DEFAULT_DIRECT_SCHEDULE = {
@@ -670,6 +671,23 @@ function getStoredDirectMaxStep() {
 function getStoredDirectService() {
   const savedServiceId = Number(window.sessionStorage.getItem(DIRECT_SERVICE_KEY));
   return DIRECT_SERVICES.find((service) => service.id === savedServiceId) || DIRECT_SERVICES[0];
+}
+
+function getExternalDirectService() {
+  try {
+    const rawService = window.sessionStorage.getItem(EXTERNAL_DIRECT_SERVICE_KEY);
+    if (!rawService) return null;
+    const service = JSON.parse(rawService);
+    if (!service?.title) return null;
+    return {
+      ...DIRECT_SERVICES[0],
+      ...service,
+      included: service.included?.length ? service.included : DIRECT_SERVICES[0].included,
+      excluded: service.excluded?.length ? service.excluded : DIRECT_SERVICES[0].excluded,
+    };
+  } catch {
+    return null;
+  }
 }
 
 function parseCurrency(value) {
@@ -1753,6 +1771,7 @@ function DirectSolicitationFlow({
 
 export default function EscolhaContratacao() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [storageReady, setStorageReady] = useState(false);
   const [selected, setSelected] = useState("");
   const [flow, setFlow] = useState("choice");
@@ -1769,6 +1788,25 @@ export default function EscolhaContratacao() {
 
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
+    const urlFlow = searchParams.get("fluxo");
+    const urlStep = Number(searchParams.get("etapa"));
+    const externalService = searchParams.get("servicoExterno") ? getExternalDirectService() : null;
+
+    if (urlFlow === "direta") {
+      const safeStep = Math.min(Math.max(urlStep || 1, 1), DIRECT_STEPS.length);
+      const service = externalService || getStoredDirectService();
+
+      setSelected("direta");
+      setFlow("direta");
+      setDirectStep(safeStep);
+      setMaxDirectStep(Math.max(safeStep, getStoredDirectMaxStep()));
+      setSelectedService(service);
+      window.sessionStorage.setItem(CONTRACT_FLOW_KEY, "direta");
+      window.sessionStorage.setItem(DIRECT_SERVICE_KEY, String(service.id));
+      setStorageReady(true);
+      return;
+    }
+
     const savedFlow = window.sessionStorage.getItem(CONTRACT_FLOW_KEY);
 
     if (savedFlow === "direta") {
@@ -1785,7 +1823,7 @@ export default function EscolhaContratacao() {
     }
 
     setStorageReady(true);
-  }, []);
+  }, [searchParams]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {

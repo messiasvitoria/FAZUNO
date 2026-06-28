@@ -44,12 +44,12 @@ const STATUS = {
 const CATEGORY_ICONS = {
   Reformas: <FaHammer />,
   Limpeza: <FaBroom />,
-  Hidráulica: <FaTint />,
-  Elétrica: <FaBolt />,
+  "Hidráulica": <FaTint />,
+  "Elétrica": <FaBolt />,
   Pintura: <FaPaintRoller />,
   Jardinagem: <FaLeaf />,
   "Ar-condicionado": <FaSnowflake />,
-  Manutenção: <FaTools />,
+  "Manutenção": <FaTools />,
 };
 
 const FILTERS = [
@@ -254,7 +254,7 @@ const DETAIL_STATUS = {
     secondaryIcon: <FaTimes />,
     disabledPrimary: true,
     disabledNotice: "Seu interesse ja foi enviado. Aguarde a resposta do cliente.",
-    disabledMessage: "Seu interesse jÃ¡ foi enviado. Aguarde a resposta do cliente.",
+    disabledMessage: "Seu interesse já foi enviado. Aguarde a resposta do cliente.",
   },
   encerrada: {
     badge: "ENCERRADA",
@@ -290,6 +290,31 @@ function money(value) {
 
 function writeTransferredOpportunity(item) {
   window.localStorage.setItem(TRANSFERRED_OPPORTUNITIES_KEY, JSON.stringify([item]));
+}
+
+function buildChatUrl({ nome, tipo = "cliente", servico, id, foto, origem = "oportunidades" }) {
+  const params = new URLSearchParams({
+    nome: nome || "Contato",
+    tipo,
+    servico: servico || "Oportunidade",
+    origem,
+  });
+  if (id) params.set("id", String(id));
+  if (foto) params.set("foto", foto);
+  return `/Pages/Chat?${params.toString()}`;
+}
+
+function buildClientProfileUrl(item) {
+  const params = new URLSearchParams({
+    nome: item.client || "Cliente",
+    avaliacao: String(item.rating || ""),
+    avaliacoes: String(item.reviews || 1),
+    local: item.city || item.address || "",
+    origem: "oportunidades",
+  });
+  if (item.id) params.set("id", String(item.id));
+  if (item.avatar) params.set("foto", item.avatar);
+  return `/Pages/Perfil_cliente?${params.toString()}`;
 }
 
 function opportunityToRequest(item) {
@@ -367,7 +392,7 @@ function FilterButton({ children, active, onClick }) {
   );
 }
 
-function OpportunityCard({ item, onAccessRequest, onDetails, onPin }) {
+function OpportunityCard({ item, onAccessRequest, onDetails, onPin, onChat }) {
   const isAccepted = item.status === "aceita";
   const isPinned = item.pinned || isAccepted;
 
@@ -436,7 +461,7 @@ function OpportunityCard({ item, onAccessRequest, onDetails, onPin }) {
               <button type="button" className="op-details" onClick={() => onDetails(item)}>
                 Ver detalhes
               </button>
-              <button type="button" className="op-chat" aria-label="Abrir chat com cliente" title="Chat com cliente">
+              <button type="button" className="op-chat" onClick={() => onChat(item)} aria-label="Abrir chat com cliente" title="Chat com cliente">
                 <FaComments />
               </button>
               <PinButton pinned={isPinned} onClick={() => onPin(item.id)} />
@@ -470,7 +495,7 @@ function DetailRow({ icon, label, value }) {
   );
 }
 
-function OpportunityDetailsModal({ item, onAccessRequest, onClose, onAction, onPin }) {
+function OpportunityDetailsModal({ item, onAccessRequest, onClose, onAction, onPin, onChat, onProfile }) {
   const status = DETAIL_STATUS[item.status] || DETAIL_STATUS.nova;
   const [modalNotice, setModalNotice] = useState("");
   const canExpire = item.status === "nova" || item.status === "analise" || item.status === "interesse";
@@ -484,10 +509,6 @@ function OpportunityDetailsModal({ item, onAccessRequest, onClose, onAction, onP
     item.expectations ||
     "Cliente procura um profissional cuidadoso, com disponibilidade no prazo solicitado e comunicacao rapida durante o atendimento.";
   const attachments = item.attachments || ["Fotos do local", "Referencia do servico", "Documento do atendimento"];
-  const openMaps = () => {
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.address)}`;
-    window.open(mapsUrl, "_blank", "noopener,noreferrer");
-  };
   const handlePrimaryAction = () => {
     if (status.disabledPrimary) {
       setModalNotice(status.disabledNotice || status.disabledMessage || "Esta acao nao esta disponivel no momento.");
@@ -521,6 +542,15 @@ function OpportunityDetailsModal({ item, onAccessRequest, onClose, onAction, onP
             {status.badge}
           </span>
           <div className="op-modal-header-actions">
+            <button
+              type="button"
+              className={`op-modal-pin ${item.pinned ? "op-modal-pin--active" : ""}`}
+              aria-label={item.pinned ? "Desafixar oportunidade" : "Fixar oportunidade"}
+              title={item.pinned ? "Desafixar oportunidade" : "Fixar oportunidade"}
+              onClick={() => onPin(item.id)}
+            >
+              <FaThumbtack />
+            </button>
             <button type="button" aria-label="Mais opções" title="Mais opções">
               <FaEllipsisV />
             </button>
@@ -568,21 +598,13 @@ function OpportunityDetailsModal({ item, onAccessRequest, onClose, onAction, onP
               </div>
             </div>
             <div className="op-quick-actions">
-              <button type="button">
+              <button type="button" onClick={() => onProfile(item)}>
                 <FaUser />
                 Ver Perfil
               </button>
-              <button type="button" onClick={openMaps}>
-                <FaMapMarkerAlt />
-                Ver Localização
-              </button>
-              <button type="button">
+              <button type="button" onClick={() => onChat(item)}>
                 <FaComments />
                 Chat
-              </button>
-              <button type="button" onClick={() => onPin(item.id)}>
-                <FaThumbtack />
-                {item.pinned ? "Fixada" : "Fixar"}
               </button>
             </div>
           </article>
@@ -787,6 +809,20 @@ export default function Oportunidades() {
     );
     setSelectedOpportunity(null);
     router.push(`/Pages/Solicitacao_prestador?origem=oportunidades&id=${request.id}`);
+  }
+
+  function handleOpenChat(item) {
+    router.push(buildChatUrl({
+      nome: item.client,
+      tipo: "cliente",
+      servico: item.title,
+      id: item.id,
+      foto: item.avatar,
+    }));
+  }
+
+  function handleOpenProfile(item) {
+    router.push(buildClientProfileUrl(item));
   }
 
   function handleModalAction(item, action) {
@@ -1662,6 +1698,30 @@ export default function Oportunidades() {
           color: #F1670F;
         }
 
+        .op-modal-header-actions .op-modal-pin {
+          border: 1.5px solid #E0E3EB;
+          background: #FFFFFF;
+          color: #98A2B3;
+        }
+
+        .op-modal-header-actions .op-modal-pin--active {
+          border-color: rgba(241, 103, 15, 0.28);
+          background: #F1670F;
+          color: #FFFFFF;
+          box-shadow: 0 10px 22px rgba(241, 103, 15, 0.24);
+        }
+
+        .op-modal-header-actions .op-modal-pin:hover {
+          border-color: rgba(241, 103, 15, 0.42);
+          background: #FFF4EC;
+          color: #F1670F;
+        }
+
+        .op-modal-header-actions .op-modal-pin--active:hover {
+          background: #E95D08;
+          color: #FFFFFF;
+        }
+
         .op-details-modal h2 {
           margin: 16px 0 18px;
           color: #0A0B2D;
@@ -2410,6 +2470,7 @@ export default function Oportunidades() {
                     onAccessRequest={handleAccessRequest}
                     onDetails={setSelectedOpportunity}
                     onPin={togglePin}
+                    onChat={handleOpenChat}
                   />
                 ))
               ) : (
@@ -2435,6 +2496,8 @@ export default function Oportunidades() {
             onClose={() => setSelectedOpportunity(null)}
             onAction={handleModalAction}
             onPin={togglePin}
+            onChat={handleOpenChat}
+            onProfile={handleOpenProfile}
           />
         )}
 

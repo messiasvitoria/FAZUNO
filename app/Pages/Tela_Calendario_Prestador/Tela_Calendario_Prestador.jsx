@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const NAV_ITEMS = [
   { label: "Início" },
@@ -8,7 +9,7 @@ const NAV_ITEMS = [
   { label: "Oportunidades" },
   { label: "Meus Serviços" },
   { label: "Agenda" },
-  { label: "Chat" },
+  { label: "Chat", route: "/Pages/Chat?perfil=prestador" },
 ];
 
 const STATS = [
@@ -59,6 +60,7 @@ const WEEK_AVAIL = [
 ];
 
 export default function TelaCalendarioPrestador() {
+  const router = useRouter();
   const [activeView, setActiveView] = useState("Semana");
   const [activeNav,  setActiveNav]  = useState("Agenda");
   const [isActive,   setIsActive]   = useState(true);
@@ -78,7 +80,7 @@ export default function TelaCalendarioPrestador() {
             return (
               <button
                 key={item.label}
-                onClick={() => setActiveNav(item.label)}
+                onClick={() => item.route ? router.push(item.route) : setActiveNav(item.label)}
                 style={{
                   width: "100%", display: "flex", alignItems: "center", gap: 10,
                   padding: "10px 18px", fontSize: 13,

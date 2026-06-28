@@ -195,7 +195,21 @@ function StatusBadge({ status }) {
 }
 
 // ─── ACTION BUTTON com navegação ──────────────────────────────────────────────
-function ActionButton({ type, onClick }) {
+function buildChatUrlFromSolicitacao(item) {
+  const params = new URLSearchParams({
+    nome: item?.prestador?.nome || "Prestador",
+    tipo: "prestador",
+    servico: item?.servico || "Solicitacao",
+    origem: "minhas-solicitacoes",
+  });
+
+  if (item?.prestador?.foto) params.set("foto", item.prestador.foto);
+  if (item?.id) params.set("id", String(item.id));
+
+  return `/Pages/Chat?${params.toString()}`;
+}
+
+function ActionButton({ type, item, onClick }) {
   const router = useRouter();
 
   const configs = {
@@ -226,6 +240,10 @@ function ActionButton({ type, onClick }) {
     }
     if (type === "pagamento") {
       router.push("/Pages/Pagamento_cliente");
+      return;
+    }
+    if (type === "conversar") {
+      router.push(buildChatUrlFromSolicitacao(item));
       return;
     }
     onClick?.();
@@ -445,6 +463,7 @@ function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
             <ActionButton
               key={acao}
               type={acao}
+              item={item}
               onClick={
                 acao === "detalhes" || acao === "interessados"
                   ? () => onVerDetalhes(acao)

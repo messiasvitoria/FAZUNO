@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import ReagendamentoSolicitadoPrestador from "./reagendamento_solicitado_prestador";
 
 const STATUS_CONFIG = {
@@ -232,20 +233,72 @@ function CheckIcon({ done, active, cancelada }) {
   );
 }
 
-export default function DetalhesModal({ onClose, solicitacao }) {
+export default function DetalhesModal({ onClose, solicitacao, onStatusChange }) {
   const [showReagendamento, setShowReagendamento] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousBodyPointerEvents = document.body.style.pointerEvents;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.pointerEvents = "auto";
+    document.documentElement.style.overflow = "hidden";
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") onClose?.();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousBodyOverflow;
+      document.body.style.pointerEvents = previousBodyPointerEvents;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, [onClose]);
 
   const sol = solicitacao || MOCK;
   const status = sol.status;
   const cfg = STATUS_CONFIG[status] || STATUS_CONFIG["andamento"];
   const timeline = sol.timeline || MOCK.timeline;
   const endereco = sol.endereco || sol.local || "";
+  const servicoNome = sol.service || sol.servico || sol.title || "Solicitacao";
 
   // dados do cliente
   const clienteNome = sol.client || sol.cliente || "Cliente";
   const clienteFoto = sol.avatar || null;
   const clienteRating = sol.rating || 0;
   const clienteReviews = sol.reviews || 0;
+  const clientePerfilUrl = `/Pages/Perfil_cliente?${new URLSearchParams({
+    nome: clienteNome,
+    avaliacao: String(clienteRating),
+    avaliacoes: String(clienteReviews),
+    local: endereco || sol.neighborhood || "",
+    origem: "solicitacao-prestador",
+    id: String(sol.id || ""),
+    ...(clienteFoto ? { foto: clienteFoto } : {}),
+  }).toString()}`;
+  const clienteChatUrl = `/Pages/Chat?${new URLSearchParams({
+    nome: clienteNome,
+    tipo: "cliente",
+    servico: servicoNome,
+    origem: "solicitacao-prestador",
+    id: String(sol.id || ""),
+    ...(clienteFoto ? { foto: clienteFoto } : {}),
+  }).toString()}`;
+
+  const closeAndGo = (url) => {
+    router.push(url);
+    onClose?.();
+  };
+
+  const changeStatusAndClose = (nextStatus) => {
+    onStatusChange?.(sol.id, nextStatus);
+    onClose?.();
+  };
 
   const btnBase = {
     borderRadius: 8,
@@ -285,7 +338,10 @@ export default function DetalhesModal({ onClose, solicitacao }) {
 
       <div
         className="modal-overlay"
-        onClick={onClose}
+        onClick={(event) => {
+          event.stopPropagation();
+          onClose?.();
+        }}
         style={{
           position: "fixed",
           inset: 0,
@@ -343,7 +399,11 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                 </p>
               </div>
               <button
-                onClick={onClose}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onClose?.();
+                }}
                 style={{
                   background: "none",
                   border: "none",
@@ -825,7 +885,7 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                   <div style={{ display: "flex", gap: 10 }}>
                     <button
                       className="action-btn"
-                      onClick={() => window.location.href = "/Pages/Perfil_cliente"}
+                      onClick={() => closeAndGo(clientePerfilUrl)}
                       style={{
                         ...btnBase,
                         background: "#fff",
@@ -840,7 +900,7 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                     </button>
                     <button
                       className="action-btn"
-                      onClick={() => window.location.href = "/Pages/Chat_prestador"}
+                      onClick={() => closeAndGo(clienteChatUrl)}
                       style={{
                         ...btnBase,
                         background: "#fff",
@@ -863,6 +923,7 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                   <div style={{ display: "flex", gap: 10 }}>
                     <button
                       className="action-btn"
+                      onClick={() => changeStatusAndClose("aceita")}
                       style={{
                         ...btnBase,
                         background: "#16A34A",
@@ -875,6 +936,7 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                     </button>
                     <button
                       className="action-btn"
+                      onClick={() => changeStatusAndClose("recusada")}
                       style={{
                         ...btnBase,
                         background: "#FEF2F2",
@@ -890,6 +952,7 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                   <div style={{ display: "flex", gap: 10 }}>
                     <button
                       className="action-btn"
+                      onClick={() => changeStatusAndClose("andamento")}
                       style={{
                         ...btnBase,
                         background: "#2563EB",
@@ -918,6 +981,7 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                     </button>
                     <button
                       className="action-btn"
+                      onClick={() => closeAndGo(`/Pages/Cancelamento_prestador?id=${encodeURIComponent(sol.id)}`)}
                       style={{
                         ...btnBase,
                         background: "#FEF2F2",
@@ -934,6 +998,7 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                   <div style={{ display: "flex", gap: 10 }}>
                     <button
                       className="action-btn"
+                      onClick={() => changeStatusAndClose("concluida")}
                       style={{
                         ...btnBase,
                         background: "#16A34A",

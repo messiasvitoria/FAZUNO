@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import TodosServicosPrestador from "./Todos_servicos_prestador";
 import {
   FaStar, FaStarHalfAlt, FaRegStar,
@@ -32,6 +32,7 @@ const C = {
 
 // ── PADRONIZADO: mesma foto usada no Modal_Detalhes_Cliente ──
 const PHOTO_PROVIDER = "https://randomuser.me/api/portraits/men/32.jpg";
+const EXTERNAL_DIRECT_SERVICE_KEY = "fazuno_solicitacao_direta_servico_externo";
 
 // Fotos realistas de eletricista
 const PORTFOLIO_PHOTOS = [
@@ -137,7 +138,15 @@ const secTitle = { fontFamily:"'Sora',sans-serif", fontSize:"1rem", fontWeight:7
 
 export default function PerfilPrestador() {
   const router = useRouter();
-  const p = PROVIDER;
+  const searchParams = useSearchParams();
+  const providerPhoto = searchParams.get("foto") || PHOTO_PROVIDER;
+  const p = {
+    ...PROVIDER,
+    name: searchParams.get("nome") || PROVIDER.name,
+    mainProfession: searchParams.get("servico") || PROVIDER.mainProfession,
+    rating: Number(searchParams.get("avaliacao")) || PROVIDER.rating,
+    totalRatings: Number(searchParams.get("avaliacoes")) || PROVIDER.totalRatings,
+  };
   const [showAll, setShowAll]       = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [skillHover, setSkillHover] = useState(null);
@@ -151,6 +160,40 @@ export default function PerfilPrestador() {
     const el = carouselRef.current;
     if (!el) return;
     el.scrollBy({ left: dir * 230, behavior: "smooth" });
+  }
+
+  function buildDirectService(service, index) {
+    return {
+      id: 8500 + index,
+      title: service.title,
+      professional: p.name,
+      rating: String(p.rating),
+      reviews: String(p.totalRatings),
+      price: `R$ ${service.price.replace(",00", "")}`,
+      distance: "3 km",
+      eta: "10 min",
+      image: service.photo,
+      profilePhoto: providerPhoto,
+      profileRoute: "/Pages/Perfil_prestador",
+      category: "Elétrica",
+      subcategory: "Serviço elétrico",
+      description: service.desc,
+      included: ["Avaliação do ponto elétrico", "Execução do serviço contratado", "Teste de segurança ao finalizar"],
+      excluded: ["Materiais não combinados", "Mudanças estruturais fora do escopo"],
+      serviceFor: "Residências, comércios e pequenos condomínios",
+      chargingType: "Por serviço",
+      attendanceMode: "Presencial",
+      executionTime: "Conforme complexidade do serviço",
+      serviceArea: p.serviceInfo.neighborhoods,
+      nextAvailability: "Hoje após 14h",
+      completedServices: `${p.servicesCompleted} serviços realizados`,
+      address: "Rua das Flores, 123, Vila Madalena, São Paulo - SP",
+    };
+  }
+
+  function openDirectFlow(service, index, step) {
+    window.sessionStorage.setItem(EXTERNAL_DIRECT_SERVICE_KEY, JSON.stringify(buildDirectService(service, index)));
+    router.push(`/Pages/Escolha_contratacao?fluxo=direta&etapa=${step}&servicoExterno=1`);
   }
 
   if (showCatalogo) {
@@ -192,7 +235,7 @@ export default function PerfilPrestador() {
                 <div style={{ width:96, height:96, borderRadius:"50%", border:"3.5px solid rgba(255,255,255,0.5)", overflow:"hidden", boxShadow:"0 4px 20px rgba(0,0,0,0.3)" }}>
                   {/* ── PADRONIZADO: mesma foto do Modal_Detalhes_Cliente ── */}
                   <img
-                    src={PHOTO_PROVIDER}
+                    src={providerPhoto}
                     alt="João Silva"
                     style={{ width:"100%", height:"100%", objectFit:"cover" }}
                     onError={e => { e.target.src="https://picsum.photos/seed/electrician42/200/200"; }}
@@ -233,7 +276,7 @@ export default function PerfilPrestador() {
               {/* ── BOTÕES "ENVIAR MENSAGEM" + "FAVORITAR PERFIL" (substituindo "Editar perfil") ── */}
               <div style={{ display:"flex", flexDirection:"column", gap:10, flexShrink:0 }}>
                 <button
-                  onClick={() => router.push("/Pages/Chat_cliente")}
+                  onClick={() => router.push(`/Pages/Chat?nome=${encodeURIComponent(p.name)}&tipo=prestador&servico=${encodeURIComponent("Perfil do prestador")}&origem=perfil-prestador`)}
                   onMouseEnter={e => { e.currentTarget.style.borderColor=C.orange; e.currentTarget.style.background="rgba(255,255,255,0.08)"; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
                   style={{ height:40, padding:"0 18px", background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", borderRadius:8, color:"#fff", fontSize:".84rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:7, transition:"all 0.15s", whiteSpace:"nowrap" }}>
@@ -369,8 +412,8 @@ onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; 
                         <div style={{ fontSize:".68rem", color:C.muted, fontWeight:600, marginBottom:2 }}>A partir de</div>
                         <div style={{ fontFamily:"'Sora',sans-serif", fontSize:".92rem", fontWeight:800, color:C.navy, marginBottom:12 }}>R$ {s.price}</div>
                         <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
-                          <button style={{ width:"100%", padding:"8px 0", borderRadius:8, border:"none", background:C.purple, color:"#fff", fontSize:".77rem", fontWeight:700, fontFamily:"'Sora',sans-serif", cursor:"pointer" }}>Solicitar serviço</button>
-                          <button style={{ width:"100%", padding:"8px 0", borderRadius:8, border:`1.5px solid ${C.border2}`, background:C.bg, color:C.navy, fontSize:".77rem", fontWeight:700, fontFamily:"'Sora',sans-serif", cursor:"pointer" }}>Ver detalhes</button>
+                          <button type="button" onClick={() => openDirectFlow(s, i, 4)} style={{ width:"100%", padding:"8px 0", borderRadius:8, border:"none", background:C.navy, color:"#fff", fontSize:".77rem", fontWeight:700, fontFamily:"'Sora',sans-serif", cursor:"pointer" }}>Solicitar serviço</button>
+                          <button type="button" onClick={() => openDirectFlow(s, i, 3)} style={{ width:"100%", padding:"8px 0", borderRadius:8, border:`1.5px solid ${C.border2}`, background:C.bg, color:C.navy, fontSize:".77rem", fontWeight:700, fontFamily:"'Sora',sans-serif", cursor:"pointer" }}>Ver detalhes</button>
                         </div>
                       </div>
                     </div>
