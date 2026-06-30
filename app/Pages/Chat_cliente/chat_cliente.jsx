@@ -11,13 +11,13 @@ const conversations = [
   { id: 3, name: "Carlos Pintor", service: "Pintura residencial", time: "Ontem", preview: "Segue as fotos do trabalho concluído.", unread: 1, online: false, avatar: "https://i.pravatar.cc/150?img=53" },
   { id: 4, name: "Mariana Designer", service: "Design de interiores", time: "2 dias", preview: "Vou preparar a proposta e te envio.", unread: 0, online: false, avatar: "https://i.pravatar.cc/150?img=44" },
   { id: 5, name: "Pedro Encanador", service: "Manutenção hidráulica", time: "3 dias", preview: "Ok, entendido! Obrigado.", unread: 0, online: false, avatar: "https://i.pravatar.cc/150?img=60" },
-  { id: 6, name: "Equipe FazUno", service: "Suporte", time: "5 dias", preview: "Sua solicitação foi atualizada.", unread: 0, online: false, avatar: null, avatarColor: "#7C3AED", avatarLetter: "F" },
+  { id: 6, name: "Equipe FazUno", service: "Suporte", time: "5 dias", preview: "Sua solicitação foi atualizada.", unread: 0, online: false, avatar: null, avatarColor: "#0A0B2D", avatarLetter: "F" },
 ];
 
 const initialMessages = [
   { id: 1, from: "me", text: "Olá, João! Tudo bem?", time: "10:15", read: true },
   { id: 2, from: "me", text: "Gostaria de confirmar se você pode vir amanhã às 9h para fazer a instalação elétrica.", time: "10:16", read: true },
-  { id: 3, from: "other", text: "Olá, Brenda! Tudo ótimo 😊\nPosso sim, amanhã às 9h está perfeito.", time: "10:18" },
+  { id: 3, from: "other", text: "Olá, Brenda! Tudo ótimo 🙂\nPosso sim, amanhã às 9h está perfeito.", time: "10:18" },
   { id: 4, from: "other", text: "Só para confirmar, o endereço é o mesmo que está na contratação, certo?", time: "10:19" },
   { id: 5, from: "me", text: "Isso mesmo! Rua das Flores, 123 - Centro. Qualquer coisa, me avise por aqui.", time: "10:20", read: true },
   { id: 6, from: "other", text: "Perfeito! Pode ser amanhã às 9h.", time: "10:30", reaction: "❤️" },
@@ -83,7 +83,7 @@ export default function ChatCliente() {
       <aside style={{ width: 280, borderRight: "1px solid #E5E7EB", background: "#fff", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "20px 16px 12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>Mensagens</h2>
-          <button style={{ background: "none", border: "none", cursor: "pointer", color: "#7C3AED", padding: 4 }}>
+          <button style={{ background: "none", border: "none", cursor: "pointer", color: "#0A0B2D", padding: 4 }}>
             <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
           </button>
         </div>
@@ -97,16 +97,16 @@ export default function ChatCliente() {
 
         <div style={{ display: "flex", gap: 6, padding: "0 16px 12px" }}>
           {["Todas", "Não lidas", "Contratações"].map((t) => (
-            <button key={t} onClick={() => setTab(t)} style={{ padding: "6px 10px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 500, background: tab === t ? "#7C3AED" : "#F3F4F6", color: tab === t ? "#fff" : "#6B7280", display: "flex", alignItems: "center", gap: 4 }}>
+            <button key={t} onClick={() => setTab(t)} style={{ padding: "6px 10px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 500, background: tab === t ? "#0A0B2D" : "#F3F4F6", color: tab === t ? "#fff" : "#6B7280", display: "flex", alignItems: "center", gap: 4 }}>
               {t}
-              {t === "Não lidas" && <span style={{ background: tab === t ? "rgba(255,255,255,0.3)" : "#7C3AED", color: "#fff", borderRadius: 10, padding: "1px 5px", fontSize: 10 }}>2</span>}
+              {t === "Não lidas" && <span style={{ background: tab === t ? "rgba(255,255,255,0.3)" : "#0A0B2D", color: "#fff", borderRadius: 10, padding: "1px 5px", fontSize: 10 }}>2</span>}
             </button>
           ))}
         </div>
 
         <div style={{ flex: 1, overflowY: "auto" }}>
           {visibleConversations.map((conv) => (
-            <div key={conv.id} onClick={() => setActiveId(conv.id)} style={{ display: "flex", gap: 12, padding: "12px 16px", cursor: "pointer", background: activeId === conv.id ? "#F5F3FF" : "transparent", borderLeft: activeId === conv.id ? "3px solid #7C3AED" : "3px solid transparent" }}>
+            <div key={conv.id} onClick={() => setActiveId(conv.id)} style={{ display: "flex", gap: 12, padding: "12px 16px", cursor: "pointer", background: activeId === conv.id ? "#EEF2FF" : "transparent", borderLeft: activeId === conv.id ? "3px solid #0A0B2D" : "3px solid transparent" }}>
               <Avatar name={conv.name} src={conv.avatar} color={conv.avatarColor} letter={conv.avatarLetter} size={44} online={conv.online} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -116,7 +116,7 @@ export default function ChatCliente() {
                 <div style={{ fontSize: 12, color: "#6B7280", marginTop: 1 }}>{conv.service}</div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 2 }}>
                   <span style={{ fontSize: 13, color: "#6B7280", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 140 }}>{conv.preview}</span>
-                  {conv.unread > 0 && <span style={{ background: "#7C3AED", color: "#fff", borderRadius: 10, padding: "1px 7px", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{conv.unread}</span>}
+                  {conv.unread > 0 && <span style={{ background: "#0A0B2D", color: "#fff", borderRadius: 10, padding: "1px 7px", fontSize: 11, fontWeight: 700, flexShrink: 0 }}>{conv.unread}</span>}
                 </div>
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function ChatCliente() {
 
         <div style={{ padding: 16, borderTop: "1px solid #E5E7EB", textAlign: "center" }}>
           <p style={{ margin: "0 0 8px", fontSize: 13, color: "#6B7280" }}>Não encontrou sua conversa?</p>
-          <button style={{ width: "100%", padding: "10px", border: "1.5px solid #7C3AED", borderRadius: 8, background: "none", color: "#7C3AED", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Ver todas as contratações</button>
+          <button style={{ width: "100%", padding: "10px", border: "1.5px solid #0A0B2D", borderRadius: 8, background: "none", color: "#0A0B2D", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Ver todas as contratações</button>
         </div>
       </aside>
 
@@ -141,7 +141,7 @@ export default function ChatCliente() {
             </div>
           </div>
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-            <button style={{ padding: "8px 16px", border: "1.5px solid #7C3AED", borderRadius: 8, background: "none", color: "#7C3AED", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Ver contratação</button>
+            <button style={{ padding: "8px 16px", border: "1.5px solid #0A0B2D", borderRadius: 8, background: "none", color: "#0A0B2D", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Ver contratação</button>
             <button style={{ background: "none", border: "none", cursor: "pointer", color: "#6B7280" }}>
               <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
             </button>
@@ -150,8 +150,8 @@ export default function ChatCliente() {
 
         <div style={{ margin: "12px 20px", padding: "12px 16px", border: "1px solid #E5E7EB", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "space-between", background: "#FAFAFA" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ width: 36, height: 36, background: "#EDE9FE", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <svg width="18" height="18" fill="none" stroke="#7C3AED" strokeWidth="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <div style={{ width: 36, height: 36, background: "#EEF2FF", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="18" height="18" fill="none" stroke="#0A0B2D" strokeWidth="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
             </div>
             <div>
               <div style={{ fontWeight: 600, fontSize: 14 }}>Instalação elétrica completa</div>
@@ -161,7 +161,7 @@ export default function ChatCliente() {
               </div>
             </div>
           </div>
-          <button style={{ background: "none", border: "none", cursor: "pointer", color: "#7C3AED", fontWeight: 600, fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
+          <button style={{ background: "none", border: "none", cursor: "pointer", color: "#0A0B2D", fontWeight: 600, fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
             Ver detalhes <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
           </button>
         </div>
@@ -175,14 +175,14 @@ export default function ChatCliente() {
               <div key={msg.id} style={{ display: "flex", justifyContent: isMe ? "flex-end" : "flex-start", gap: 8, alignItems: "flex-end" }}>
                 {!isMe && <Avatar name={active.name} src={active.avatar} size={32} />}
                 <div style={{ maxWidth: "65%" }}>
-                  <div style={{ padding: "10px 14px", borderRadius: isMe ? "16px 16px 4px 16px" : "16px 16px 16px 4px", background: isMe ? "#7C3AED" : "#F3F4F6", color: isMe ? "#fff" : "#111827", fontSize: 14, lineHeight: 1.5, whiteSpace: "pre-line" }}>
+                  <div style={{ padding: "10px 14px", borderRadius: isMe ? "16px 16px 4px 16px" : "16px 16px 16px 4px", background: isMe ? "#0A0B2D" : "#F3F4F6", color: isMe ? "#fff" : "#111827", fontSize: 14, lineHeight: 1.5, whiteSpace: "pre-line" }}>
                     {msg.text}
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2, justifyContent: isMe ? "flex-end" : "flex-start" }}>
                     {msg.reaction && <span style={{ fontSize: 13, background: "#fff", border: "1px solid #E5E7EB", borderRadius: 10, padding: "1px 6px" }}>{msg.reaction} 1</span>}
                     <span style={{ fontSize: 11, color: "#9CA3AF" }}>{msg.time}</span>
                     {isMe && (
-                      <svg width="14" height="14" fill="none" stroke={msg.read ? "#7C3AED" : "#9CA3AF"} strokeWidth="2" viewBox="0 0 24 24">
+                      <svg width="14" height="14" fill="none" stroke={msg.read ? "#0A0B2D" : "#9CA3AF"} strokeWidth="2" viewBox="0 0 24 24">
                         <path d="M20 6 9 17l-5-5"/>
                         {msg.read && <path d="M24 6 13 17"/>}
                       </svg>
@@ -205,12 +205,12 @@ export default function ChatCliente() {
 
         <div style={{ padding: "0 20px 12px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, border: "1.5px solid #E5E7EB", borderRadius: 12, padding: "10px 14px", background: "#fff" }}>
-            <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18 }}>😊</button>
+            <button style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18 }}>🙂</button>
             <button style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF" }}>
               <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
             </button>
             <input value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendMessage()} placeholder="Digite sua mensagem..." style={{ flex: 1, border: "none", outline: "none", fontSize: 14, color: "#374151", background: "transparent" }} />
-            <button onClick={sendMessage} style={{ width: 36, height: 36, borderRadius: "50%", background: "#7C3AED", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <button onClick={sendMessage} style={{ width: 36, height: 36, borderRadius: "50%", background: "#0A0B2D", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <svg width="16" height="16" fill="none" stroke="#fff" strokeWidth="2" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9l20-7z"/></svg>
             </button>
           </div>
@@ -220,3 +220,4 @@ export default function ChatCliente() {
     </div>
   );
 }
+

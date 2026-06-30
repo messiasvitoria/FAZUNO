@@ -26,6 +26,7 @@ import {
   FaMoneyBillWave,
   FaPaintRoller,
   FaRegCheckCircle,
+  FaRegHeart,
   FaSearch,
   FaShareAlt,
   FaShieldAlt,
@@ -158,6 +159,7 @@ const DIRECT_SERVICES = [
     distance: "5 km",
     eta: "15 min",
     image: "/foto_encanador2.jpg",
+    profilePhoto: "https://randomuser.me/api/portraits/women/32.jpg",
     category: "Hidráulica",
     subcategory: "Torneiras e vazamentos",
     description: "Troca ou instalação de torneira com vedação, teste de vazamento e orientação de uso.",
@@ -182,6 +184,7 @@ const DIRECT_SERVICES = [
     distance: "4 km",
     eta: "20 min",
     image: "/foto_eletricista.jpg",
+    profilePhoto: "https://randomuser.me/api/portraits/men/11.jpg",
     category: "Elétrica",
     subcategory: "Tomadas e pontos elétricos",
     description: "Substituição de tomadas, revisão básica da fiação e teste de segurança após a troca.",
@@ -206,6 +209,7 @@ const DIRECT_SERVICES = [
     distance: "6 km",
     eta: "30 min",
     image: "/foto_pintora.avif",
+    profilePhoto: "https://randomuser.me/api/portraits/women/65.jpg",
     category: "Reformas",
     subcategory: "Pintura interna",
     description: "Pintura de ambientes internos com acabamento limpo, proteção de móveis e organização final.",
@@ -230,6 +234,7 @@ const DIRECT_SERVICES = [
     distance: "2 km",
     eta: "12 min",
     image: "/foto_faxineira1.avif",
+    profilePhoto: "https://randomuser.me/api/portraits/women/68.jpg",
     category: "Limpeza",
     subcategory: "Limpeza padrao",
     description: "Limpeza completa para casas e apartamentos, com foco em cozinha, banheiros, quartos e areas comuns.",
@@ -254,6 +259,7 @@ const DIRECT_SERVICES = [
     distance: "4 km",
     eta: "25 min",
     image: "/foto_pintora2.avif",
+    profilePhoto: "https://randomuser.me/api/portraits/women/52.jpg",
     category: "Pintura",
     subcategory: "Pintura interna",
     description: "Pintura de paredes internas com acabamento uniforme, protecao de rodapes e limpeza basica ao final.",
@@ -278,6 +284,7 @@ const DIRECT_SERVICES = [
     distance: "7 km",
     eta: "35 min",
     image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=260&fit=crop&auto=format",
+    profilePhoto: "https://randomuser.me/api/portraits/men/53.jpg",
     category: "Jardinagem",
     subcategory: "Poda e manutencao",
     description: "Manutencao de jardins pequenos, poda leve, retirada de folhas e organizacao da area verde.",
@@ -302,6 +309,7 @@ const DIRECT_SERVICES = [
     distance: "3 km",
     eta: "18 min",
     image: "/foto_montador_moveis.avif",
+    profilePhoto: "https://randomuser.me/api/portraits/men/64.jpg",
     category: "Montagem",
     subcategory: "Moveis residenciais",
     description: "Montagem de moveis novos ou desmontados, com conferencia das pecas e ajuste final.",
@@ -326,6 +334,7 @@ const DIRECT_SERVICES = [
     distance: "5 km",
     eta: "30 min",
     image: "/mulher2.jpg",
+    profilePhoto: "https://randomuser.me/api/portraits/women/71.jpg",
     category: "Beleza",
     subcategory: "Maquiagem",
     description: "Maquiagem social para eventos, fotos e ocasioes especiais, com preparacao de pele e acabamento profissional.",
@@ -350,6 +359,7 @@ const DIRECT_SERVICES = [
     distance: "Atendimento remoto",
     eta: "8 min",
     image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=260&fit=crop&auto=format",
+    profilePhoto: "https://randomuser.me/api/portraits/men/75.jpg",
     category: "Tecnologia",
     subcategory: "Suporte tecnico",
     description: "Suporte para computador, configuracao de programas, limpeza de arquivos e diagnostico inicial.",
@@ -374,6 +384,7 @@ const DIRECT_SERVICES = [
     distance: "6 km",
     eta: "32 min",
     image: "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=400&h=260&fit=crop&auto=format",
+    profilePhoto: "https://randomuser.me/api/portraits/men/81.jpg",
     category: "Automotivo",
     subcategory: "Limpeza de veiculos",
     description: "Higienizacao interna de veiculos com limpeza de bancos, painel, carpetes e acabamento.",
@@ -398,6 +409,7 @@ const DIRECT_SERVICES = [
     distance: "Atendimento remoto",
     eta: "10 min",
     image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=260&fit=crop&auto=format",
+    profilePhoto: "https://randomuser.me/api/portraits/women/76.jpg",
     category: "Educação",
     subcategory: "Reforco escolar",
     description: "Aula particular de matematica para ensino fundamental e medio, com revisao de conteudo e exercicios guiados.",
@@ -836,40 +848,74 @@ function MiniServiceCard({ service, onClick }) {
 }
 
 function ProfessionalCard({ service, onDetails, onRequest }) {
+  const profilePhoto = service.profilePhoto || service.image;
+  const [isFavorited, setIsFavorited] = useState(false);
+
   return (
     <article className="direct-result-card">
-      <img src={service.image} alt={service.title} />
+      <div className="direct-result-media">
+        <img src={service.image} alt={service.title} />
+        <span>{service.category}</span>
+      </div>
+
       <div className="direct-result-info">
         <h3>{service.title}</h3>
-        <strong>{service.professional}</strong>
-        <p>
-          <FaStar />
-          {service.rating} ({service.reviews})
-        </p>
-        <p>
-          <FaClock />
-          Responde em {service.eta}
-        </p>
-        <p>
-          <FaMapMarkerAlt />
-          {service.distance} de você
-        </p>
-        <small>A partir de {service.price}</small>
+        <div className="direct-result-provider">
+          <img src={profilePhoto} alt={service.professional} />
+          <strong>{service.professional}</strong>
+          <FaCheckCircle />
+        </div>
+
+        <div className="direct-rating-row">
+          <span className="direct-stars" aria-label={`Nota ${service.rating}`}>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <FaStar key={index} />
+            ))}
+          </span>
+          <small>{service.rating} ({service.reviews} avaliações)</small>
+        </div>
+
+        <div className="direct-result-metrics">
+          <span>
+            <FaClock />
+            <b>Responde em</b>
+            <strong>{service.eta}</strong>
+          </span>
+          <span>
+            <FaMapMarkerAlt />
+            <b>Distância</b>
+            <strong>{service.distance} de você</strong>
+          </span>
+        </div>
+
+        <p className="direct-result-description">{service.description}</p>
+        <small className="direct-result-price">A partir de {service.price}</small>
       </div>
+
       <div className="direct-result-actions">
+        <button
+          type="button"
+          className={`direct-favorite ${isFavorited ? "is-favorited" : ""}`}
+          aria-label={isFavorited ? "Remover dos favoritos" : "Favoritar serviço"}
+          aria-pressed={isFavorited}
+          onClick={() => setIsFavorited((current) => !current)}
+        >
+          {isFavorited ? <FaHeart /> : <FaRegHeart />}
+        </button>
         <button type="button" className="direct-secondary" onClick={onDetails}>
           Ver detalhes
+          <FaArrowRight />
         </button>
         <button type="button" className="direct-primary" onClick={onRequest}>
+          <FaCalendarAlt />
           Solicitar
         </button>
       </div>
     </article>
   );
 }
-
-function DirectSearchStep({ onNext, onSelect, onBack, onCategorySelect }) {
-  const [searchQuery, setSearchQuery] = useState("");
+function DirectSearchStep({ onNext, onSelect, onBack, onCategorySelect, initialSearch = "" }) {
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   const categoriesRef = useRef(null);
   const scrollCategories = (direction) => {
     categoriesRef.current?.scrollBy({ left: direction * 300, behavior: "smooth" });
@@ -981,8 +1027,9 @@ function DirectSearchStep({ onNext, onSelect, onBack, onCategorySelect }) {
   );
 }
 
-function DirectResultsStep({ onBack, onDetails, onRequest, initialCategory = "Todas" }) {
+function DirectResultsStep({ onBack, onDetails, onRequest, initialCategory = "Todas", initialSearch = "" }) {
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [categoryFilter, setCategoryFilter] = useState(initialCategory);
   const [distanceFilter, setDistanceFilter] = useState("Todas");
   const [sortFilter, setSortFilter] = useState("relevancia");
@@ -994,11 +1041,22 @@ function DirectResultsStep({ onBack, onDetails, onRequest, initialCategory = "To
 
   const filteredServices = useMemo(() => {
     const maxDistance = distanceFilter === "Todas" ? null : Number(distanceFilter);
+    const normalizedSearch = normalizeSearch(searchQuery);
 
     const services = DIRECT_SERVICES.filter((service) => {
       const matchesCategory = categoryFilter === "Todas" || normalizeSearch(service.category) === normalizeSearch(categoryFilter);
       const matchesDistance = maxDistance === null || parseDistance(service.distance) <= maxDistance;
-      return matchesCategory && matchesDistance;
+      const searchable = [
+        service.title,
+        service.professional,
+        service.category,
+        service.subcategory,
+        service.description,
+        service.serviceArea,
+        service.address,
+      ].join(" ");
+      const matchesSearch = !normalizedSearch || normalizeSearch(searchable).includes(normalizedSearch);
+      return matchesCategory && matchesDistance && matchesSearch;
     });
 
     return [...services].sort((a, b) => {
@@ -1007,7 +1065,7 @@ function DirectResultsStep({ onBack, onDetails, onRequest, initialCategory = "To
       if (sortFilter === "menor-distancia") return parseDistance(a.distance) - parseDistance(b.distance);
       return a.id - b.id;
     });
-  }, [categoryFilter, distanceFilter, sortFilter]);
+  }, [categoryFilter, distanceFilter, searchQuery, sortFilter]);
 
   const activeFiltersCount = [categoryFilter !== "Todas", distanceFilter !== "Todas", sortFilter !== "relevancia"].filter(Boolean).length;
 
@@ -1034,6 +1092,21 @@ function DirectResultsStep({ onBack, onDetails, onRequest, initialCategory = "To
           {activeFiltersCount > 0 && <span>{activeFiltersCount}</span>}
         </button>
       </div>
+
+      <label className="direct-search direct-search--results">
+        <FaSearch />
+        <input
+          type="search"
+          placeholder="Buscar por serviço ou prestador..."
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+        />
+        {searchQuery && (
+          <button type="button" aria-label="Limpar busca" onClick={() => setSearchQuery("")}>
+            <FaTimes />
+          </button>
+        )}
+      </label>
 
       {filtersOpen && (
         <div className="direct-filter-panel">
@@ -1092,6 +1165,7 @@ function DirectResultsStep({ onBack, onDetails, onRequest, initialCategory = "To
 
 function DirectDetailsStep({ service, onBack, onRequest }) {
   const router = useRouter();
+  const [isFavorited, setIsFavorited] = useState(false);
   const included = service.included || ["Execução do serviço", "Orientação inicial", "Teste de qualidade"];
   const excluded = service.excluded || ["Materiais adicionais", "Serviços fora do combinado"];
   const profilePhoto = service.profilePhoto || service.image;
@@ -1107,8 +1181,14 @@ function DirectDetailsStep({ service, onBack, onRequest }) {
           <button type="button" aria-label="Compartilhar">
             <FaShareAlt />
           </button>
-          <button type="button" aria-label="Favoritar">
-            <FaHeart />
+          <button
+            type="button"
+            className={isFavorited ? "is-favorited" : ""}
+            aria-label={isFavorited ? "Remover dos favoritos" : "Favoritar serviço"}
+            aria-pressed={isFavorited}
+            onClick={() => setIsFavorited((current) => !current)}
+          >
+            {isFavorited ? <FaHeart /> : <FaRegHeart />}
           </button>
         </div>
         <span>{service.category}</span>
@@ -1712,6 +1792,7 @@ function DirectSolicitationFlow({
   categoryFilter,
   schedule,
   request,
+  initialSearch = "",
   setCategoryFilter,
   setStep,
   setService,
@@ -1738,11 +1819,12 @@ function DirectSolicitationFlow({
       <StepIndicator step={step} maxStep={maxStep} onStepClick={setStep} />
 
       <div className="direct-step-shell">
-        {step === 1 && <DirectSearchStep onNext={setStep} onSelect={setService} onBack={onBack} onCategorySelect={setCategoryFilter} />}
+        {step === 1 && <DirectSearchStep onNext={setStep} onSelect={setService} onBack={onBack} onCategorySelect={setCategoryFilter} initialSearch={initialSearch} />}
         {step === 2 && (
           <DirectResultsStep
             onBack={() => setStep(1)}
             initialCategory={categoryFilter}
+            initialSearch={initialSearch}
             onDetails={(nextService) => {
               setService(nextService);
               setStep(3);
@@ -1779,6 +1861,7 @@ export default function EscolhaContratacao() {
   const [maxDirectStep, setMaxDirectStep] = useState(1);
   const [selectedService, setSelectedService] = useState(DIRECT_SERVICES[0]);
   const [directCategoryFilter, setDirectCategoryFilter] = useState("Todas");
+  const [directInitialSearch, setDirectInitialSearch] = useState("");
   const [directSchedule, setDirectSchedule] = useState(DEFAULT_DIRECT_SCHEDULE);
   const [createdRequest, setCreatedRequest] = useState(null);
   const [opportunityStep, setOpportunityStep] = useState(1);
@@ -1790,6 +1873,7 @@ export default function EscolhaContratacao() {
   useEffect(() => {
     const urlFlow = searchParams.get("fluxo");
     const urlStep = Number(searchParams.get("etapa"));
+    const urlSearch = searchParams.get("busca") || "";
     const externalService = searchParams.get("servicoExterno") ? getExternalDirectService() : null;
 
     if (urlFlow === "direta") {
@@ -1801,6 +1885,7 @@ export default function EscolhaContratacao() {
       setDirectStep(safeStep);
       setMaxDirectStep(Math.max(safeStep, getStoredDirectMaxStep()));
       setSelectedService(service);
+      setDirectInitialSearch(urlSearch);
       window.sessionStorage.setItem(CONTRACT_FLOW_KEY, "direta");
       window.sessionStorage.setItem(DIRECT_SERVICE_KEY, String(service.id));
       setStorageReady(true);
@@ -2725,9 +2810,23 @@ export default function EscolhaContratacao() {
           grid-template-columns: 76px minmax(0, 1fr) 236px;
         }
 
+        .direct-result-provider {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          margin-bottom: 5px;
+        }
+
+        .direct-result-provider img {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 1px solid #E6E8EF;
+        }
+
         .direct-result-info strong {
           display: block;
-          margin-bottom: 5px;
           color: #0A0B2D;
           font-size: 0.78rem;
         }
@@ -2758,6 +2857,201 @@ export default function EscolhaContratacao() {
           grid-template-columns: 124px 96px;
           gap: 8px;
           justify-content: end;
+        }
+
+        .direct-result-card {
+          grid-template-columns: 120px minmax(0, 1fr) 148px;
+          align-items: stretch;
+          gap: 16px;
+          padding: 12px 14px;
+          border-radius: 12px;
+          box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .direct-result-media {
+          position: relative;
+          min-height: 124px;
+          overflow: hidden;
+          border-radius: 10px;
+          background: #F4F6FA;
+        }
+
+        .direct-result-media img {
+          width: 100%;
+          height: 100%;
+          display: block;
+          object-fit: cover;
+        }
+
+        .direct-result-media span {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          padding: 4px 8px;
+          border-radius: 8px;
+          background: #0A0B2D;
+          color: #FFFFFF;
+          font-size: 0.64rem;
+          font-weight: 800;
+        }
+
+        .direct-result-info {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .direct-result-info h3 {
+          margin: 0 0 6px;
+          color: #0A0B2D;
+          font-size: 0.96rem;
+          line-height: 1.25;
+          font-weight: 800;
+        }
+
+        .direct-result-provider {
+          margin-bottom: 6px;
+        }
+
+        .direct-result-provider img {
+          width: 24px;
+          height: 24px;
+        }
+
+        .direct-result-provider strong {
+          color: #0A0B2D;
+          font-size: 0.78rem;
+          font-weight: 800;
+        }
+
+        .direct-result-provider svg {
+          color: #0B55F4;
+          font-size: 0.7rem;
+        }
+
+        .direct-rating-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 9px;
+        }
+
+        .direct-stars {
+          display: inline-flex;
+          gap: 2px;
+          color: #F59E0B;
+        }
+
+        .direct-stars svg {
+          width: 11px;
+          height: 11px;
+          color: #F59E0B;
+        }
+
+        .direct-rating-row small {
+          color: #3F4A5F;
+          font-size: 0.7rem;
+          font-weight: 700;
+        }
+
+        .direct-result-metrics {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 0;
+          margin-bottom: 9px;
+          padding-bottom: 9px;
+          border-bottom: 1px solid #E6E8EF;
+        }
+
+        .direct-result-metrics span {
+          display: grid;
+          grid-template-columns: auto 1fr;
+          column-gap: 6px;
+          row-gap: 1px;
+          padding-right: 9px;
+          border-right: 1px solid #E6E8EF;
+          color: #0A0B2D;
+        }
+
+        .direct-result-metrics span:last-child {
+          border-right: 0;
+          padding-right: 0;
+        }
+
+        .direct-result-metrics svg {
+          grid-row: span 2;
+          margin-top: 2px;
+          width: 12px;
+          height: 12px;
+          color: #0A0B2D;
+        }
+
+        .direct-result-metrics b {
+          color: #667085;
+          font-size: 0.6rem;
+          line-height: 1.2;
+          font-weight: 700;
+        }
+
+        .direct-result-metrics strong {
+          color: #0A0B2D;
+          font-size: 0.64rem;
+          line-height: 1.2;
+          font-weight: 800;
+        }
+
+        .direct-result-info .direct-result-description {
+          display: block;
+          max-width: 420px;
+          margin: 0 0 7px;
+          color: #3F4A5F;
+          font-size: 0.72rem;
+          line-height: 1.36;
+          font-weight: 500;
+        }
+
+        .direct-result-info .direct-result-price {
+          display: block;
+          margin-top: auto;
+          color: #F1670F;
+          font-size: 0.72rem;
+          font-weight: 800;
+        }
+
+        .direct-result-actions {
+          display: grid;
+          grid-template-columns: 1fr;
+          grid-template-rows: 32px 38px 38px;
+          align-content: center;
+          justify-items: stretch;
+          gap: 8px;
+        }
+
+        .direct-favorite {
+          justify-self: end;
+          width: 32px;
+          height: 32px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border: 1.5px solid #E6E8EF;
+          border-radius: 999px;
+          background: #FFFFFF;
+          color: #0A0B2D;
+          cursor: pointer;
+        }
+
+        .direct-favorite.is-favorited,
+        .direct-floating-actions button.is-favorited {
+          color: #F1670F;
+        }
+
+        .direct-result-actions .direct-secondary,
+        .direct-result-actions .direct-primary {
+          width: 100%;
+          min-height: 38px;
+          border-radius: 9px;
+          font-size: 0.72rem;
         }
 
         .direct-detail-media {
@@ -3817,7 +4111,21 @@ export default function EscolhaContratacao() {
           }
 
           .direct-result-card {
-            grid-template-columns: 72px minmax(0, 1fr);
+            grid-template-columns: 1fr;
+          }
+
+          .direct-result-media {
+            min-height: 150px;
+          }
+
+          .direct-result-metrics {
+            grid-template-columns: 1fr;
+            gap: 8px;
+          }
+
+          .direct-result-metrics span {
+            border-right: 0;
+            padding-right: 0;
           }
 
           .direct-filter-panel {
@@ -3826,6 +4134,7 @@ export default function EscolhaContratacao() {
 
           .direct-result-actions {
             grid-column: 1 / -1;
+            grid-template-rows: auto;
           }
 
           .direct-flow-title {
@@ -3862,6 +4171,7 @@ export default function EscolhaContratacao() {
                   categoryFilter={directCategoryFilter}
                   schedule={directSchedule}
                   request={createdRequest}
+                  initialSearch={directInitialSearch}
                   setCategoryFilter={setDirectCategoryFilter}
                   setStep={handleDirectStep}
                   setService={setSelectedService}
@@ -3923,3 +4233,4 @@ export default function EscolhaContratacao() {
     </>
   );
 }
+

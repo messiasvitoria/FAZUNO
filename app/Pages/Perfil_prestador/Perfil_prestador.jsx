@@ -11,7 +11,7 @@ import {
   FaLaptop, FaEllipsisH, FaExclamationCircle, FaBan,
   FaWrench, FaBolt, FaFileAlt, FaCalendar,
   FaArrowLeft, FaArrowRight, FaChevronLeft, FaChevronRight,
-  FaCommentDots, FaPlug, FaLightbulb, FaTools, FaExclamationTriangle,
+  FaCommentDots, FaPlug, FaLightbulb, FaTools, FaExclamationTriangle, FaShareAlt,
 } from "react-icons/fa";
 
 const C = {
@@ -151,6 +151,7 @@ export default function PerfilPrestador() {
   const [reportOpen, setReportOpen] = useState(false);
   const [skillHover, setSkillHover] = useState(null);
   const [favorited, setFavorited]   = useState(false);
+  const [shared, setShared] = useState(false);
   const [showCatalogo, setShowCatalogo] = useState(false);
   const carouselRef = useRef(null);
 
@@ -288,6 +289,18 @@ export default function PerfilPrestador() {
 onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
                   style={{ height:40, padding:"0 18px", background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", borderRadius:8, color:"#fff", fontSize:".84rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:7, transition:"all 0.15s", whiteSpace:"nowrap" }}>
                   {favorited ? <FaHeart size={13} style={{ color:C.orange }}/> : <FaRegHeart size={13}/>} {favorited ? "Favoritado" : "Favoritar perfil"}
+                </button>
+                <button
+                  onClick={() => {
+                    const url = typeof window !== "undefined" ? window.location.href : "";
+                    navigator?.clipboard?.writeText(url);
+                    setShared(true);
+                    window.setTimeout(() => setShared(false), 1800);
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor=C.orange; e.currentTarget.style.background="rgba(255,255,255,0.08)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
+                  style={{ height:40, padding:"0 18px", background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", borderRadius:8, color:"#fff", fontSize:".84rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:7, transition:"all 0.15s", whiteSpace:"nowrap" }}>
+                  <FaShareAlt size={13}/> {shared ? "Link copiado" : "Compartilhar perfil"}
                 </button>
               </div>
             </div>

@@ -74,6 +74,7 @@ function CheckIcon({ done, active, cancelada }) {
 export default function DetalhesModal({ onClose, solicitacao }) {
   const router = useRouter(); // ← ADICIONADO
   const [showReagendamento, setShowReagendamento] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
   const sol       = solicitacao || MOCK_SOLICITACAO;
   const status    = sol.status;
   const cfg       = STATUS_CONFIG[status] || STATUS_CONFIG["Em Andamento"];
@@ -352,8 +353,13 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                     <button className="action-btn" style={{ ...btnBase, background: "#fff", color: "#374151", border: "1.5px solid #E5E7EB" }}>
                       <i className="ti ti-refresh" style={{ fontSize: 15 }} /> Pedir Novamente
                     </button>
-                    <button className="action-btn" style={{ ...btnBase, background: "#EFF6FF", color: "#2563EB", border: "1.5px solid #BFDBFE" }}>
-                      <i className="ti ti-heart" style={{ fontSize: 15 }} /> Favoritar
+                    <button
+                      className="action-btn"
+                      aria-pressed={isFavorited}
+                      onClick={() => setIsFavorited((current) => !current)}
+                      style={{ ...btnBase, background: "#EFF6FF", color: isFavorited ? "#F1670F" : "#2563EB", border: "1.5px solid #BFDBFE" }}
+                    >
+                      <i className={isFavorited ? "ti ti-heart-filled" : "ti ti-heart"} style={{ fontSize: 15 }} /> {isFavorited ? "Favoritado" : "Favoritar"}
                     </button>
                   </div>
                 )}

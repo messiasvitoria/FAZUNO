@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "../../components/SideBar_cliente";
 import Topbar  from "../../components/TopBar_cliente";
 
@@ -345,6 +346,49 @@ function CategoriesGrid() {
 
 // ─── HOME PAGE ────────────────────────────────────────────────────────────────
 function HomePage() {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const popularSearches = [
+    { label: "Instalação de chuveiro", icon: "droplet" },
+    { label: "Limpeza residencial", icon: "broomCat" },
+    { label: "Pintura residencial", icon: "heartIcon" },
+    { label: "Instalação elétrica", icon: "zap" },
+    { label: "Encanamento", icon: "wrench2" },
+    { label: "Ar-condicionado", icon: "monitorIcon" },
+  ];
+
+  const recentSearches = [
+    { label: "instalação de chuveiro", type: "Serviço" },
+    { label: "eletricista", type: "Profissional" },
+    { label: "limpeza residencial", type: "Serviço" },
+    { label: "pintura", type: "Serviço" },
+    { label: "ar-condicionado", type: "Serviço" },
+  ];
+
+  function openSearchPage(query = "") {
+    const trimmedQuery = query.trim();
+    const params = new URLSearchParams();
+    if (trimmedQuery) params.set("q", trimmedQuery);
+    router.push(`/Pages/Busca_cliente${params.toString() ? `?${params.toString()}` : ""}`);
+  }
+
+  function openDirectFlow() {
+    router.push("/Pages/Escolha_contratacao?fluxo=direta&etapa=1");
+  }
+
+  function handleSearchSubmit(event) {
+    event.preventDefault();
+    openSearchPage(searchQuery);
+  }
+
+  function chooseSearch(term) {
+    setSearchQuery(term);
+    setSearchOpen(false);
+    openSearchPage(term);
+  }
+
   return (
     <div className="fazuno-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", backgroundColor: "#f9fafb" }}>
       {/* HERO */}
@@ -358,7 +402,7 @@ function HomePage() {
             <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 14, lineHeight: 1.6, margin: "0 0 24px" }}>
               Encontre profissionais confiáveis para serviços residenciais, saúde, beleza e muito mais.
             </p>
-            <button style={{ backgroundColor: "#f97316", color: "white", fontWeight: 700, fontSize: 15, padding: "13px 36px", borderRadius: 9999, border: "none", cursor: "pointer", boxShadow: "0 8px 24px rgba(249,115,22,0.45)", transition: "background 0.2s, transform 0.1s" }}
+            <button type="button" onClick={() => openDirectFlow()} style={{ backgroundColor: "#f97316", color: "white", fontWeight: 700, fontSize: 15, padding: "13px 36px", borderRadius: 9999, border: "none", cursor: "pointer", boxShadow: "0 8px 24px rgba(249,115,22,0.45)", transition: "background 0.2s, transform 0.1s" }}
               onMouseEnter={e => { e.currentTarget.style.backgroundColor = "#ea6c0a"; e.currentTarget.style.transform = "scale(1.03)"; }}
               onMouseLeave={e => { e.currentTarget.style.backgroundColor = "#f97316"; e.currentTarget.style.transform = "scale(1)"; }}
             >Solicitar serviço</button>
@@ -391,19 +435,172 @@ function HomePage() {
           <h2 style={{ fontSize: 24, fontWeight: 700, color: "#111827", margin: 0 }}>Olá, Isaac! </h2>
           <p style={{ fontSize: 14, color: "#9ca3af", margin: "4px 0 0" }}>O que você precisa hoje?</p>
         </div>
-        <div style={{ position: "relative", marginBottom: 32 }}>
+        <form onSubmit={handleSearchSubmit} style={{ position: "relative", marginBottom: 32 }}>
           <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", display: "flex" }}>
             <Icon name="search" size={18} color="#9ca3af" />
           </span>
-          <input placeholder="Buscar eletricista, faxina, professor, encanador..."
+          <input type="search" placeholder="Buscar serviço ou prestador..."
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            onClick={() => setSearchOpen(true)}
             style={{ width: "100%", boxSizing: "border-box", paddingLeft: 44, paddingRight: 50, paddingTop: 12, paddingBottom: 12, fontSize: 14, color: "#374151", backgroundColor: "white", border: "1.5px solid #e5e7eb", borderRadius: 14, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", outline: "none", transition: "border 0.2s, box-shadow 0.2s" }}
-            onFocus={e => { e.target.style.borderColor = "#f97316"; e.target.style.boxShadow = "0 0 0 3px rgba(249,115,22,0.15)"; }}
-            onBlur={e => { e.target.style.borderColor = "#e5e7eb"; e.target.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
+            onFocus={e => { setSearchOpen(true); e.target.style.borderColor = "#0A0B2D"; e.target.style.boxShadow = "0 0 0 3px rgba(10,11,45,0.12)"; }}
+            onBlur={e => { setTimeout(() => setSearchOpen(false), 120); e.target.style.borderColor = "#e5e7eb"; e.target.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
           />
-          <span style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", display: "flex" }}>
+          <button type="button" aria-label="Abrir busca" onClick={() => openSearchPage(searchQuery)} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", display: "flex", border: 0, background: "transparent", padding: 4, cursor: "pointer" }}>
             <Icon name="sliders" size={18} color="#9ca3af" />
-          </span>
-        </div>
+          </button>
+          {searchOpen && (
+            <div className="home-search-popover" onMouseDown={(event) => event.preventDefault()}>
+              <button type="button" className="home-search-clear" onClick={() => { setSearchQuery(""); setSearchOpen(false); }}>
+                Limpar
+              </button>
+
+              <section>
+                <h4>Mais procurados</h4>
+                <div className="home-popular-grid">
+                  {popularSearches.map((item) => (
+                    <button key={item.label} type="button" onClick={() => chooseSearch(item.label)}>
+                      <Icon name={item.icon} size={22} color="#0A0B2D" />
+                      <span>{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+
+              <section>
+                <div className="home-recent-title">
+                  <h4>Últimos pesquisados</h4>
+                  <button type="button" onClick={() => openSearchPage(searchQuery)}>
+                    Ver tudo
+                  </button>
+                </div>
+                <div className="home-recent-list">
+                  {recentSearches.map((item) => (
+                    <button key={item.label} type="button" onClick={() => chooseSearch(item.label)}>
+                      <span className="home-clock">◷</span>
+                      <span>{item.label}</span>
+                      <small>{item.type}</small>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            </div>
+          )}
+        </form>
+
+        <style jsx>{`
+          .home-search-popover {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 56px;
+            z-index: 40;
+            background: #ffffff;
+            border: 1px solid #e0e3eb;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 22px 48px rgba(15, 23, 42, 0.14);
+          }
+
+          .home-recent-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 12px;
+          }
+
+          .home-search-clear,
+          .home-recent-title button {
+            border: 0;
+            background: transparent;
+            color: #0A0B2D;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+          }
+
+          .home-search-clear {
+            position: absolute;
+            right: 14px;
+            top: 14px;
+          }
+
+          .home-search-popover h4 {
+            margin: 0;
+            color: #0a0b2d;
+            font-size: 14px;
+            font-weight: 800;
+          }
+
+          .home-popular-grid {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 12px;
+            margin: 10px 0 18px;
+          }
+
+          .home-popular-grid button {
+            min-height: 84px;
+            border: 0;
+            border-radius: 12px;
+            background: #eef2ff;
+            color: #0a0b2d;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            gap: 8px;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 800;
+          }
+
+          .home-popular-grid button:hover {
+            background: #e0e7ff;
+            transform: translateY(-1px);
+          }
+
+          .home-recent-list {
+            display: grid;
+            gap: 4px;
+          }
+
+          .home-recent-list button {
+            border: 0;
+            background: #ffffff;
+            cursor: pointer;
+            display: grid;
+            grid-template-columns: 24px 1fr auto;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 0;
+            color: #475467;
+            text-align: left;
+            font-size: 13px;
+          }
+
+          .home-clock {
+            color: #667085;
+            font-size: 16px;
+          }
+
+          .home-recent-list small {
+            background: #f4f6fa;
+            border-radius: 999px;
+            color: #667085;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 9px;
+          }
+
+          @media (max-width: 900px) {
+            .home-popular-grid {
+              grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+          }
+        `}</style>
 
         {/* CATEGORIAS — grid fixo sem carrossel */}
         <CategoriesGrid />

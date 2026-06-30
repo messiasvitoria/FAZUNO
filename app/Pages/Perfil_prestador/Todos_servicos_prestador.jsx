@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   FaArrowLeft, FaStar, FaMapMarkerAlt, FaCheckCircle, FaCommentDots,
-  FaHeart, FaRegHeart, FaSearch, FaTimes,
+  FaHeart, FaRegHeart, FaSearch, FaTimes, FaShareAlt,
   FaChevronLeft, FaChevronRight, FaBolt, FaTools, FaPlug, FaLightbulb,
   FaShieldAlt, FaExclamationTriangle,
 } from "react-icons/fa";
@@ -74,6 +74,7 @@ export default function TodosServicosPrestador({ onVoltar }) {
   const [sort, setSort]             = useState("Mais contratados");
   const [page, setPage]             = useState(1);
   const [favorited, setFavorited]   = useState(false);
+  const [shared, setShared] = useState(false);
   const [favServices, setFavServices] = useState(new Set());
 
   function toggleFavService(id) {
@@ -213,6 +214,18 @@ export default function TodosServicosPrestador({ onVoltar }) {
                   onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
                   style={{ ...headerBtnBase, background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", color:"#fff" }}>
                   {favorited ? <FaHeart size={13} style={{ color:C.orange }}/> : <FaRegHeart size={13}/>} {favorited ? "Favoritado" : "Favoritar perfil"}
+                </button>
+                <button
+                  onClick={() => {
+                    const url = typeof window !== "undefined" ? window.location.href : "";
+                    navigator?.clipboard?.writeText(url);
+                    setShared(true);
+                    window.setTimeout(() => setShared(false), 1800);
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.7)"; e.currentTarget.style.background="rgba(255,255,255,0.08)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
+                  style={{ ...headerBtnBase, background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", color:"#fff" }}>
+                  <FaShareAlt size={13}/> {shared ? "Link copiado" : "Compartilhar perfil"}
                 </button>
               </div>
             </div>
