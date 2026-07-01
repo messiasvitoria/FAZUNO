@@ -1,0 +1,330 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --navy:         #0A0B2D;
+  --navy-mid:     #12143a;
+  --navy-lite:    #1a1d50;
+  --white:        #FFFFFF;
+  --off-white:    #E6E6E6;
+  --off-white2:   #DCDCDC;
+  --off-white3:   #D0D0D0;
+  --black:        #000000;
+  --text-mute:    #666666;
+  --input-bg:     #F0F0F0;
+  --input-border: #C8C8C8;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--navy);
+  font-family: 'DM Sans', sans-serif;
+  color: var(--off-white);
+}
+
+/* ─── PÁGINA ─── */
+.page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ─── CÍRCULOS DECORATIVOS ─── */
+.bg-dot {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(230, 230, 230, 0.06);
+  pointer-events: none;
+}
+.bd1 { width: 340px; height: 340px; top: -80px;    right: 220px; }
+.bd2 { width: 180px; height: 180px; top:  60px;    right:  60px; }
+.bd3 { width:  90px; height:  90px; bottom: 100px; right: 160px; }
+.bd4 { width:  55px; height:  55px; bottom: 200px; right:  80px; }
+
+/* ─── BLOB BRANCO ─── */
+.blob-wrap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 52%;
+  height: 100%;
+  z-index: 2;
+}
+
+.blob {
+  position: absolute;
+  top: 3%;
+  left: -2%;
+  width: 100%;
+  height: 94%;
+  background: var(--white);
+  border-radius: 0% 58% 52% 0% / 0% 46% 54% 0%;
+  box-shadow: 12px 0 60px rgba(10, 11, 45, 0.18);
+  animation: morphBlob 16s ease-in-out infinite alternate;
+  will-change: border-radius;
+}
+
+@keyframes morphBlob {
+  0%   { border-radius: 0% 58% 52% 0% / 0% 46% 54% 0%; }
+  25%  { border-radius: 0% 62% 48% 0% / 0% 52% 48% 0%; }
+  50%  { border-radius: 0% 55% 56% 0% / 0% 44% 58% 0%; }
+  75%  { border-radius: 0% 60% 50% 0% / 0% 50% 52% 0%; }
+  100% { border-radius: 0% 56% 54% 0% / 0% 48% 56% 0%; }
+}
+
+/* ─── CONTEÚDO DO BLOB ─── */
+.blob-inner {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 12%; /* Aumentado o recuo lateral para garantir que nada passe do blob */
+  color: var(--black);
+}
+
+/* ─── ÁREA DE ANIMAÇÃO E LOGO ─── */
+.anim-space {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;               /* Garante que a letra nunca suba em cima do vídeo */
+  width: 100%;
+  max-width: 440px;        /* Expandido para permitir que o nome passe um pouco o tamanho da casa */
+}
+
+.anim-video {
+  width: 90%;              /* Deixa o vídeo ligeiramente menor que a largura máxima */
+  height: auto;
+  max-height: 48vh;        /* Segura o tamanho do vídeo para sobrar espaço para o nome grande */
+  object-fit: contain;
+  display: block;
+}
+
+.brand-name-img {
+  width: 100%;             /* Ocupa a largura total permitida do container */
+  max-width: 410px;        /* Fica maior que a casa (90% vs 100%), mas respeita o limite do blob */
+  height: auto;
+  object-fit: contain;
+  display: block;
+  mix-blend-mode: multiply; /* Remove qualquer fundo branco indesejado da imagem jpeg */
+}
+
+/* ─── PAINEL DIREITO ─── */
+.panel-right {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 52%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 10%;
+  padding-right: 8%;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 340px;
+  animation: fadeUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.login-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--off-white);
+  letter-spacing: -1px;
+  margin-bottom: 32px;
+  line-height: 1;
+}
+
+/* Fields */
+.field {
+  margin-bottom: 6px;
+}
+
+.field--no-margin {
+  margin-bottom: 0;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--off-white2);
+  margin-bottom: 7px;
+  letter-spacing: 0.01em;
+}
+
+.field-input-wrap {
+  position: relative;
+}
+
+.field-input-wrap input {
+  width: 100%;
+  padding: 13px 16px;
+  background: rgba(230, 230, 230, 0.08);
+  border: 1.5px solid rgba(230, 230, 230, 0.15);
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.94rem;
+  color: var(--off-white);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.field-input-wrap input::placeholder {
+  color: rgba(230, 230, 230, 0.3);
+  font-weight: 300;
+}
+
+.field-input-wrap input:focus {
+  border-color: rgba(230, 230, 230, 0.45);
+  background: rgba(230, 230, 230, 0.12);
+  box-shadow: 0 0 0 3px rgba(230, 230, 230, 0.07);
+}
+
+/* Eye button */
+.eye-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+
+.eye-btn:hover {
+  opacity: 0.8;
+}
+
+/* Forgot */
+.forgot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+  margin-bottom: 26px;
+}
+
+.forgot a {
+  font-size: 0.78rem;
+  color: rgba(230, 230, 230, 0.45);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.forgot a:hover {
+  color: var(--off-white);
+}
+
+/* Button */
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: var(--off-white);
+  color: var(--navy);
+  border: none;
+  border-radius: 10px;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.97rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(230, 230, 230, 0.15);
+}
+
+.btn-submit:hover {
+  background: var(--off-white2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(230, 230, 230, 0.2);
+}
+
+.btn-submit:active {
+  transform: translateY(0);
+}
+
+/* Ripple */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(10, 11, 45, 0.12);
+  transform: scale(0);
+  animation: rippleAnim 0.5s linear;
+  pointer-events: none;
+}
+
+@keyframes rippleAnim {
+  to { transform: scale(5); opacity: 0; }
+}
+
+/* Register */
+.register {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 0.85rem;
+  color: rgba(230, 230, 230, 0.4);
+}
+
+.register a {
+  color: var(--off-white);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(230, 230, 230, 0.3);
+  padding-bottom: 1px;
+  transition: border-color 0.2s;
+}
+
+.register a:hover {
+  border-color: var(--off-white);
+}
+
+/* Footnote */
+.page-footnote {
+  position: absolute;
+  bottom: 26px;
+  right: 40px;
+  font-size: 0.7rem;
+  color: rgba(230, 230, 230, 0.25);
+  text-align: right;
+  z-index: 5;
+  line-height: 1.6;
+}
+
+.page-footnote a {
+  color: rgba(230, 230, 230, 0.4);
+  text-decoration: none;
+}
+
+.page-footnote a:hover {
+  color: var(--off-white);
+}
