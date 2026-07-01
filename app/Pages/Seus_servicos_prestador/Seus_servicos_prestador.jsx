@@ -168,10 +168,10 @@ export default function MeusServicos() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
+
   return (
     <div className="bg-gray-50 font-sans">
       <div className="max-w-6xl mx-auto px-6 py-8">
-
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -184,7 +184,7 @@ export default function MeusServicos() {
           </button>
         </div>
 
-        {/* Stat Cards */}
+      
         <div className="grid grid-cols-4 gap-4 mb-6">
           {statCards.map((card, i) => (
             <div key={i} className="bg-white rounded-2xl border border-gray-100 p-4 flex items-start gap-3 shadow-sm">
