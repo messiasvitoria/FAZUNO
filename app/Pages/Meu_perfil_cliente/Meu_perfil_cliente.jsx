@@ -37,6 +37,8 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
     chartBar:     ["M18 20V10", "M12 20V4", "M6 20v-6"],
     x:            ["M18 6L6 18", "M6 6l12 12"],
     camera:       ["M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z", "M12 17a4 4 0 100-8 4 4 0 000 8z"],
+    // ── Ícone "ban" usado para avaliações anônimas (mesmo padrão das outras telas) ──
+    ban:          ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", "M4.93 4.93l14.14 14.14"],
     star:         null,
   };
 
@@ -92,10 +94,10 @@ const initialClientData = {
   reviews: [
     { name: "João Eletricista", role: "Eletricista",        rating: 5.0, date: "10/06/2025", text: "Cliente educado, comunicação clara e sempre muito prestativo. Recomendo!",                              photo: "/foto_eletricista2.jpg"     },
     { name: "Ana Diarista",     role: "Diarista",           rating: 4.5, date: "03/06/2025", text: "Ótima experiência, tudo organizado e pagamento realizado conforme combinado. Muito pontual!",           photo: "/foto_faxineira2.avif"      },
-    { name: "Carlos Lima",      role: "Encanador",          rating: 4.8, date: "14/05/2025", text: "Muito pontual e prestativo. Voltaria a trabalhar sem hesitar.",                                         photo: "/foto_encanador2.jpg"       },
+    { name: "Carlos Lima",      role: "Encanador",          rating: 4.8, date: "14/05/2025", text: "Muito pontual e prestativo. Voltaria a trabalhar sem hesitar.",                                         photo: "/foto_encanador2.jpg",       anonymous: true },
     { name: "Fernanda Reis",    role: "Pintora",            rating: 4.6, date: "02/04/2025", text: "Organizado e justo. Pagamento realizado no prazo combinado.",                                           photo: "/foto_pintora2.avif"        },
     { name: "Roberto Souza",    role: "Montador de Móveis", rating: 4.5, date: "18/03/2025", text: "Casa sempre organizada e acesso facilitado. Cliente excelente!",                                        photo: "/foto_montador_moveis.avif" },
-    { name: "Patrícia Lima",    role: "Cuidadora",          rating: 4.7, date: "05/03/2025", text: "Ótima comunicação e muito atencioso durante todo o serviço. Voltaria com prazer!",                      photo: "/foto_cuidadora.jpg"        },
+    { name: "Patrícia Lima",    role: "Cuidadora",          rating: 4.7, date: "05/03/2025", text: "Ótima comunicação e muito atencioso durante todo o serviço. Voltaria com prazer!",                      photo: "/foto_cuidadora.jpg",        anonymous: true },
   ],
 };
 
@@ -253,12 +255,19 @@ function ReviewCard({ review }) {
       style={{ backgroundColor: "white", borderRadius: 16, padding: 16, boxShadow: hovered ? "0 0 0 2px #f97316, 0 8px 24px rgba(249,115,22,0.15)" : "0 2px 12px rgba(0,0,0,0.06)", border: `1.5px solid ${hovered ? "#f97316" : "#f1f5f9"}`, transform: hovered ? "translateY(-4px)" : "translateY(0)", height: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", transition: "all 0.25s ease", cursor: "default" }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-        <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "2px solid #fed7aa" }}>
-          <img src={review.photo} alt={review.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
-        </div>
+        {review.anonymous ? (
+          // ── Avaliação anônima: ícone "ban" no lugar da foto, sem nome/cargo ──
+          <div style={{ width: 36, height: 36, borderRadius: "50%", backgroundColor: "#f1f5f9", border: "2px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <Icon name="ban" size={16} color="#9ca3af" strokeWidth={2} />
+          </div>
+        ) : (
+          <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "2px solid #fed7aa" }}>
+            <img src={review.photo} alt={review.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
+          </div>
+        )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#111827" }}>{review.name}</p>
-          <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>{review.role}</p>
+          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#111827" }}>{review.anonymous ? "Avaliação anônima" : review.name}</p>
+          {!review.anonymous && <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>{review.role}</p>}
         </div>
         <span style={{ fontSize: 10, color: "#9ca3af", flexShrink: 0 }}>{review.date}</span>
       </div>
@@ -528,8 +537,8 @@ export default function MeuPerfilCliente() {
                 </SectionCard>
               </div>
 
-              {/* BANNER CTA */}
-              <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 100%)", borderRadius: 16, padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, position: "relative", overflow: "hidden", marginBottom: 8 }}>
+              {/* BANNER CTA — botão "Explorar serviços" removido */}
+              <div style={{ background: "linear-gradient(130deg, #0d1b3e 0%, #1e3a8a 100%)", borderRadius: 16, padding: "20px 24px", display: "flex", alignItems: "center", gap: 16, position: "relative", overflow: "hidden", marginBottom: 8 }}>
                 <div style={{ position: "absolute", inset: 0, pointerEvents: "none", backgroundImage: "radial-gradient(ellipse at 100% 50%, rgba(249,115,22,0.12) 0%, transparent 60%)" }} />
                 <div style={{ display: "flex", alignItems: "center", gap: 16, zIndex: 2 }}>
                   <div style={{ width: 48, height: 48, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -542,14 +551,6 @@ export default function MeuPerfilCliente() {
                     </p>
                   </div>
                 </div>
-                <button
-                  onClick={() => router.push("/Pages/Tela_inicial_cliente")}
-                  style={{ flexShrink: 0, zIndex: 2, padding: "10px 20px", borderRadius: 10, backgroundColor: "#f97316", border: "none", color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", transition: "opacity 0.2s" }}
-                  onMouseEnter={e => e.currentTarget.style.opacity = "0.85"}
-                  onMouseLeave={e => e.currentTarget.style.opacity = "1"}
-                >
-                  Explorar serviços
-                </button>
               </div>
             </div>
 

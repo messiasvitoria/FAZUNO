@@ -37,6 +37,8 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
     bookIcon:     ["M4 19.5A2.5 2.5 0 016.5 17H20", "M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"],
     mortarboard:  ["M22 10v6M2 10l10-5 10 5-10 5z", "M6 12v5c3 3 9 3 12 0v-5"],
     wrench:       ["M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"],
+    // ── Ícone "ban" (mesmo conceito usado no Perfil_prestador para avaliação anônima) ──
+    ban:          ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", "M4.93 4.93l14.14 14.14"],
     star:         null,
   };
 
@@ -84,10 +86,10 @@ const clientData = {
   reviews: [
     { name: "João Silva",    role: "Eletricista",        rating: 5.0, date: "10/05/2025", text: "Cliente muito educado e prestativo. Comunicação clara desde o início. Recomendo!",             photo: "/foto_eletricista2.jpg"     },
     { name: "Ana Souza",     role: "Diarista",           rating: 4.5, date: "22/04/2025", text: "Ambiente organizado e cliente muito atencioso. Foi um prazer realizar o serviço.",             photo: "/foto_faxineira2.avif"      },
-    { name: "Carlos Lima",   role: "Encanador",          rating: 4.8, date: "14/04/2025", text: "Muito pontual e prestativo. Voltaria a trabalhar sem hesitar.",                               photo: "/foto_encanador2.jpg"       },
+    { name: "Carlos Lima",   role: "Encanador",          rating: 4.8, date: "14/04/2025", text: "Muito pontual e prestativo. Voltaria a trabalhar sem hesitar.",                               photo: "/foto_encanador2.jpg",       anonymous: true },
     { name: "Fernanda Reis", role: "Pintora",            rating: 4.6, date: "02/04/2025", text: "Organizado e justo. Pagamento realizado no prazo combinado.",                                  photo: "/foto_pintora2.avif"        },
     { name: "Roberto Souza", role: "Montador de Móveis", rating: 4.5, date: "18/03/2025", text: "Casa sempre organizada e acesso facilitado. Cliente excelente!",                              photo: "/foto_montador_moveis.avif" },
-    { name: "Patrícia Lima", role: "Cuidadora",          rating: 4.7, date: "05/03/2025", text: "Ótima comunicação e muito atencioso durante todo o serviço. Voltaria com prazer!",            photo: "/foto_cuidadora.jpg"        },
+    { name: "Patrícia Lima", role: "Cuidadora",          rating: 4.7, date: "05/03/2025", text: "Ótima comunicação e muito atencioso durante todo o serviço. Voltaria com prazer!",            photo: "/foto_cuidadora.jpg",        anonymous: true },
     { name: "Marcos Prado",  role: "Jardineiro",         rating: 4.3, date: "20/02/2025", text: "Cliente pontual e educado. Deixou tudo pronto para trabalhar sem dificuldades.",              photo: "/homem2.avif"               },
   ],
 };
@@ -128,12 +130,19 @@ function ReviewCard({ review }) {
     <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
       style={{ backgroundColor: "white", borderRadius: 16, padding: 16, boxShadow: hovered ? "0 0 0 2px #f97316, 0 8px 24px rgba(249,115,22,0.15)" : "0 2px 12px rgba(0,0,0,0.06)", border: `1.5px solid ${hovered ? "#f97316" : "#f1f5f9"}`, transform: hovered ? "translateY(-4px)" : "translateY(0)", height: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", transition: "all 0.25s ease", cursor: "default" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-        <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "2px solid #fed7aa" }}>
-          <img src={review.photo} alt={review.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
-        </div>
+        {review.anonymous ? (
+          // ── PADRONIZADO: mesmo padrão de avaliação anônima do Perfil_prestador ──
+          <div style={{ width: 36, height: 36, borderRadius: "50%", backgroundColor: "#f1f5f9", border: "2px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <Icon name="ban" size={16} color="#9ca3af" strokeWidth={2} />
+          </div>
+        ) : (
+          <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "2px solid #fed7aa" }}>
+            <img src={review.photo} alt={review.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
+          </div>
+        )}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#111827" }}>{review.name}</p>
-          <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>{review.role}</p>
+          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#111827" }}>{review.anonymous ? "Avaliação anônima" : review.name}</p>
+          {!review.anonymous && <p style={{ margin: 0, fontSize: 11, color: "#9ca3af" }}>{review.role}</p>}
         </div>
         <span style={{ fontSize: 10, color: "#9ca3af", flexShrink: 0 }}>{review.date}</span>
       </div>

@@ -31,15 +31,15 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
 
 /* ── Dados ─────────────────────────────────────────────────────── */
 const SUBCATEGORIAS = [
-  { key: "todas",        label: "Todos"              },
-  { key: "cuidador",     label: "Cuidadores"         },
-  { key: "enfermagem",   label: "Enfermagem"         },
-  { key: "fisioterapia", label: "Fisioterapia"       },
-  { key: "nutricao",     label: "Nutrição"           },
-  { key: "psicologia",   label: "Psicologia"         },
-  { key: "medico",       label: "Médicos"            },
-  { key: "odontologia",  label: "Odontologia"        },
-  { key: "estetica",     label: "Estética"           },
+  { key: "todas",        label: "Todos"        },
+  { key: "cuidador",     label: "Cuidadores"   },
+  { key: "enfermagem",   label: "Enfermagem"   },
+  { key: "fisioterapia", label: "Fisioterapia" },
+  { key: "nutricao",     label: "Nutrição"     },
+  { key: "psicologia",   label: "Psicologia"   },
+  { key: "medico",       label: "Médicos"      },
+  { key: "odontologia",  label: "Odontologia"  },
+  { key: "estetica",     label: "Estética"     },
 ];
 
 const ORDENAR = [
@@ -50,38 +50,177 @@ const ORDENAR = [
   { key: "preco_desc",  label: "Maior preço"      },
 ];
 
+// Fotos temáticas por profissão e gênero via Unsplash
 const PROFISSIONAIS = [
-  // Cuidadores
-  { id: 1,  nome: "Juliana Costa",    sub: "cuidador",     role: "Cuidadora de Idosos",         rating: 4.9, reviews: 76,  distance: "1,5 km", price: "R$ 80/h",  photo: "/foto_cuidadora.jpg",         verified: true,  destaque: true,  bio: "Especialista em cuidados com idosos, com 8 anos de experiência. Disponível para plantões diurnos e noturnos." },
-  { id: 2,  nome: "Renata Alves",     sub: "cuidador",     role: "Cuidadora Pediátrica",        rating: 4.8, reviews: 44,  distance: "2,2 km", price: "R$ 70/h",  photo: "/foto_faxineira2.avif",       verified: true,  destaque: false, bio: "Cuidadora infantil com formação em primeiros socorros e desenvolvimento infantil." },
-  { id: 3,  nome: "Marco Vieira",     sub: "cuidador",     role: "Cuidador Domiciliar",         rating: 4.7, reviews: 31,  distance: "3,0 km", price: "R$ 65/h",  photo: "/foto_encanador2.jpg",        verified: true,  destaque: false, bio: "Cuidador domiciliar com treinamento em mobilidade e higiene para pacientes acamados." },
-  // Enfermagem
-  { id: 4,  nome: "Camila Ferreira",  sub: "enfermagem",   role: "Técnica em Enfermagem",       rating: 4.9, reviews: 112, distance: "2,0 km", price: "R$ 90/h",  photo: "/foto_faxineira1.avif",       verified: true,  destaque: true,  bio: "Técnica em enfermagem com experiência em aplicação de medicamentos, curativos e monitoramento." },
-  { id: 5,  nome: "Diego Santana",    sub: "enfermagem",   role: "Enfermeiro Domiciliar",       rating: 4.8, reviews: 88,  distance: "3,5 km", price: "R$ 120/h", photo: "/foto_encanador.jpg",         verified: true,  destaque: false, bio: "Enfermeiro com COREN ativo, especializado em cuidados domiciliares e pós-operatórios." },
-  { id: 6,  nome: "Larissa Matos",    sub: "enfermagem",   role: "Enfermeira UTI Domiciliar",   rating: 5.0, reviews: 67,  distance: "4,1 km", price: "R$ 150/h", photo: "/foto_faxineira2.avif",       verified: true,  destaque: true,  bio: "Enfermeira especializada em UTI domiciliar e pacientes de alta complexidade." },
-  // Fisioterapia
-  { id: 7,  nome: "Rodrigo Lima",     sub: "fisioterapia", role: "Fisioterapeuta",              rating: 4.9, reviews: 93,  distance: "1,8 km", price: "R$ 130/h", photo: "/foto_montador_moveis.avif",  verified: true,  destaque: true,  bio: "Fisioterapeuta com especialização em reabilitação ortopédica e neurológica." },
-  { id: 8,  nome: "Tânia Rocha",      sub: "fisioterapia", role: "Fisio. Respiratória",         rating: 4.7, reviews: 55,  distance: "2,8 km", price: "R$ 140/h", photo: "/foto_faxineira1.avif",       verified: true,  destaque: false, bio: "Especialista em fisioterapia respiratória para DPOC, asma e pós-COVID." },
-  { id: 9,  nome: "Bruno Almeida",    sub: "fisioterapia", role: "Fisio. Esportivo",            rating: 4.8, reviews: 79,  distance: "3,2 km", price: "R$ 135/h", photo: "/foto_eletricista2.jpg",      verified: true,  destaque: false, bio: "Fisioterapeuta esportivo com atendimento em domicílio e reabilitação de atletas." },
-  // Nutrição
-  { id: 10, nome: "Priscila Nunes",   sub: "nutricao",     role: "Nutricionista",               rating: 4.9, reviews: 101, distance: "1,2 km", price: "R$ 110/h", photo: "/foto_pintora2.avif",         verified: true,  destaque: true,  bio: "Nutricionista clínica com foco em emagrecimento saudável e reeducação alimentar." },
-  { id: 11, nome: "André Campos",     sub: "nutricao",     role: "Nutri. Esportivo",            rating: 4.8, reviews: 63,  distance: "2,5 km", price: "R$ 120/h", photo: "/foto_encanador2.jpg",        verified: true,  destaque: false, bio: "Nutricionista esportivo com experiência em performance e suplementação." },
-  { id: 12, nome: "Fernanda Braga",   sub: "nutricao",     role: "Nutri. Infantil",             rating: 4.9, reviews: 47,  distance: "3,7 km", price: "R$ 115/h", photo: "/foto_faxineira2.avif",       verified: true,  destaque: false, bio: "Especializada em alimentação saudável para bebês e crianças em fase de crescimento." },
-  // Psicologia
-  { id: 13, nome: "Aline Carvalho",   sub: "psicologia",   role: "Psicóloga Clínica",           rating: 5.0, reviews: 134, distance: "1,0 km", price: "R$ 150/h", photo: "/foto_pintora.avif",          verified: true,  destaque: true,  bio: "Psicóloga com CRP ativo, especializada em TCC, ansiedade e depressão." },
-  { id: 14, nome: "Paulo Henrique",   sub: "psicologia",   role: "Psicólogo Infantil",          rating: 4.8, reviews: 72,  distance: "2,3 km", price: "R$ 140/h", photo: "/foto_eletricista.jpg",       verified: true,  destaque: false, bio: "Especialista em psicologia infantil e adolescente, com abordagem lúdica." },
-  { id: 15, nome: "Mariana Lopes",    sub: "psicologia",   role: "Neuropsicóloga",              rating: 4.9, reviews: 58,  distance: "4,0 km", price: "R$ 170/h", photo: "/foto_cuidadora.jpg",         verified: true,  destaque: false, bio: "Neuropsicóloga com experiência em avaliação e reabilitação cognitiva." },
-  // Médicos
-  { id: 16, nome: "Dr. Fábio Torres", sub: "medico",       role: "Clínico Geral",               rating: 5.0, reviews: 198, distance: "2,0 km", price: "R$ 200/h", photo: "/foto_eletricista2.jpg",      verified: true,  destaque: true,  bio: "Médico clínico geral com CRM ativo, atende visitas domiciliares e emite atestados." },
-  { id: 17, nome: "Dra. Cláudia Mei", sub: "medico",       role: "Pediatra",                    rating: 4.9, reviews: 143, distance: "3,1 km", price: "R$ 220/h", photo: "/foto_faxineira1.avif",       verified: true,  destaque: false, bio: "Pediatra com residência em neonatologia, atendimento domiciliar para bebês e crianças." },
-  { id: 18, nome: "Dr. Rafael Mota",  sub: "medico",       role: "Geriatra",                    rating: 4.8, reviews: 87,  distance: "3,8 km", price: "R$ 240/h", photo: "/foto_encanador.jpg",         verified: true,  destaque: false, bio: "Geriatra especializado em cuidados de saúde para idosos e doenças crônicas." },
-  // Odontologia
-  { id: 19, nome: "Dra. Letícia Paz", sub: "odontologia",  role: "Dentista",                    rating: 4.9, reviews: 89,  distance: "1,5 km", price: "R$ 160/h", photo: "/foto_pintora2.avif",         verified: true,  destaque: true,  bio: "Dentista com CRO ativo, realiza consultas domiciliares de urgência e manutenção." },
-  { id: 20, nome: "Bruno Esteves",    sub: "odontologia",  role: "Ortodontista",                rating: 4.8, reviews: 55,  distance: "2,9 km", price: "R$ 180/h", photo: "/foto_montador_moveis.avif",  verified: true,  destaque: false, bio: "Especialista em ortodontia e alinhadores invisíveis com atendimento personalizado." },
-  // Estética
-  { id: 21, nome: "Vanessa Souza",    sub: "estetica",     role: "Esteticista",                 rating: 4.9, reviews: 116, distance: "0,8 km", price: "R$ 95/h",  photo: "/foto_faxineira2.avif",       verified: true,  destaque: true,  bio: "Esteticista com cursos em drenagem linfática, microagulhamento e limpeza de pele." },
-  { id: 22, nome: "Gisele Tavares",   sub: "estetica",     role: "Massoterapeuta",              rating: 4.8, reviews: 74,  distance: "1,9 km", price: "R$ 100/h", photo: "/foto_cuidadora.jpg",         verified: true,  destaque: false, bio: "Massoterapeuta com técnicas relaxantes, terapêuticas e modeladoras." },
-  { id: 23, nome: "Carina Medeiros",  sub: "estetica",     role: "Podóloga",                    rating: 4.7, reviews: 49,  distance: "2,6 km", price: "R$ 80/h",  photo: "/foto_pintora.avif",          verified: true,  destaque: false, bio: "Podóloga com atendimento domiciliar especializado em diabéticos e idosos." },
+  // ── Cuidadores ──────────────────────────────────────────────────
+  {
+    id: 1, nome: "Juliana Costa", sub: "cuidador", role: "Cuidadora de Idosos",
+    rating: 4.9, reviews: 76, distance: "1,5 km", price: "R$ 80/h",
+    photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: true,
+    bio: "Especialista em cuidados com idosos, com 8 anos de experiência. Disponível para plantões diurnos e noturnos.",
+  },
+  {
+    id: 2, nome: "Renata Alves", sub: "cuidador", role: "Cuidadora Pediátrica",
+    rating: 4.8, reviews: 44, distance: "2,2 km", price: "R$ 70/h",
+    photo: "https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: false,
+    bio: "Cuidadora infantil com formação em primeiros socorros e desenvolvimento infantil.",
+  },
+  {
+    id: 3, nome: "Marco Vieira", sub: "cuidador", role: "Cuidador Domiciliar",
+    rating: 4.7, reviews: 31, distance: "3,0 km", price: "R$ 65/h",
+    photo: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: false,
+    bio: "Cuidador domiciliar com treinamento em mobilidade e higiene para pacientes acamados.",
+  },
+  // ── Enfermagem ──────────────────────────────────────────────────
+  {
+    id: 4, nome: "Camila Ferreira", sub: "enfermagem", role: "Técnica em Enfermagem",
+    rating: 4.9, reviews: 112, distance: "2,0 km", price: "R$ 90/h",
+    photo: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: true,
+    bio: "Técnica em enfermagem com experiência em aplicação de medicamentos, curativos e monitoramento.",
+  },
+  {
+    id: 5, nome: "Diego Santana", sub: "enfermagem", role: "Enfermeiro Domiciliar",
+    rating: 4.8, reviews: 88, distance: "3,5 km", price: "R$ 120/h",
+    photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: false,
+    bio: "Enfermeiro com COREN ativo, especializado em cuidados domiciliares e pós-operatórios.",
+  },
+  {
+    id: 6, nome: "Larissa Matos", sub: "enfermagem", role: "Enfermeira UTI Domiciliar",
+    rating: 5.0, reviews: 67, distance: "4,1 km", price: "R$ 150/h",
+    photo: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: true,
+    bio: "Enfermeira especializada em UTI domiciliar e pacientes de alta complexidade.",
+  },
+  // ── Fisioterapia ────────────────────────────────────────────────
+  {
+    id: 7, nome: "Rodrigo Lima", sub: "fisioterapia", role: "Fisioterapeuta",
+    rating: 4.9, reviews: 93, distance: "1,8 km", price: "R$ 130/h",
+    photo: "https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: true,
+    bio: "Fisioterapeuta com especialização em reabilitação ortopédica e neurológica.",
+  },
+  {
+    id: 8, nome: "Tânia Rocha", sub: "fisioterapia", role: "Fisio. Respiratória",
+    rating: 4.7, reviews: 55, distance: "2,8 km", price: "R$ 140/h",
+    photo: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: false,
+    bio: "Especialista em fisioterapia respiratória para DPOC, asma e pós-COVID.",
+  },
+  {
+    id: 9, nome: "Bruno Almeida", sub: "fisioterapia", role: "Fisio. Esportivo",
+    rating: 4.8, reviews: 79, distance: "3,2 km", price: "R$ 135/h",
+    photo: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: false,
+    bio: "Fisioterapeuta esportivo com atendimento em domicílio e reabilitação de atletas.",
+  },
+  // ── Nutrição ────────────────────────────────────────────────────
+  {
+    id: 10, nome: "Priscila Nunes", sub: "nutricao", role: "Nutricionista",
+    rating: 4.9, reviews: 101, distance: "1,2 km", price: "R$ 110/h",
+    photo: "https://images.unsplash.com/photo-1618498082410-b4aa22193b38?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: true,
+    bio: "Nutricionista clínica com foco em emagrecimento saudável e reeducação alimentar.",
+  },
+  {
+    id: 11, nome: "André Campos", sub: "nutricao", role: "Nutri. Esportivo",
+    rating: 4.8, reviews: 63, distance: "2,5 km", price: "R$ 120/h",
+    photo: "https://images.unsplash.com/photo-1534367610401-9f5ed68180aa?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: false,
+    bio: "Nutricionista esportivo com experiência em performance e suplementação.",
+  },
+  {
+    id: 12, nome: "Fernanda Braga", sub: "nutricao", role: "Nutri. Infantil",
+    rating: 4.9, reviews: 47, distance: "3,7 km", price: "R$ 115/h",
+    photo: "https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: false,
+    bio: "Especializada em alimentação saudável para bebês e crianças em fase de crescimento.",
+  },
+  // ── Psicologia ──────────────────────────────────────────────────
+  {
+    id: 13, nome: "Aline Carvalho", sub: "psicologia", role: "Psicóloga Clínica",
+    rating: 5.0, reviews: 134, distance: "1,0 km", price: "R$ 150/h",
+    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: true,
+    bio: "Psicóloga com CRP ativo, especializada em TCC, ansiedade e depressão.",
+  },
+  {
+    id: 14, nome: "Paulo Henrique", sub: "psicologia", role: "Psicólogo Infantil",
+    rating: 4.8, reviews: 72, distance: "2,3 km", price: "R$ 140/h",
+    photo: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: false,
+    bio: "Especialista em psicologia infantil e adolescente, com abordagem lúdica.",
+  },
+  {
+    id: 15, nome: "Mariana Lopes", sub: "psicologia", role: "Neuropsicóloga",
+    rating: 4.9, reviews: 58, distance: "4,0 km", price: "R$ 170/h",
+    photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: false,
+    bio: "Neuropsicóloga com experiência em avaliação e reabilitação cognitiva.",
+  },
+  // ── Médicos ─────────────────────────────────────────────────────
+  {
+    id: 16, nome: "Dr. Fábio Torres", sub: "medico", role: "Clínico Geral",
+    rating: 5.0, reviews: 198, distance: "2,0 km", price: "R$ 200/h",
+    photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=faces",
+    verified: true, destaque: true,
+    bio: "Médico clínico geral com CRM ativo, atende visitas domiciliares e emite atestados.",
+  },
+  {
+    id: 17, nome: "Dra. Cláudia Mei", sub: "medico", role: "Pediatra",
+    rating: 4.9, reviews: 143, distance: "3,1 km", price: "R$ 220/h",
+    photo: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=200&h=200&fit=crop&crop=faces",
+    verified: true, destaque: false,
+    bio: "Pediatra com residência em neonatologia, atendimento domiciliar para bebês e crianças.",
+  },
+  {
+    id: 18, nome: "Dr. Rafael Mota", sub: "medico", role: "Geriatra",
+    rating: 4.8, reviews: 87, distance: "3,8 km", price: "R$ 240/h",
+    photo: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: false,
+    bio: "Geriatra especializado em cuidados de saúde para idosos e doenças crônicas.",
+  },
+  // ── Odontologia ─────────────────────────────────────────────────
+  {
+    id: 19, nome: "Dra. Letícia Paz", sub: "odontologia", role: "Dentista",
+    rating: 4.9, reviews: 89, distance: "1,5 km", price: "R$ 160/h",
+    photo: "https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: true,
+    bio: "Dentista com CRO ativo, realiza consultas domiciliares de urgência e manutenção.",
+  },
+  {
+    id: 20, nome: "Bruno Esteves", sub: "odontologia", role: "Ortodontista",
+    rating: 4.8, reviews: 55, distance: "2,9 km", price: "R$ 180/h",
+    photo: "https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=200&h=200&fit=crop&crop=faces",
+    verified: true, destaque: false,
+    bio: "Especialista em ortodontia e alinhadores invisíveis com atendimento personalizado.",
+  },
+  // ── Estética ────────────────────────────────────────────────────
+  {
+    id: 21, nome: "Vanessa Souza", sub: "estetica", role: "Esteticista",
+    rating: 4.9, reviews: 116, distance: "0,8 km", price: "R$ 95/h",
+    photo: "https://images.unsplash.com/photo-1560869713-7d0a29430803?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: true,
+    bio: "Esteticista com cursos em drenagem linfática, microagulhamento e limpeza de pele.",
+  },
+  {
+    id: 22, nome: "Gisele Tavares", sub: "estetica", role: "Massoterapeuta",
+    rating: 4.8, reviews: 74, distance: "1,9 km", price: "R$ 100/h",
+    photo: "https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: false,
+    bio: "Massoterapeuta com técnicas relaxantes, terapêuticas e modeladoras.",
+  },
+  {
+    id: 23, nome: "Carina Medeiros", sub: "estetica", role: "Podóloga",
+    rating: 4.7, reviews: 49, distance: "2,6 km", price: "R$ 80/h",
+    photo: "https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?w=200&h=200&fit=crop&crop=face",
+    verified: true, destaque: false,
+    bio: "Podóloga com atendimento domiciliar especializado em diabéticos e idosos.",
+  },
 ];
 
 /* ── Card do profissional ──────────────────────────────────────── */
@@ -91,7 +230,11 @@ function ProfissionalCard({ pro, onContratar }) {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{ backgroundColor: "white", borderRadius: 18, padding: 16, boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.18)" : "0 0 0 1.5px #e5e7eb, 0 2px 12px rgba(0,0,0,0.07)", transform: hovered ? "translateY(-6px)" : "translateY(0)", transition: "all 0.25s ease", cursor: "default", position: "relative" }}
+      style={{
+        backgroundColor: "white", borderRadius: 18, padding: 16,
+        boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.18)" : "0 0 0 1.5px #e5e7eb, 0 2px 12px rgba(0,0,0,0.07)",
+        transform: hovered ? "translateY(-6px)" : "translateY(0)", transition: "all 0.25s ease", cursor: "default", position: "relative",
+      }}
     >
       {pro.destaque && (
         <span style={{ position: "absolute", top: 12, right: 12, fontSize: 10, fontWeight: 700, background: "#fff7ed", color: "#f97316", border: "1px solid #fed7aa", borderRadius: 20, padding: "3px 8px" }}>
@@ -100,7 +243,11 @@ function ProfissionalCard({ pro, onContratar }) {
       )}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
         <div style={{ width: 64, height: 64, borderRadius: "50%", overflow: "hidden", border: "2.5px solid #fed7aa", flexShrink: 0 }}>
-          <img src={pro.photo} alt={pro.nome} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
+          <img
+            src={pro.photo} alt={pro.nome}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            onError={e => { e.target.style.display = "none"; }}
+          />
         </div>
       </div>
       <p style={{ fontWeight: 700, fontSize: 13, color: "#111827", textAlign: "center", margin: "0 0 2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{pro.nome}</p>
@@ -135,7 +282,11 @@ function ProfissionalCard({ pro, onContratar }) {
 }
 
 /* ── Modal Contratar ───────────────────────────────────────────── */
-function ModalContratar({ pro, onClose }) {
+function ModalContratar({ pro, onClose, router }) {
+  const handleSolicitar = () => {
+    router.push(`/Pages/Escolha_contratacao?proId=${pro.id}`);
+  };
+
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
       <div onClick={e => e.stopPropagation()} style={{ background: "#fff", borderRadius: 16, width: "100%", maxWidth: 420, boxShadow: "0 24px 60px rgba(0,0,0,0.2)", overflow: "hidden", fontFamily: "'Segoe UI', sans-serif" }}>
@@ -175,7 +326,9 @@ function ModalContratar({ pro, onClose }) {
           </div>
           <div style={{ display: "flex", gap: 10 }}>
             <button onClick={onClose} style={{ flex: 1, padding: "11px 0", borderRadius: 10, border: "1.5px solid #D1D5DB", background: "#fff", color: "#374151", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>Cancelar</button>
-            <button style={{ flex: 1.4, padding: "11px 0", borderRadius: 10, border: "none", background: "#f97316", color: "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer" }}
+            <button
+              onClick={handleSolicitar}
+              style={{ flex: 1.4, padding: "11px 0", borderRadius: 10, border: "none", background: "#f97316", color: "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer" }}
               onMouseEnter={e => e.currentTarget.style.opacity = "0.88"}
               onMouseLeave={e => e.currentTarget.style.opacity = "1"}
             >Solicitar serviço</button>
@@ -189,21 +342,21 @@ function ModalContratar({ pro, onClose }) {
 /* ── Página ────────────────────────────────────────────────────── */
 export default function CategoriaSaude() {
   const router = useRouter();
-  const [subcat, setSubcat]     = useState("todas");
-  const [ordenar, setOrdenar]   = useState("relevancia");
-  const [busca, setBusca]       = useState("");
+  const [subcat, setSubcat]       = useState("todas");
+  const [ordenar, setOrdenar]     = useState("relevancia");
+  const [busca, setBusca]         = useState("");
   const [showOrder, setShowOrder] = useState(false);
-  const [modalPro, setModalPro] = useState(null);
+  const [modalPro, setModalPro]   = useState(null);
 
   const filtrados = PROFISSIONAIS.filter(p => {
-    const matchSub  = subcat === "todas" || p.sub === subcat;
+    const matchSub   = subcat === "todas" || p.sub === subcat;
     const matchBusca = !busca || p.nome.toLowerCase().includes(busca.toLowerCase()) || p.role.toLowerCase().includes(busca.toLowerCase());
     return matchSub && matchBusca;
   }).sort((a, b) => {
     if (ordenar === "avaliacao")  return b.rating - a.rating;
     if (ordenar === "distancia")  return parseFloat(a.distance) - parseFloat(b.distance);
-    if (ordenar === "preco_asc")  return parseInt(a.price.replace(/\D/g,"")) - parseInt(b.price.replace(/\D/g,""));
-    if (ordenar === "preco_desc") return parseInt(b.price.replace(/\D/g,"")) - parseInt(a.price.replace(/\D/g,""));
+    if (ordenar === "preco_asc")  return parseInt(a.price.replace(/\D/g, "")) - parseInt(b.price.replace(/\D/g, ""));
+    if (ordenar === "preco_desc") return parseInt(b.price.replace(/\D/g, "")) - parseInt(a.price.replace(/\D/g, ""));
     return b.destaque - a.destaque;
   });
 
@@ -331,7 +484,7 @@ export default function CategoriaSaude() {
         </div>
       </div>
 
-      {modalPro && <ModalContratar pro={modalPro} onClose={() => setModalPro(null)} />}
+      {modalPro && <ModalContratar pro={modalPro} onClose={() => setModalPro(null)} router={router} />}
     </>
   );
 }
