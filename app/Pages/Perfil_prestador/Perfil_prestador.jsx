@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation"; // ← ADICIONADO
+import { useRouter, useSearchParams } from "next/navigation";
+import TodosServicosPrestador from "./Todos_servicos_prestador";
 import {
   FaStar, FaStarHalfAlt, FaRegStar,
   FaMapMarkerAlt, FaCheckCircle,
@@ -8,14 +9,16 @@ import {
   FaHeart, FaRegHeart,
   FaBroom, FaPaintRoller, FaHeartbeat, FaGraduationCap, FaCut,
   FaLaptop, FaEllipsisH, FaExclamationCircle, FaBan,
-  FaWrench, FaBolt, FaEdit, FaFileAlt, FaCalendar,
-  FaArrowLeft, // ← ADICIONADO
+  FaWrench, FaBolt, FaFileAlt, FaCalendar,
+  FaArrowLeft, FaArrowRight, FaChevronLeft, FaChevronRight,
+  FaCommentDots, FaPlug, FaLightbulb, FaTools, FaExclamationTriangle, FaShareAlt,
 } from "react-icons/fa";
 
 const C = {
   navy:    "#06104A",
   band:    "#143660",
   orange:  "#f1670f",
+  purple:  "#7C5CFC",
   muted:   "#6975A8",
   border:  "#E2E7F0",
   border2: "#DDE3EE",
@@ -29,6 +32,7 @@ const C = {
 
 // ── PADRONIZADO: mesma foto usada no Modal_Detalhes_Cliente ──
 const PHOTO_PROVIDER = "https://randomuser.me/api/portraits/men/32.jpg";
+const EXTERNAL_DIRECT_SERVICE_KEY = "fazuno_solicitacao_direta_servico_externo";
 
 // Fotos realistas de eletricista
 const PORTFOLIO_PHOTOS = [
@@ -90,6 +94,18 @@ const PROVIDER = {
   ],
 };
 
+// ── PADRONIZADO: prévia de "Serviços ofertados" (todas elétricas) ──
+const SERVICES_PREVIEW = [
+  { title: "Instalação elétrica residencial",      desc: "Instalações elétricas residenciais e comerciais completas, do projeto à execução.", price: "120,00", Icon: FaBolt,               photo: PORTFOLIO_PHOTOS[0] },
+  { title: "Manutenção elétrica preventiva",       desc: "Reparos elétricos, troca de disjuntores, tomadas e interruptores com segurança.",   price: "110,00", Icon: FaTools,              photo: PORTFOLIO_PHOTOS[1] },
+  { title: "Troca de fiação e cabeamento",         desc: "Substituição completa de fiação antiga ou danificada, com materiais de qualidade.", price: "150,00", Icon: FaPlug,               photo: PORTFOLIO_PHOTOS[2] },
+  { title: "Instalação de iluminação LED",         desc: "Instalação de luminárias, spots, fitas de LED e iluminação decorativa.",            price: "90,00",  Icon: FaLightbulb,          photo: PORTFOLIO_PHOTOS[3] },
+  { title: "Instalação de quadro de distribuição",  desc: "Montagem e revisão de quadros de distribuição com disjuntores certificados.",       price: "180,00", Icon: FaShieldAlt,          photo: PORTFOLIO_PHOTOS[4] },
+  { title: "Instalação de tomadas e interruptores",desc: "Instalação de tomadas, interruptores e pontos de energia.",                          price: "70,00",  Icon: FaBolt,               photo: PORTFOLIO_PHOTOS[0] },
+  { title: "Reparo de curto-circuito",             desc: "Atendimento rápido para curtos-circuitos e falhas elétricas urgentes.",              price: "130,00", Icon: FaExclamationTriangle, photo: PORTFOLIO_PHOTOS[1] },
+  { title: "Revisão e laudo NR-10",                desc: "Vistoria completa com laudo técnico conforme norma NR-10.",                          price: "160,00", Icon: FaShieldAlt,          photo: PORTFOLIO_PHOTOS[2] },
+];
+
 function StarRow({ value }) {
   return (
     <span style={{ display:"inline-flex", gap:2, color:C.star, fontSize:"0.8rem" }}>
@@ -121,13 +137,69 @@ const card = { border:`1.5px solid ${C.border}`, borderRadius:12, background:C.b
 const secTitle = { fontFamily:"'Sora',sans-serif", fontSize:"1rem", fontWeight:700, color:C.navy, marginBottom:18, marginTop:0 };
 
 export default function PerfilPrestador() {
-  const router = useRouter(); // ← ADICIONADO
-  const p = PROVIDER;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const providerPhoto = searchParams.get("foto") || PHOTO_PROVIDER;
+  const p = {
+    ...PROVIDER,
+    name: searchParams.get("nome") || PROVIDER.name,
+    mainProfession: searchParams.get("servico") || PROVIDER.mainProfession,
+    rating: Number(searchParams.get("avaliacao")) || PROVIDER.rating,
+    totalRatings: Number(searchParams.get("avaliacoes")) || PROVIDER.totalRatings,
+  };
   const [showAll, setShowAll]       = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [skillHover, setSkillHover] = useState(null);
+  const [favorited, setFavorited]   = useState(false);
+  const [shared, setShared] = useState(false);
+  const [showCatalogo, setShowCatalogo] = useState(false);
+  const carouselRef = useRef(null);
 
   const visibleReviews = showAll ? p.reviews : p.reviews.slice(0, 2);
+
+  function scrollCarousel(dir) {
+    const el = carouselRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * 230, behavior: "smooth" });
+  }
+
+  function buildDirectService(service, index) {
+    return {
+      id: 8500 + index,
+      title: service.title,
+      professional: p.name,
+      rating: String(p.rating),
+      reviews: String(p.totalRatings),
+      price: `R$ ${service.price.replace(",00", "")}`,
+      distance: "3 km",
+      eta: "10 min",
+      image: service.photo,
+      profilePhoto: providerPhoto,
+      profileRoute: "/Pages/Perfil_prestador",
+      category: "Elétrica",
+      subcategory: "Serviço elétrico",
+      description: service.desc,
+      included: ["Avaliação do ponto elétrico", "Execução do serviço contratado", "Teste de segurança ao finalizar"],
+      excluded: ["Materiais não combinados", "Mudanças estruturais fora do escopo"],
+      serviceFor: "Residências, comércios e pequenos condomínios",
+      chargingType: "Por serviço",
+      attendanceMode: "Presencial",
+      executionTime: "Conforme complexidade do serviço",
+      serviceArea: p.serviceInfo.neighborhoods,
+      nextAvailability: "Hoje após 14h",
+      completedServices: `${p.servicesCompleted} serviços realizados`,
+      address: "Rua das Flores, 123, Vila Madalena, São Paulo - SP",
+    };
+  }
+
+  function openDirectFlow(service, index, step) {
+    window.sessionStorage.setItem(EXTERNAL_DIRECT_SERVICE_KEY, JSON.stringify(buildDirectService(service, index)));
+    router.push(`/Pages/Escolha_contratacao?fluxo=direta&etapa=${step}&servicoExterno=1`);
+  }
+
+  if (showCatalogo) {
+    return <TodosServicosPrestador onVoltar={() => setShowCatalogo(false)} />;
+  }
 
   return (
     <>
@@ -139,6 +211,7 @@ export default function PerfilPrestador() {
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width:6px; height:6px; }
         ::-webkit-scrollbar-thumb { background:#c7cde0; border-radius:99px; }
+        .services-carousel::-webkit-scrollbar { display:none; }
       `}</style>
 
       <div style={{ fontFamily:"'DM Sans','Segoe UI',sans-serif", background:"#EEF1F8", color:C.navy, position:"fixed", inset:0, overflowY:"auto" }}>
@@ -163,7 +236,7 @@ export default function PerfilPrestador() {
                 <div style={{ width:96, height:96, borderRadius:"50%", border:"3.5px solid rgba(255,255,255,0.5)", overflow:"hidden", boxShadow:"0 4px 20px rgba(0,0,0,0.3)" }}>
                   {/* ── PADRONIZADO: mesma foto do Modal_Detalhes_Cliente ── */}
                   <img
-                    src={PHOTO_PROVIDER}
+                    src={providerPhoto}
                     alt="João Silva"
                     style={{ width:"100%", height:"100%", objectFit:"cover" }}
                     onError={e => { e.target.src="https://picsum.photos/seed/electrician42/200/200"; }}
@@ -201,12 +274,35 @@ export default function PerfilPrestador() {
                 </p>
               </div>
 
-              <button
-                onMouseEnter={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.7)"; e.currentTarget.style.background="rgba(255,255,255,0.08)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
-                style={{ height:40, padding:"0 18px", background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", borderRadius:8, color:"#fff", fontSize:".84rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:7, flexShrink:0, transition:"all 0.15s" }}>
-                <FaEdit size={13}/> Editar perfil
-              </button>
+              {/* ── BOTÕES "ENVIAR MENSAGEM" + "FAVORITAR PERFIL" (substituindo "Editar perfil") ── */}
+              <div style={{ display:"flex", flexDirection:"column", gap:10, flexShrink:0 }}>
+                <button
+                  onClick={() => router.push(`/Pages/Chat?nome=${encodeURIComponent(p.name)}&tipo=prestador&servico=${encodeURIComponent("Perfil do prestador")}&origem=perfil-prestador`)}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor=C.orange; e.currentTarget.style.background="rgba(255,255,255,0.08)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
+                  style={{ height:40, padding:"0 18px", background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", borderRadius:8, color:"#fff", fontSize:".84rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:7, transition:"all 0.15s", whiteSpace:"nowrap" }}>
+                  <FaCommentDots size={13}/> Enviar mensagem
+                </button>
+                <button
+                  onClick={() => setFavorited(v => !v)}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor=C.orange; e.currentTarget.style.background="rgba(255,255,255,0.08)"; }}
+onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
+                  style={{ height:40, padding:"0 18px", background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", borderRadius:8, color:"#fff", fontSize:".84rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:7, transition:"all 0.15s", whiteSpace:"nowrap" }}>
+                  {favorited ? <FaHeart size={13} style={{ color:C.orange }}/> : <FaRegHeart size={13}/>} {favorited ? "Favoritado" : "Favoritar perfil"}
+                </button>
+                <button
+                  onClick={() => {
+                    const url = typeof window !== "undefined" ? window.location.href : "";
+                    navigator?.clipboard?.writeText(url);
+                    setShared(true);
+                    window.setTimeout(() => setShared(false), 1800);
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor=C.orange; e.currentTarget.style.background="rgba(255,255,255,0.08)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
+                  style={{ height:40, padding:"0 18px", background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", borderRadius:8, color:"#fff", fontSize:".84rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:7, transition:"all 0.15s", whiteSpace:"nowrap" }}>
+                  <FaShareAlt size={13}/> {shared ? "Link copiado" : "Compartilhar perfil"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -280,6 +376,62 @@ export default function PerfilPrestador() {
                     <div style={{ fontSize:".75rem", fontWeight:700, color:C.muted, textAlign:"center", lineHeight:1.3 }}>{cat.label}</div>
                   </div>
                 ))}
+              </div>
+            </div>
+          </AnimCard>
+
+          {/* ── SERVIÇOS OFERTADOS (carrossel) ── */}
+          <AnimCard delay={95} style={{ ...card, marginBottom:20 }}>
+            <div style={{ padding:"24px 26px" }}>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:18 }}>
+                <p style={{ ...secTitle, marginBottom:0 }}>Serviços ofertados</p>
+                <button
+                  onClick={() => setShowCatalogo(true)}
+                  onMouseEnter={e => e.currentTarget.style.textDecoration="underline"}
+                  onMouseLeave={e => e.currentTarget.style.textDecoration="none"}
+                  style={{ background:"none", border:"none", color:C.orange, fontSize:".83rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
+                  Ver todos os serviços <FaArrowRight size={11}/>
+                </button>
+              </div>
+
+              <div style={{ position:"relative" }}>
+                <button
+                  onClick={() => scrollCarousel(-1)}
+                  style={{ position:"absolute", left:-8, top:"38%", transform:"translateY(-50%)", width:34, height:34, borderRadius:"50%", background:"#fff", border:`1.5px solid ${C.border}`, boxShadow:"0 4px 12px rgba(6,16,74,0.12)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", zIndex:2 }}>
+                  <FaChevronLeft size={12} color={C.navy}/>
+                </button>
+                <button
+                  onClick={() => scrollCarousel(1)}
+                  style={{ position:"absolute", right:-8, top:"38%", transform:"translateY(-50%)", width:34, height:34, borderRadius:"50%", background:"#fff", border:`1.5px solid ${C.border}`, boxShadow:"0 4px 12px rgba(6,16,74,0.12)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", zIndex:2 }}>
+                  <FaChevronRight size={12} color={C.navy}/>
+                </button>
+
+                <div ref={carouselRef} className="services-carousel" style={{ display:"flex", gap:14, overflowX:"auto", scrollSnapType:"x mandatory", paddingBottom:4, scrollbarWidth:"none" }}>
+                  {SERVICES_PREVIEW.map((s,i) => (
+                    <div key={i}
+                      style={{ minWidth:212, maxWidth:212, flexShrink:0, scrollSnapAlign:"start", border:`1.5px solid ${C.border}`, borderRadius:12, overflow:"hidden", background:C.bg, transition:"transform 0.2s, box-shadow 0.2s" }}
+                      onMouseEnter={e => { e.currentTarget.style.transform="translateY(-3px)"; e.currentTarget.style.boxShadow="0 10px 24px rgba(6,16,74,0.10)"; }}
+                      onMouseLeave={e => { e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow="none"; }}>
+                      <div style={{ position:"relative", width:"100%", aspectRatio:"4/3" }}>
+                        <img src={s.photo} alt={s.title} style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
+                          onError={e => { e.target.src=`https://picsum.photos/seed/serv${i+1}/400/300`; }}/>
+                        <div style={{ position:"absolute", top:8, left:8, width:30, height:30, borderRadius:"50%", background:"rgba(255,255,255,0.92)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                          <s.Icon style={{ color:C.orange, fontSize:".85rem" }}/>
+                        </div>
+                      </div>
+                      <div style={{ padding:"13px 14px 15px" }}>
+                        <div style={{ fontFamily:"'Sora',sans-serif", fontSize:".84rem", fontWeight:700, color:C.navy, marginBottom:6, lineHeight:1.3, minHeight:34 }}>{s.title}</div>
+                        <p style={{ fontSize:".73rem", color:C.muted, fontWeight:500, lineHeight:1.5, margin:"0 0 10px", display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical", overflow:"hidden", minHeight:32 }}>{s.desc}</p>
+                        <div style={{ fontSize:".68rem", color:C.muted, fontWeight:600, marginBottom:2 }}>A partir de</div>
+                        <div style={{ fontFamily:"'Sora',sans-serif", fontSize:".92rem", fontWeight:800, color:C.navy, marginBottom:12 }}>R$ {s.price}</div>
+                        <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
+                          <button type="button" onClick={() => openDirectFlow(s, i, 4)} style={{ width:"100%", padding:"8px 0", borderRadius:8, border:"none", background:C.navy, color:"#fff", fontSize:".77rem", fontWeight:700, fontFamily:"'Sora',sans-serif", cursor:"pointer" }}>Solicitar serviço</button>
+                          <button type="button" onClick={() => openDirectFlow(s, i, 3)} style={{ width:"100%", padding:"8px 0", borderRadius:8, border:`1.5px solid ${C.border2}`, background:C.bg, color:C.navy, fontSize:".77rem", fontWeight:700, fontFamily:"'Sora',sans-serif", cursor:"pointer" }}>Ver detalhes</button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </AnimCard>
@@ -362,7 +514,7 @@ export default function PerfilPrestador() {
             </div>
           </AnimCard>
 
-          {/* Avaliações */}
+        {/* Avaliações */}
           <AnimCard delay={160} style={{ ...card, marginBottom:10 }}>
             <div style={{ padding:"24px 26px" }}>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
@@ -373,16 +525,11 @@ export default function PerfilPrestador() {
               {visibleReviews.map((r,idx) => (
                 <div key={r.id} style={{ padding:"14px 0", borderBottom: idx < visibleReviews.length-1 ? `1px solid ${C.bgLight}` : "none" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:9 }}>
-                    <div style={{ width:42, height:42, borderRadius:"50%", overflow:"hidden", flexShrink:0, border:`2px solid ${C.border}` }}>
-                      <img
-                        src={AVATAR_PHOTOS[idx % AVATAR_PHOTOS.length]}
-                        alt={r.author}
-                        style={{ width:"100%", height:"100%", objectFit:"cover" }}
-                        onError={e => { e.target.src=`https://picsum.photos/seed/person${idx+1}/80/80`; }}
-                      />
+                    <div style={{ width:42, height:42, borderRadius:"50%", background:C.bgLight, border:`2px solid ${C.border}`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      <FaBan style={{ color:C.muted, fontSize:"1rem" }}/>
                     </div>
                     <div>
-                      <div style={{ fontFamily:"'Sora',sans-serif", fontSize:".88rem", fontWeight:700, color:C.navy }}>{r.author}</div>
+                      <div style={{ fontFamily:"'Sora',sans-serif", fontSize:".88rem", fontWeight:700, color:C.navy }}>Avaliação anônima</div>
                       <StarRow value={r.rating}/>
                     </div>
                     <div style={{ fontSize:".74rem", color:C.muted, fontWeight:600, marginLeft:"auto" }}>{r.date}</div>
@@ -402,33 +549,52 @@ export default function PerfilPrestador() {
             </div>
           </AnimCard>
 
-          <button onClick={() => setReportOpen(true)}
-            onMouseEnter={e => e.currentTarget.style.color=C.red}
-            onMouseLeave={e => e.currentTarget.style.color=C.muted}
-            style={{ display:"flex", alignItems:"center", gap:7, justifyContent:"center", background:"none", border:"none", color:C.muted, fontSize:".78rem", fontWeight:600, cursor:"pointer", padding:"10px 0", margin:"4px auto 0", transition:"color 0.15s" }}>
-            <FaExclamationCircle/> Denunciar este perfil
-          </button>
-        </div>
-
-        {/* ── Modal de denúncia ── */}
-        {reportOpen && (
-          <div onClick={() => setReportOpen(false)} style={{ position:"fixed", inset:0, background:"rgba(6,16,74,0.55)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:60, animation:"ppFadeBg 0.2s ease" }}>
-            <div onClick={e => e.stopPropagation()} style={{ background:C.bg, borderRadius:14, padding:"28px 24px", width:"min(360px,94vw)", boxShadow:"0 24px 60px rgba(6,16,74,0.25)", animation:"ppSlideIn 0.3s ease" }}>
-              <div style={{ fontFamily:"'Sora',sans-serif", fontSize:"1rem", fontWeight:700, color:C.navy, marginBottom:10 }}>Denunciar perfil</div>
-              <p style={{ fontSize:".84rem", color:C.muted, fontWeight:500, marginBottom:18, lineHeight:1.6 }}>Selecione o motivo. Analisaremos e tomaremos as medidas necessárias.</p>
-              {["Informações falsas","Comportamento inadequado","Spam ou fraude","Outro"].map(m => (
-                <button key={m} onClick={() => setReportOpen(false)}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor=C.band; e.currentTarget.style.background="#EFF6FF"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.background="#F8FAFF"; }}
-                  style={{ display:"block", width:"100%", textAlign:"left", background:"#F8FAFF", border:`1.5px solid ${C.border}`, borderRadius:8, padding:"11px 14px", marginBottom:8, fontSize:".84rem", fontWeight:600, color:C.navy, cursor:"pointer", transition:"all 0.15s" }}>
-                  {m}
-                </button>
-              ))}
-              <button onClick={() => setReportOpen(false)} style={{ width:"100%", background:"none", border:"none", color:C.muted, fontSize:".82rem", fontWeight:600, cursor:"pointer", marginTop:6, padding:6 }}>Cancelar</button>
+          {/* ── Banner Segurança ── */}
+          <div style={{ background:"linear-gradient(130deg,#06104A 0%,#143660 100%)", borderRadius:16, padding:"20px 24px", display:"flex", alignItems:"center", gap:16, position:"relative", overflow:"hidden", marginTop:20 }}>
+            <div style={{ position:"absolute", inset:0, pointerEvents:"none", backgroundImage:"radial-gradient(ellipse at 100% 50%, rgba(241,103,15,0.12) 0%, transparent 60%)" }}/>
+            <div style={{ width:48, height:48, borderRadius:14, backgroundColor:"rgba(255,255,255,0.1)", border:"1.5px solid rgba(255,255,255,0.15)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, zIndex:2 }}>
+              <FaShieldAlt style={{ color:C.orange, fontSize:"1.4rem" }}/>
+            </div>
+            <div style={{ zIndex:2 }}>
+              <p style={{ margin:"0 0 3px", fontSize:".9rem", fontWeight:700, color:"#fff", fontFamily:"'Sora',sans-serif" }}>Perfil seguro e confiável</p>
+              <p style={{ margin:0, fontSize:".8rem", color:"rgba(255,255,255,0.6)", lineHeight:1.5 }}>
+                Todas as informações deste perfil são checadas pela nossa equipe para garantir mais segurança para os clientes da plataforma.
+              </p>
             </div>
           </div>
-        )}
-      </div>
+
+        </div>{/* fecha maxWidth */}
+
+        {/* ── Rodapé ── */}
+        <footer style={{ backgroundColor:"#0d1b3e", color:"white", marginTop:8 }}>
+          <div style={{ borderTop:"1px solid rgba(255,255,255,0.1)", padding:"16px 40px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <img src="/Logo_branca.png" alt="Fazuno" style={{ height:36, width:"auto", display:"block" }}/>
+              <span style={{ fontSize:11, color:"rgba(255,255,255,0.3)", marginLeft:8 }}>© 2026 FazUno. Todos os direitos reservados.</span>
+            </div>
+          </div>
+        </footer>
+
+      </div>{/* fecha position:fixed */}
+
+      {/* ── Modal de denúncia ── */}
+      {reportOpen && (
+        <div onClick={() => setReportOpen(false)} style={{ position:"fixed", inset:0, background:"rgba(6,16,74,0.55)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:60, animation:"ppFadeBg 0.2s ease" }}>
+          <div onClick={e => e.stopPropagation()} style={{ background:C.bg, borderRadius:14, padding:"28px 24px", width:"min(360px,94vw)", boxShadow:"0 24px 60px rgba(6,16,74,0.25)", animation:"ppSlideIn 0.3s ease" }}>
+            <div style={{ fontFamily:"'Sora',sans-serif", fontSize:"1rem", fontWeight:700, color:C.navy, marginBottom:10 }}>Denunciar perfil</div>
+            <p style={{ fontSize:".84rem", color:C.muted, fontWeight:500, marginBottom:18, lineHeight:1.6 }}>Selecione o motivo. Analisaremos e tomaremos as medidas necessárias.</p>
+            {["Informações falsas","Comportamento inadequado","Spam ou fraude","Outro"].map(m => (
+              <button key={m} onClick={() => setReportOpen(false)}
+                onMouseEnter={e => { e.currentTarget.style.borderColor=C.band; e.currentTarget.style.background="#EFF6FF"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.background="#F8FAFF"; }}
+                style={{ display:"block", width:"100%", textAlign:"left", background:"#F8FAFF", border:`1.5px solid ${C.border}`, borderRadius:8, padding:"11px 14px", marginBottom:8, fontSize:".84rem", fontWeight:600, color:C.navy, cursor:"pointer", transition:"all 0.15s" }}>
+                {m}
+              </button>
+            ))}
+            <button onClick={() => setReportOpen(false)} style={{ width:"100%", background:"none", border:"none", color:C.muted, fontSize:".82rem", fontWeight:600, cursor:"pointer", marginTop:6, padding:6 }}>Cancelar</button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

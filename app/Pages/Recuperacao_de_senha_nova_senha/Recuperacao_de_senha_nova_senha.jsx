@@ -72,9 +72,13 @@ export default function NewPassword() {
         .eye-btn:hover { opacity: 0.8; }
       `}</style>
 
+<<<<<<< HEAD
        <div className="absolute z-20" style={{ top: 24, left: 12 }}>
           <img src="/Logo_branca.png" alt="FazUno" style={{ height: 60, width: "auto" }} />
         </div>
+
+=======
+>>>>>>> b985e188f20250c5cd6fb9e9be22a7b6bec04c60
       <div
         className="relative w-screen h-screen overflow-hidden flex items-center justify-center"
         style={{ background: "#0A0B2D", fontFamily: "'DM Sans', sans-serif", color: "#E6E6E6" }}
