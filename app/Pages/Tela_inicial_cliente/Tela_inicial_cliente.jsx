@@ -89,6 +89,7 @@ function InfiniteCarousel({ items, renderItem, itemWidth, gap = 16, visibleCount
 
   const offset = -(index * step);
 
+  // Setas como faixas laterais semi-transparentes com botão central
   const ArrowBtn = ({ dir }) => (
     <div
       style={{
@@ -104,10 +105,18 @@ function InfiniteCarousel({ items, renderItem, itemWidth, gap = 16, visibleCount
     >
       <button
         style={{
-          width: 40, height: 40, borderRadius: "50%", border: "2px solid #e5e7eb",
-          background: "white", boxShadow: "0 4px 16px rgba(0,0,0,0.14)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          cursor: "pointer", transition: "background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.15s", flexShrink: 0,
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          border: "2px solid #e5e7eb",
+          background: "white",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.14)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          transition: "background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.15s",
+          flexShrink: 0,
         }}
         onMouseEnter={e => {
           e.currentTarget.style.background = "#f97316";
@@ -129,11 +138,17 @@ function InfiniteCarousel({ items, renderItem, itemWidth, gap = 16, visibleCount
 
   return (
     <div style={{ position: "relative" }}>
-      <div style={{ overflow: "hidden", margin: "0 28px", paddingTop: 8, paddingBottom: 12 }}>
+      <div style={{
+        overflow: "hidden",
+        margin: "0 28px",
+        paddingTop: 8,
+        paddingBottom: 12,
+      }}>
         <div
           onTransitionEnd={handleTransitionEnd}
           style={{
-            display: "flex", gap,
+            display: "flex",
+            gap,
             transform: `translateX(${offset}px)`,
             transition: animating ? "transform 0.35s cubic-bezier(0.4,0,0.2,1)" : "none",
             willChange: "transform",
@@ -153,23 +168,12 @@ function InfiniteCarousel({ items, renderItem, itemWidth, gap = 16, visibleCount
 }
 
 // ─── CARDS ───────────────────────────────────────────────────────────────────
-function CategoryCard({ cat, onClick }) {
+function CategoryCard({ cat }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, cursor: "pointer" }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={onClick}
-    >
-      <div style={{
-        width: 60, height: 60, borderRadius: 14, backgroundColor: "white",
-        border: hovered ? "2px solid #f97316" : "2px solid #e5e7eb",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        transform: hovered ? "translateY(-5px)" : "translateY(0)",
-        boxShadow: hovered ? "0 8px 24px rgba(249,115,22,0.22)" : "0 2px 8px rgba(0,0,0,0.06)",
-        transition: "all 0.25s ease",
-      }}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, cursor: "pointer" }}
+      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+      <div style={{ width: 60, height: 60, borderRadius: 14, backgroundColor: "white", border: hovered ? "2px solid #f97316" : "2px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", transform: hovered ? "translateY(-5px)" : "translateY(0)", boxShadow: hovered ? "0 8px 24px rgba(249,115,22,0.22)" : "0 2px 8px rgba(0,0,0,0.06)", transition: "all 0.25s ease" }}>
         <Icon name={cat.icon} size={26} color="#0d1b3e" strokeWidth={1.7} />
       </div>
       <span style={{ fontSize: 12, color: "#4b5563", fontWeight: 500, textAlign: "center", lineHeight: 1.2 }}>{cat.label}</span>
@@ -181,11 +185,7 @@ function ProfessionalCard({ pro }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
-      style={{
-        backgroundColor: "white", borderRadius: 18, padding: 16,
-        boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.18)" : "0 0 0 1.5px #e5e7eb, 0 2px 12px rgba(0,0,0,0.07)",
-        transform: hovered ? "translateY(-6px)" : "translateY(0)", transition: "all 0.25s ease", cursor: "pointer",
-      }}
+      style={{ backgroundColor: "white", borderRadius: 18, padding: 16, boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.18)" : "0 0 0 1.5px #e5e7eb, 0 2px 12px rgba(0,0,0,0.07)", transform: hovered ? "translateY(-6px)" : "translateY(0)", transition: "all 0.25s ease", cursor: "pointer" }}
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
     >
       <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
@@ -208,8 +208,7 @@ function ProfessionalCard({ pro }) {
         <Icon name="checkCircle" size={13} color="#22c55e" />
         <span style={{ fontSize: 12, color: "#16a34a", fontWeight: 500 }}>Verificada</span>
       </div>
-      <button
-        style={{ width: "100%", backgroundColor: "#0d1b3e", color: "white", fontWeight: 700, fontSize: 12, padding: "9px 0", borderRadius: 12, border: "none", cursor: "pointer", transition: "background 0.2s" }}
+      <button style={{ width: "100%", backgroundColor: "#0d1b3e", color: "white", fontWeight: 700, fontSize: 12, padding: "9px 0", borderRadius: 12, border: "none", cursor: "pointer", transition: "background 0.2s" }}
         onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f97316"}
         onMouseLeave={e => e.currentTarget.style.backgroundColor = "#0d1b3e"}
       >Contratar</button>
@@ -219,22 +218,13 @@ function ProfessionalCard({ pro }) {
 
 function ServiceCard({ svc }) {
   const [hovered, setHovered] = useState(false);
+  const images = { faxina: "/foto_faxineira1.avif", eletrica: "/foto_eletricista.jpg", encanador: "/foto_encanador.jpg", moveis: "/foto_montador_moveis.avif", pintora: "/foto_pintora.avif" };
+  const iconToKey = { "broomCat": "faxina", "zap": "eletrica", "droplet": "encanador", "wrench2": "moveis", "heartIcon": "pintora" };
   return (
-    <div
-      style={{
-        backgroundColor: "white", borderRadius: 18, overflow: "hidden",
-        boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.18)" : "0 0 0 1.5px #e5e7eb, 0 2px 12px rgba(0,0,0,0.08)",
-        transform: hovered ? "translateY(-6px)" : "translateY(0)", transition: "all 0.25s ease", cursor: "pointer",
-      }}
-      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
-    >
+    <div style={{ backgroundColor: "white", borderRadius: 18, overflow: "hidden", boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.18)" : "0 0 0 1.5px #e5e7eb, 0 2px 12px rgba(0,0,0,0.08)", transform: hovered ? "translateY(-6px)" : "translateY(0)", transition: "all 0.25s ease", cursor: "pointer" }}
+      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
       <div style={{ height: 120, overflow: "hidden", position: "relative" }}>
-        <img
-          src={svc.photo}
-          alt={svc.label}
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
-          onError={e => { e.target.style.display = "none"; e.target.parentNode.style.background = `linear-gradient(135deg, ${svc.bg} 0%, ${svc.color}22 100%)`; }}
-        />
+        <img src={images[iconToKey[svc.icon] || "faxina"]} alt={svc.label} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} onError={e => { e.target.style.display = "none"; e.target.parentNode.style.background = `linear-gradient(135deg, ${svc.bg} 0%, ${svc.color}22 100%)`; }} />
       </div>
       <div style={{ padding: "12px 14px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
@@ -253,11 +243,7 @@ function ReviewCard({ r }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
-      style={{
-        backgroundColor: "white", borderRadius: 18, padding: 16,
-        boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.15)" : "0 0 0 1.5px #e5e7eb, 0 2px 12px rgba(0,0,0,0.06)",
-        cursor: "pointer", transition: "transform 0.25s, box-shadow 0.25s", transform: hovered ? "translateY(-4px)" : "translateY(0)",
-      }}
+      style={{ backgroundColor: "white", borderRadius: 18, padding: 16, boxShadow: hovered ? "0 0 0 2px #f97316, 0 12px 28px rgba(249,115,22,0.15)" : "0 0 0 1.5px #e5e7eb, 0 2px 12px rgba(0,0,0,0.06)", cursor: "pointer", transition: "transform 0.25s, box-shadow 0.25s", transform: hovered ? "translateY(-4px)" : "translateY(0)" }}
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
     >
       <div style={{ display: "flex", gap: 2, marginBottom: 10 }}>
@@ -279,139 +265,45 @@ function ReviewCard({ r }) {
 
 // ─── STATIC DATA ─────────────────────────────────────────────────────────────
 const categories = [
-  { icon: "heartIcon", label: "Saúde", route: "/Pages/Categorias_servico_cliente" },
-  { icon: "broomCat",     label: "Limpeza",    route: null },
-  { icon: "wrench2",      label: "Reparos",    route: null },
-  { icon: "homeIcon",     label: "Reformas",   route: null },
-  { icon: "scissorsIcon", label: "Beleza",     route: null },
-  { icon: "leafIcon",     label: "Jardinagem", route: null },
-  { icon: "carIcon",      label: "Automotivo", route: null },
-  { icon: "monitorIcon",  label: "Tecnologia", route: null },
-  { icon: "pawIcon",      label: "Pet",        route: null },
-  { icon: "bookIcon",     label: "Educação",   route: null },
+  { icon: "heartIcon",    label: "Saúde"      },
+  { icon: "broomCat",     label: "Limpeza"    },
+  { icon: "wrench2",      label: "Reparos"    },
+  { icon: "homeIcon",     label: "Reformas"   },
+  { icon: "scissorsIcon", label: "Beleza"     },
+  { icon: "leafIcon",     label: "Jardinagem" },
+  { icon: "carIcon",      label: "Automotivo" },
+  { icon: "monitorIcon",  label: "Tecnologia" },
+  { icon: "pawIcon",      label: "Pet"        },
+  { icon: "bookIcon",     label: "Educação"   },
 ];
 
-// Profissionais com fotos temáticas por profissão e gênero (Unsplash)
 const professionals = [
-  {
-    name: "Ana Silva",
-    role: "Faxineira",
-    rating: 4.9, reviews: 120, distance: "2 km de você",
-    photo: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=200&h=200&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: "Carlos Lima",
-    role: "Eletricista",
-    rating: 4.8, reviews: 98, distance: "3 km de você",
-    photo: "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=200&h=200&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: "Juliana Costa",
-    role: "Cuidadora",
-    rating: 4.9, reviews: 76, distance: "1,5 km de você",
-    photo: "https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=200&h=200&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: "Roberto Souza",
-    role: "Encanador",
-    rating: 4.7, reviews: 143, distance: "4 km de você",
-    photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: "Fernanda Reis",
-    role: "Pintora",
-    rating: 5.0, reviews: 55, distance: "2,5 km de você",
-    photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: "Marcos Antunes",
-    role: "Jardineiro",
-    rating: 4.8, reviews: 61, distance: "3,5 km de você",
-    photo: "https://images.unsplash.com/photo-1552058544-f2b08422138a?w=200&h=200&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: "Patrícia Melo",
-    role: "Cozinheira",
-    rating: 4.9, reviews: 88, distance: "1 km de você",
-    photo: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=200&h=200&fit=crop&crop=face&auto=format",
-  },
+  { name: "Ana Silva",      role: "Faxineira",   rating: 4.9, reviews: 120, distance: "2 km de você",   photo: "/foto_faxineira2.avif" },
+  { name: "Carlos Lima",    role: "Eletricista", rating: 4.8, reviews: 98,  distance: "3 km de você",   photo: "/foto_eletricista2.jpg" },
+  { name: "Juliana Costa",  role: "Cuidadora",   rating: 4.9, reviews: 76,  distance: "1,5 km de você", photo: "/foto_cuidadora.jpg" },
+  { name: "Roberto Souza",  role: "Encanador",   rating: 4.7, reviews: 143, distance: "4 km de você",   photo: "/foto_encanador2.jpg" },
+  { name: "Fernanda Reis",  role: "Pintora",     rating: 5.0, reviews: 55,  distance: "2,5 km de você", photo: "/foto_pintora2.avif" },
+  { name: "Marcos Antunes", role: "Jardineiro",  rating: 4.8, reviews: 61,  distance: "3,5 km de você", photo: "/foto_encanador.jpg" },
+  { name: "Patrícia Melo",  role: "Cozinheira",  rating: 4.9, reviews: 88,  distance: "1 km de você",   photo: "/foto_faxineira1.avif" },
 ];
 
 const services = [
-  {
-    icon: "broomCat", label: "Faxina Residencial", price: "R$ 120", color: "#22c55e", bg: "#dcfce7",
-    // mulher fazendo faxina
-    photo: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=200&fit=crop",
-  },
-  {
-    icon: "zap", label: "Eletricista", price: "R$ 80", color: "#eab308", bg: "#fef9c3",
-    // homem eletricista trabalhando
-    photo: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400&h=200&fit=crop",
-  },
-  {
-    icon: "droplet", label: "Encanador", price: "R$ 90", color: "#3b82f6", bg: "#dbeafe",
-    // homem encanador com ferramentas
-    photo: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=200&fit=crop",
-  },
-  {
-    icon: "wrench2", label: "Montagem de Móveis", price: "R$ 70", color: "#f97316", bg: "#ffedd5",
-    // homem montando móvel
-    photo: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=200&fit=crop",
-  },
-  {
-    icon: "heartIcon", label: "Cuidadora", price: "R$ 150", color: "#8b5cf6", bg: "#ede9fe",
-    // mulher uniforme saúde cuidando de idoso
-    photo: "https://images.unsplash.com/photo-1576765608622-067973a79f53?w=400&h=200&fit=crop",
-  },
-  {
-    icon: "leafIcon", label: "Jardinagem", price: "R$ 100", color: "#16a34a", bg: "#dcfce7",
-    // homem jardineiro
-    photo: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=200&fit=crop",
-  },
-  {
-    icon: "carIcon", label: "Automotivo", price: "R$ 130", color: "#0284c7", bg: "#dbeafe",
-    // homem mecânico trabalhando em carro
-    photo: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=200&fit=crop",
-  },
+  { icon: "broomCat",  label: "Faxina Residencial", price: "R$ 120", color: "#22c55e", bg: "#dcfce7" },
+  { icon: "zap",       label: "Eletricista",         price: "R$ 80",  color: "#eab308", bg: "#fef9c3" },
+  { icon: "droplet",   label: "Encanador",           price: "R$ 90",  color: "#3b82f6", bg: "#dbeafe" },
+  { icon: "wrench2",   label: "Montagem de Móveis",  price: "R$ 70",  color: "#f97316", bg: "#ffedd5" },
+  { icon: "heartIcon", label: "Pintora",             price: "R$ 150", color: "#8b5cf6", bg: "#ede9fe" },
+  { icon: "leafIcon",  label: "Jardinagem",          price: "R$ 100", color: "#16a34a", bg: "#dcfce7" },
+  { icon: "carIcon",   label: "Automotivo",          price: "R$ 130", color: "#0284c7", bg: "#dbeafe" },
 ];
 
 const reviews = [
-  {
-    name: "Marcos A.", role: "Faxina Residencial",
-    text: "Profissional excelente, chegou no horário e fez um ótimo trabalho. Super recomendo!",
-    rating: 5,
-    photo: "https://images.unsplash.com/photo-1552058544-f2b08422138a?w=100&h=100&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: "Patrícia M.", role: "Eletricista",
-    text: "Atendimento rápido e muito atencioso. Resolveu meu problema em minutos!",
-    rating: 5,
-    photo: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=100&h=100&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: "Luciana S.", role: "Cuidadora",
-    text: "Ótima profissional, cuidadosa e muito dedicada. Minha mãe adorou!",
-    rating: 5,
-    photo: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: "Felipe R.", role: "Encanador",
-    text: "Resolveu o problema rapidinho, preço justo e muito educado. Recomendo!",
-    rating: 5,
-    photo: "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=100&h=100&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: "Camila T.", role: "Pintura",
-    text: "Resultado impecável, muito cuidadosa com os detalhes. Ficou lindo!",
-    rating: 5,
-    photo: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=100&h=100&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: "Eduardo L.", role: "Jardinagem",
-    text: "Jardim ficou uma obra de arte. Pontual e super profissional.",
-    rating: 5,
-    photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=face&auto=format",
-  },
+  { name: "Marcos A.",   role: "Faxina Residencial", text: "Profissional excelente, chegou no horário e fez um ótimo trabalho. Super recomendo!", rating: 5, photo: "/homem2.avif" },
+  { name: "Patrícia M.", role: "Eletricista",         text: "Atendimento rápido e muito atencioso. Resolveu meu problema em minutos!",            rating: 5, photo: "/mulher 1.avif" },
+  { name: "Luciana S.",  role: "Cuidadora",           text: "Ótima profissional, cuidadosa e muito dedicada. Minha mãe adorou!",                  rating: 5, photo: "/mulher2.jpg" },
+  { name: "Felipe R.",   role: "Encanador",           text: "Resolveu o problema rapidinho, preço justo e muito educado. Recomendo!",              rating: 5, photo: "/homem3.avif" },
+  { name: "Camila T.",   role: "Pintura",             text: "Resultado impecável, muito cuidadosa com os detalhes. Ficou lindo!",                  rating: 5, photo: "/foto_faxineira1.avif" },
+  { name: "Eduardo L.",  role: "Jardinagem",          text: "Jardim ficou uma obra de arte. Pontual e super profissional.",                        rating: 5, photo: "/foto_encanador.jpg" },
 ];
 
 // ─── SECTION WRAPPER COM CAROUSEL ────────────────────────────────────────────
@@ -421,21 +313,31 @@ function CarouselSection({ title, items, renderItem, itemWidth, gap = 16, visibl
       <div style={{ marginBottom: 16 }}>
         <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>{title}</h3>
       </div>
-      <InfiniteCarousel items={items} renderItem={renderItem} itemWidth={itemWidth} gap={gap} visibleCount={visibleCount} />
+      <InfiniteCarousel
+        items={items}
+        renderItem={renderItem}
+        itemWidth={itemWidth}
+        gap={gap}
+        visibleCount={visibleCount}
+      />
     </section>
   );
 }
 
 // ─── CATEGORIAS EM GRID FIXO ─────────────────────────────────────────────────
-function CategoriesGrid({ onCategoryClick }) {
+function CategoriesGrid() {
   return (
     <section style={{ marginBottom: 36 }}>
       <div style={{ marginBottom: 16 }}>
         <h3 style={{ fontSize: 18, fontWeight: 700, color: "#111827", margin: 0 }}>Categorias</h3>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 12 }}>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(10, 1fr)",
+        gap: 12,
+      }}>
         {categories.map((cat, i) => (
-          <CategoryCard key={i} cat={cat} onClick={() => onCategoryClick(cat)} />
+          <CategoryCard key={i} cat={cat} />
         ))}
       </div>
     </section>
@@ -443,7 +345,50 @@ function CategoriesGrid({ onCategoryClick }) {
 }
 
 // ─── HOME PAGE ────────────────────────────────────────────────────────────────
-function HomePage({ onCategoryClick }) {
+function HomePage() {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const popularSearches = [
+    { label: "Instalação de chuveiro", icon: "droplet" },
+    { label: "Limpeza residencial", icon: "broomCat" },
+    { label: "Pintura residencial", icon: "heartIcon" },
+    { label: "Instalação elétrica", icon: "zap" },
+    { label: "Encanamento", icon: "wrench2" },
+    { label: "Ar-condicionado", icon: "monitorIcon" },
+  ];
+
+  const recentSearches = [
+    { label: "instalação de chuveiro", type: "Serviço" },
+    { label: "eletricista", type: "Profissional" },
+    { label: "limpeza residencial", type: "Serviço" },
+    { label: "pintura", type: "Serviço" },
+    { label: "ar-condicionado", type: "Serviço" },
+  ];
+
+  function openSearchPage(query = "") {
+    const trimmedQuery = query.trim();
+    const params = new URLSearchParams();
+    if (trimmedQuery) params.set("q", trimmedQuery);
+    router.push(`/Pages/Busca_cliente${params.toString() ? `?${params.toString()}` : ""}`);
+  }
+
+  function openDirectFlow() {
+    router.push("/Pages/Escolha_contratacao?fluxo=direta&etapa=1");
+  }
+
+  function handleSearchSubmit(event) {
+    event.preventDefault();
+    openSearchPage(searchQuery);
+  }
+
+  function chooseSearch(term) {
+    setSearchQuery(term);
+    setSearchOpen(false);
+    openSearchPage(term);
+  }
+
   return (
     <div className="fazuno-scroll" style={{ flex: 1, overflowY: "auto", overflowX: "hidden", backgroundColor: "#f9fafb" }}>
       {/* HERO */}
@@ -457,6 +402,10 @@ function HomePage({ onCategoryClick }) {
             <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 14, lineHeight: 1.6, margin: "0 0 24px" }}>
               Encontre profissionais confiáveis para serviços residenciais, saúde, beleza e muito mais.
             </p>
+            <button type="button" onClick={() => openDirectFlow()} style={{ backgroundColor: "#f97316", color: "white", fontWeight: 700, fontSize: 15, padding: "13px 36px", borderRadius: 9999, border: "none", cursor: "pointer", boxShadow: "0 8px 24px rgba(249,115,22,0.45)", transition: "background 0.2s, transform 0.1s" }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = "#ea6c0a"; e.currentTarget.style.transform = "scale(1.03)"; }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = "#f97316"; e.currentTarget.style.transform = "scale(1)"; }}
+            >Solicitar serviço</button>
           </div>
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "58%", overflow: "hidden" }}>
             <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 80, background: "linear-gradient(to right, #1e3a8a, transparent)", zIndex: 1 }}/>
@@ -486,23 +435,175 @@ function HomePage({ onCategoryClick }) {
           <h2 style={{ fontSize: 24, fontWeight: 700, color: "#111827", margin: 0 }}>Olá, Isaac! </h2>
           <p style={{ fontSize: 14, color: "#9ca3af", margin: "4px 0 0" }}>O que você precisa hoje?</p>
         </div>
-        <div style={{ position: "relative", marginBottom: 32 }}>
+        <form onSubmit={handleSearchSubmit} style={{ position: "relative", marginBottom: 32 }}>
           <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", display: "flex" }}>
             <Icon name="search" size={18} color="#9ca3af" />
           </span>
-          <input
-            placeholder="Buscar eletricista, faxina, professor, encanador..."
+          <input type="search" placeholder="Buscar serviço ou prestador..."
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            onClick={() => setSearchOpen(true)}
             style={{ width: "100%", boxSizing: "border-box", paddingLeft: 44, paddingRight: 50, paddingTop: 12, paddingBottom: 12, fontSize: 14, color: "#374151", backgroundColor: "white", border: "1.5px solid #e5e7eb", borderRadius: 14, boxShadow: "0 1px 4px rgba(0,0,0,0.06)", outline: "none", transition: "border 0.2s, box-shadow 0.2s" }}
-            onFocus={e => { e.target.style.borderColor = "#f97316"; e.target.style.boxShadow = "0 0 0 3px rgba(249,115,22,0.15)"; }}
-            onBlur={e => { e.target.style.borderColor = "#e5e7eb"; e.target.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
+            onFocus={e => { setSearchOpen(true); e.target.style.borderColor = "#0A0B2D"; e.target.style.boxShadow = "0 0 0 3px rgba(10,11,45,0.12)"; }}
+            onBlur={e => { setTimeout(() => setSearchOpen(false), 120); e.target.style.borderColor = "#e5e7eb"; e.target.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"; }}
           />
-          <span style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", display: "flex" }}>
+          <button type="button" aria-label="Abrir busca" onClick={() => openSearchPage(searchQuery)} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", display: "flex", border: 0, background: "transparent", padding: 4, cursor: "pointer" }}>
             <Icon name="sliders" size={18} color="#9ca3af" />
-          </span>
-        </div>
+          </button>
+          {searchOpen && (
+            <div className="home-search-popover" onMouseDown={(event) => event.preventDefault()}>
+              <button type="button" className="home-search-clear" onClick={() => { setSearchQuery(""); setSearchOpen(false); }}>
+                Limpar
+              </button>
+
+              <section>
+                <h4>Mais procurados</h4>
+                <div className="home-popular-grid">
+                  {popularSearches.map((item) => (
+                    <button key={item.label} type="button" onClick={() => chooseSearch(item.label)}>
+                      <Icon name={item.icon} size={22} color="#0A0B2D" />
+                      <span>{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+
+              <section>
+                <div className="home-recent-title">
+                  <h4>Últimos pesquisados</h4>
+                  <button type="button" onClick={() => openSearchPage(searchQuery)}>
+                    Ver tudo
+                  </button>
+                </div>
+                <div className="home-recent-list">
+                  {recentSearches.map((item) => (
+                    <button key={item.label} type="button" onClick={() => chooseSearch(item.label)}>
+                      <span className="home-clock">◷</span>
+                      <span>{item.label}</span>
+                      <small>{item.type}</small>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            </div>
+          )}
+        </form>
+
+        <style jsx>{`
+          .home-search-popover {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 56px;
+            z-index: 40;
+            background: #ffffff;
+            border: 1px solid #e0e3eb;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 0 22px 48px rgba(15, 23, 42, 0.14);
+          }
+
+          .home-recent-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 12px;
+          }
+
+          .home-search-clear,
+          .home-recent-title button {
+            border: 0;
+            background: transparent;
+            color: #0A0B2D;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+          }
+
+          .home-search-clear {
+            position: absolute;
+            right: 14px;
+            top: 14px;
+          }
+
+          .home-search-popover h4 {
+            margin: 0;
+            color: #0a0b2d;
+            font-size: 14px;
+            font-weight: 800;
+          }
+
+          .home-popular-grid {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 12px;
+            margin: 10px 0 18px;
+          }
+
+          .home-popular-grid button {
+            min-height: 84px;
+            border: 0;
+            border-radius: 12px;
+            background: #eef2ff;
+            color: #0a0b2d;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            gap: 8px;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 800;
+          }
+
+          .home-popular-grid button:hover {
+            background: #e0e7ff;
+            transform: translateY(-1px);
+          }
+
+          .home-recent-list {
+            display: grid;
+            gap: 4px;
+          }
+
+          .home-recent-list button {
+            border: 0;
+            background: #ffffff;
+            cursor: pointer;
+            display: grid;
+            grid-template-columns: 24px 1fr auto;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 0;
+            color: #475467;
+            text-align: left;
+            font-size: 13px;
+          }
+
+          .home-clock {
+            color: #667085;
+            font-size: 16px;
+          }
+
+          .home-recent-list small {
+            background: #f4f6fa;
+            border-radius: 999px;
+            color: #667085;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 9px;
+          }
+
+          @media (max-width: 900px) {
+            .home-popular-grid {
+              grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+          }
+        `}</style>
 
         {/* CATEGORIAS — grid fixo sem carrossel */}
-        <CategoriesGrid onCategoryClick={onCategoryClick} />
+        <CategoriesGrid />
 
         {/* PROFISSIONAIS — carrossel com 5 visíveis */}
         <CarouselSection
@@ -549,8 +650,6 @@ function HomePage({ onCategoryClick }) {
 
 // ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function TelainicialCliente() {
-  const router = useRouter();
-
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = ".fazuno-scroll::-webkit-scrollbar{display:none}.fazuno-scroll{-ms-overflow-style:none;scrollbar-width:none}";
@@ -558,18 +657,12 @@ export default function TelainicialCliente() {
     return () => { document.head.removeChild(style); };
   }, []);
 
-  const handleCategoryClick = (cat) => {
-    if (cat.route) {
-      router.push(cat.route);
-    }
-  };
-
   return (
     <div style={{ display: "flex", width: "100%", height: "100vh", overflow: "hidden", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f9fafb" }}>
       <Sidebar />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden" }}>
         <Topbar />
-        <HomePage onCategoryClick={handleCategoryClick} />
+        <HomePage />
       </div>
     </div>
   );

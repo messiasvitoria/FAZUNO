@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // ─── ICON COMPONENT ──────────────────────────────────────────────────────────
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
@@ -211,7 +211,15 @@ function ReviewsCarousel({ reviews }) {
 // ─── ROOT ─────────────────────────────────────────────────────────────────────
 export default function PerfilCliente() {
   const router = useRouter();
-  const c = clientData;
+  const searchParams = useSearchParams();
+  const c = {
+    ...clientData,
+    name: searchParams.get("nome") || clientData.name,
+    avatar: searchParams.get("foto") || clientData.avatar,
+    location: searchParams.get("local") || clientData.location,
+    rating: Number(searchParams.get("avaliacao")) || clientData.rating,
+    reviewCount: Number(searchParams.get("avaliacoes")) || clientData.reviewCount,
+  };
 
   useEffect(() => {
     const style = document.createElement("style");

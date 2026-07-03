@@ -40,7 +40,7 @@ function NotifIcon({ icon, iconColor }) {
 }
 
 // ─── NOTIF DETAIL MODAL ───────────────────────────────────────────────────────
-function NotifDetailModal({ notif, onClose }) {
+function NotifDetailModal({ notif, onClose, onAction }) {
   useEffect(() => {
     const handler = (e) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", handler);
@@ -108,7 +108,7 @@ function NotifDetailModal({ notif, onClose }) {
               Fechar
             </button>
             <button
-              onClick={onClose}
+              onClick={() => onAction?.(notif)}
               style={{ flex: 2, padding: "11px 0", borderRadius: 12, border: "none", backgroundColor: content.color, color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
               onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.88")}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
@@ -348,6 +348,15 @@ export default function TopBar_cliente() {
     router.push(route);
   };
 
+  const handleNotificationAction = (notif) => {
+    setSelectedNotif(null);
+    if (notif?.icon === "chat") {
+      router.push(`/Pages/Chat?nome=${encodeURIComponent("Joao Silva")}&tipo=prestador&servico=${encodeURIComponent("Mensagem do prestador")}&origem=notificacao-cliente&id=${notif.id}`);
+      return;
+    }
+    router.push("/Pages/Minhas_Solicitacoes");
+  };
+
   const handleLogout = () => {
     setProfileOpen(false);
     router.push("/Pages/Login");
@@ -356,7 +365,7 @@ export default function TopBar_cliente() {
   return (
     <>
       {selectedNotif && (
-        <NotifDetailModal notif={selectedNotif} onClose={() => setSelectedNotif(null)} />
+        <NotifDetailModal notif={selectedNotif} onClose={() => setSelectedNotif(null)} onAction={handleNotificationAction} />
       )}
 
       {profileOpen && (

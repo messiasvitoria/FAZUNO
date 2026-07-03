@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import DetalhesModal from "../Detalhes_solicitacao_prestador/Detalhes_solicitacao_prestador";
 import {
   FaBolt,
@@ -10,7 +11,6 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaClock,
-  FaEllipsisV,
   FaFilter,
   FaHammer,
   FaMapMarkerAlt,
@@ -431,9 +431,6 @@ function RequestCard({ item, index, onAction, onVerDetalhes }) {
               {actionLabel}
             </button>
           )}
-          <button type="button" className="sr-more" aria-label="Mais opções">
-            <FaEllipsisV />
-          </button>
         </div>
       </section>
     </article>
@@ -468,6 +465,8 @@ function SummaryCard({ items }) {
 }
 
 function TipsCard() {
+  const router = useRouter();
+
   const tips = [
     "Mantenha seu perfil sempre atualizado para receber mais oportunidades.",
     "Responda rápido para aumentar suas chances de ser escolhido.",
@@ -484,7 +483,11 @@ function TipsCard() {
           {tip}
         </p>
       ))}
-      <button type="button" className="sr-profile-btn">
+      <button
+        type="button"
+        className="sr-profile-btn"
+        onClick={() => router.push("/Pages/Meu_perfil_prestador")}
+      >
         <FaUserAlt />
         Ver meu perfil
       </button>
@@ -492,13 +495,14 @@ function TipsCard() {
   );
 }
 
-export default function Oportunidades() {
+export default function SolicitacoesRecebidas() {
   const [items, setItems] = useState(REQUESTS);
   const [statusFilter, setStatusFilter] = useState("todos");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [solicitacaoSelecionada, setSolicitacaoSelecionada] = useState(null);
+  const [solicitacaoSelecionadaId, setSolicitacaoSelecionadaId] = useState(null);
+  const [detalhesKey, setDetalhesKey] = useState(0);
 
   useEffect(() => {
   const transferred = readTransferredOpportunities();
@@ -510,7 +514,7 @@ export default function Oportunidades() {
   const selected = transferred.find((item) => String(item.id) === targetId);
 
   if (selected) {
-    setTimeout(() => setSolicitacaoSelecionada(selected), 0);
+    setTimeout(() => setSolicitacaoSelecionadaId(selected.id), 0);
   }
 
   setTimeout(() => {
@@ -523,6 +527,23 @@ export default function Oportunidades() {
     });
   }, 0);
 }, []);
+
+  useEffect(() => {
+    const restorePageInteractivity = () => {
+      document.body.style.pointerEvents = "";
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      setSolicitacaoSelecionadaId(null);
+    };
+
+    window.addEventListener("pageshow", restorePageInteractivity);
+    window.addEventListener("popstate", restorePageInteractivity);
+
+    return () => {
+      window.removeEventListener("pageshow", restorePageInteractivity);
+      window.removeEventListener("popstate", restorePageInteractivity);
+    };
+  }, []);
 
   const counts = useMemo(() => {
     return Object.fromEntries(
@@ -571,6 +592,13 @@ export default function Oportunidades() {
   const safePage = Math.min(currentPage, pageCount);
   const start = (safePage - 1) * ITEMS_PER_PAGE;
   const visibleItems = filteredItems.slice(start, start + ITEMS_PER_PAGE);
+  const solicitacaoSelecionada = useMemo(
+    () =>
+      solicitacaoSelecionadaId == null
+        ? null
+        : items.find((item) => String(item.id) === String(solicitacaoSelecionadaId)) || null,
+    [items, solicitacaoSelecionadaId],
+  );
 
   function updateSearch(value) {
     setSearch(value);
@@ -582,11 +610,11 @@ export default function Oportunidades() {
     setCurrentPage(1);
   }
 
-  function handleAction(id) {
+  function handleAction(id, forcedStatus) {
     setItems((current) =>
       current.map((item) => {
         if (item.id !== id) return item;
-        const nextStatus = getNextStatus(item.status);
+        const nextStatus = forcedStatus || getNextStatus(item.status);
         return {
           ...item,
           status: nextStatus,
@@ -598,11 +626,15 @@ export default function Oportunidades() {
   }
 
   function handleVerDetalhes(item) {
-    setSolicitacaoSelecionada(item);
+    setDetalhesKey((current) => current + 1);
+    setSolicitacaoSelecionadaId(item.id);
   }
 
   function handleFecharDetalhes() {
-    setSolicitacaoSelecionada(null);
+    document.body.style.pointerEvents = "";
+    document.body.style.overflow = "";
+    document.documentElement.style.overflow = "";
+    setSolicitacaoSelecionadaId(null);
   }
 
   return (
@@ -839,7 +871,7 @@ export default function Oportunidades() {
         .sr-card {
           min-height: 142px;
           display: grid;
-          grid-template-columns: minmax(235px, 0.95fr) minmax(330px, 1.15fr) minmax(320px, 0.9fr);
+          grid-template-columns: minmax(225px, 0.9fr) minmax(310px, 1.18fr) minmax(288px, 0.84fr);
           gap: 20px;
           padding: 20px 22px;
           border: 1.5px solid #E2E7F0;
@@ -991,14 +1023,15 @@ export default function Oportunidades() {
           flex-direction: column;
           justify-content: space-between;
           gap: 18px;
-          padding-left: 20px;
+          padding-left: 18px;
           border-left: 1px solid #E7EBF3;
+          min-width: 0;
         }
 
         .sr-value-row {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          align-items: start;
           gap: 14px;
           }
 
@@ -1019,38 +1052,43 @@ export default function Oportunidades() {
         }
 
         .sr-status {
-          min-width: 82px;
-          min-height: 33px;
-          padding: 0 14px;
+          width: fit-content;
+          min-width: 0;
+          min-height: 25px;
+          padding: 4px 12px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          border-radius: 8px;
+          border-radius: 999px;
           background: var(--status-bg);
           color: var(--status-color);
-          font-size: 0.86rem;
+          font-size: 0.76rem;
           font-weight: 800;
+          line-height: 1;
           white-space: nowrap;
+          justify-self: end;
         }
 
         .sr-action-row {
           display: grid;
-          grid-template-columns: 138px minmax(156px, 1fr) 26px;
-          gap: 12px;
+          grid-template-columns: minmax(112px, 1fr) minmax(122px, 1fr);
+          gap: 8px;
           align-items: center;
         }
 
         .sr-btn {
           height: 40px;
-          padding: 0 16px;
+          padding: 0 12px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
+          gap: 8px;
           border-radius: 6px;
           font: inherit;
-          font-size: 0.9rem;
+          font-size: 0.82rem;
           font-weight: 800;
+          line-height: 1.15;
+          text-align: center;
           cursor: pointer;
           transition: transform 0.16s, box-shadow 0.2s, background 0.2s, color 0.2s;
         }
@@ -1072,18 +1110,6 @@ export default function Oportunidades() {
         .sr-btn--primary:hover, .sr-btn--secondary:hover {
           box-shadow: 0 12px 22px rgba(6, 16, 74, 0.14);
           transform: translateY(-1px);
-        }
-
-        .sr-more {
-          width: 26px;
-          height: 40px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          border: 0;
-          background: transparent;
-          color: #06104A;
-          cursor: pointer;
         }
 
         .sr-side {
@@ -1266,8 +1292,8 @@ export default function Oportunidades() {
           .sr-client { grid-template-columns: 58px minmax(0, 1fr); }
           .sr-avatar { width: 56px; height: 56px; }
           .sr-action-row { grid-template-columns: 1fr; }
-          .sr-more { width: 100%; border: 1.5px solid #DDE3EE; border-radius: 6px; }
-          .sr-value-row { flex-direction: column; }
+          .sr-value-row { grid-template-columns: 1fr; }
+          .sr-status { justify-self: start; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1426,8 +1452,10 @@ export default function Oportunidades() {
 
       {solicitacaoSelecionada && (
         <DetalhesModal
+          key={`${solicitacaoSelecionada.id}-${detalhesKey}`}
           solicitacao={solicitacaoSelecionada}
           onClose={handleFecharDetalhes}
+          onStatusChange={handleAction}
         />
       )}
     </>

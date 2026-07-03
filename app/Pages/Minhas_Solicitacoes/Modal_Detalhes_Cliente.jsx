@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import ReagendamentoSolicitadoCliente from "./reagendamento_solicitado_cliente";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // ← ADICIONADO
 const STATUS_CONFIG = {
   "Solicitação Enviada":  { color: "#2563EB", bg: "#EFF6FF", border: "#BFDBFE", label: "SOLICITAÇÃO ENVIADA" },
   "Em Análise":           { color: "#EA580C", bg: "#FFF7ED", border: "#FED7AA", label: "EM ANÁLISE" },
@@ -72,8 +72,9 @@ function CheckIcon({ done, active, cancelada }) {
 }
 
 export default function DetalhesModal({ onClose, solicitacao }) {
-  const router = useRouter();
+  const router = useRouter(); // ← ADICIONADO
   const [showReagendamento, setShowReagendamento] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
   const sol       = solicitacao || MOCK_SOLICITACAO;
   const status    = sol.status;
   const cfg       = STATUS_CONFIG[status] || STATUS_CONFIG["Em Andamento"];
@@ -82,6 +83,24 @@ export default function DetalhesModal({ onClose, solicitacao }) {
   const orcamento = sol.orcamento || MOCK_SOLICITACAO.orcamento;
   const endereco  = sol.endereco  || sol.local || "";
   const prestador = sol.prestador || MOCK_SOLICITACAO.prestador;
+  const perfilPrestadorUrl = `/Pages/Perfil_prestador?${new URLSearchParams({
+    nome: prestador?.nome || "Prestador",
+    tipo: "prestador",
+    servico: sol.servico || "Solicitacao",
+    avaliacao: String(prestador?.avaliacao || ""),
+    avaliacoes: String(prestador?.avaliacoes || ""),
+    origem: "detalhes-minhas-solicitacoes",
+    id: String(sol.id || ""),
+    ...(prestador?.foto ? { foto: prestador.foto } : {}),
+  }).toString()}`;
+  const chatUrl = `/Pages/Chat?${new URLSearchParams({
+    nome: prestador?.nome || "Prestador",
+    tipo: "prestador",
+    servico: sol.servico || "Solicitacao",
+    origem: "detalhes-minhas-solicitacoes",
+    id: String(sol.id || ""),
+    ...(prestador?.foto ? { foto: prestador.foto } : {}),
+  }).toString()}`;
 
   const btnBase = {
     borderRadius: 8, padding: "10px 16px", fontSize: "0.82rem", fontWeight: 600,
@@ -249,16 +268,17 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 10 }}>
+                    {/* ── CORRIGIDO: redireciona para Perfil_prestador ao clicar ── */}
                     <button
                       className="action-btn"
-                      onClick={() => router.push("/Pages/Perfil_prestador")}
+                      onClick={() => router.push(perfilPrestadorUrl)}
                       style={{ ...btnBase, background: "#fff", color: "#374151", border: "1.5px solid #E5E7EB", width: "auto", padding: "10px 18px" }}
                     >
                       <i className="ti ti-user" style={{ fontSize: 15 }} /> Ver perfil
                     </button>
                     <button
                       className="action-btn"
-                      onClick={() => router.push("/Pages/Chat_cliente")}
+                      onClick={() => router.push(chatUrl)}
                       style={{ ...btnBase, background: "#fff", color: "#374151", border: "1.5px solid #E5E7EB", width: "auto", padding: "10px 18px" }}
                     >
                       <i className="ti ti-message" style={{ fontSize: 15 }} /> Enviar mensagem
@@ -285,10 +305,10 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                   </button>
                 )}
                 {status === "Aceita" && (
-                  <div style={{ display: "flex", gap: 10 }}>
-                    <button className="action-btn" onClick={() => setShowReagendamento(true)} style={{ ...btnBase, background: "#F5F3FF", color: "#7C3AED", border: "1.5px solid #DDD6FE" }}>
-                      <i className="ti ti-calendar" style={{ fontSize: 15 }} /> Reagendar
-                    </button>
+                <div style={{ display: "flex", gap: 10 }}>
+                <button className="action-btn" onClick={() => setShowReagendamento(true)} style={{ ...btnBase, background: "#F5F3FF", color: "#7C3AED", border: "1.5px solid #DDD6FE" }}>
+                <i className="ti ti-calendar" style={{ fontSize: 15 }} /> Reagendar
+               </button>
                   </div>
                 )}
                 {status === "Aguardando Pagamento" && (
@@ -315,7 +335,11 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                       <button className="action-btn" style={{ ...btnBase, background: "#FEF2F2", color: "#DC2626", border: "1.5px solid #FECACA" }}>
                         <i className="ti ti-x" style={{ fontSize: 15 }} /> Recusar Novo Valor
                       </button>
-                      <button className="action-btn" style={{ ...btnBase, background: "#fff", color: "#374151", border: "1.5px solid #E5E7EB" }}>
+                      <button
+                        className="action-btn"
+                        onClick={() => router.push(chatUrl)}
+                        style={{ ...btnBase, background: "#fff", color: "#374151", border: "1.5px solid #E5E7EB" }}
+                      >
                         <i className="ti ti-message" style={{ fontSize: 15 }} /> Conversar
                       </button>
                     </div>
@@ -329,8 +353,13 @@ export default function DetalhesModal({ onClose, solicitacao }) {
                     <button className="action-btn" style={{ ...btnBase, background: "#fff", color: "#374151", border: "1.5px solid #E5E7EB" }}>
                       <i className="ti ti-refresh" style={{ fontSize: 15 }} /> Pedir Novamente
                     </button>
-                    <button className="action-btn" style={{ ...btnBase, background: "#EFF6FF", color: "#2563EB", border: "1.5px solid #BFDBFE" }}>
-                      <i className="ti ti-heart" style={{ fontSize: 15 }} /> Favoritar
+                    <button
+                      className="action-btn"
+                      aria-pressed={isFavorited}
+                      onClick={() => setIsFavorited((current) => !current)}
+                      style={{ ...btnBase, background: "#EFF6FF", color: isFavorited ? "#F1670F" : "#2563EB", border: "1.5px solid #BFDBFE" }}
+                    >
+                      <i className={isFavorited ? "ti ti-heart-filled" : "ti ti-heart"} style={{ fontSize: 15 }} /> {isFavorited ? "Favoritado" : "Favoritar"}
                     </button>
                   </div>
                 )}
@@ -390,12 +419,12 @@ export default function DetalhesModal({ onClose, solicitacao }) {
           </div>
         </div>
       </div>
-      {showReagendamento && (
-        <ReagendamentoSolicitadoCliente
-          onClose={() => setShowReagendamento(false)}
-          onConcluir={() => setShowReagendamento(false)}
-        />
-      )}
+    {showReagendamento && (
+  <ReagendamentoSolicitadoCliente
+    onClose={() => setShowReagendamento(false)}
+    onConcluir={() => setShowReagendamento(false)}
+  />
+)}
     </>
   );
 }

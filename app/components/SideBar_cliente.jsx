@@ -35,7 +35,7 @@ const navItems = [
   { icon: "home", label: "Início",                   route: "/Pages/Tela_inicial_cliente" },
   { icon: "plus", label: "Abrir novas solicitações", route: "/Pages/Escolha_contratacao" },
   { icon: "list", label: "Minhas solicitações",      route: "/Pages/Minhas_Solicitacoes" },
-  { icon: "chat", label: "Chat",                     route: "/Pages/Chat_cliente" },
+  { icon: "chat", label: "Chat",                     route: "/Pages/Chat?perfil=cliente" },
 ];
 
 // ─── SIDEBAR ──────────────────────────────────────────────────────────────────
@@ -43,7 +43,13 @@ export default function Sidebar() {
   const router   = useRouter();
   const pathname = usePathname();
 
-  const isActive = (item) => item.route ? pathname === item.route : false;
+  const isActive = (item) => {
+    if (!item.route) return false;
+    if (item.route === "/Pages/Tela_inicial_cliente") {
+      return pathname === item.route || pathname === "/Pages/Busca_cliente";
+    }
+    return pathname === item.route;
+  };
 
   const handleClick = (item) => {
     if (item.route) router.push(item.route);
