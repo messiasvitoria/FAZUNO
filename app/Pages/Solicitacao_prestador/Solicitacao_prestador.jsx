@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import DetalhesModal from "../Detalhes_solicitacao_prestador/Detalhes_solicitacao_prestador";
+import TopBar_Prestador  from "../../components/TopBar_Prestador";
+import Parte_menulateral from "../../components/Parte_menulateral";
 import {
   FaBolt,
   FaBroom,
@@ -616,7 +618,31 @@ export default function Oportunidades() {
         };
 
         .sr-page, .sr-page * { box-sizing: border-box; }
+
+        .sr-app-layout {
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+          width: 100%;
+        }
+
+        .sr-app-body {
+          display: flex;
+          flex: 1;
+          min-height: 0;
+          width: 100%;
+        }
+
+        .sr-sidebar-wrap {
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          flex-shrink: 0;
+        }
+
         .sr-page {
+          flex: 1;
+          min-width: 0;
           min-height: 100vh;
           width: 100%;
           background: #FFFFFF;
@@ -1259,6 +1285,17 @@ export default function Oportunidades() {
           .sr-side { grid-template-columns: 1fr; }
         }
 
+        @media (max-width: 900px) {
+          .sr-app-body {
+            flex-direction: column;
+          }
+
+          .sr-sidebar-wrap {
+            position: static;
+            height: auto;
+          }
+        }
+
         @media (max-width: 560px) {
           .sr-shell { padding: 16px 14px 22px; }
           .sr-user-area { width: 100%; justify-content: space-between; }
@@ -1276,153 +1313,158 @@ export default function Oportunidades() {
         }
       `}</style>
 
-      
-        <main
-  className="sr-page"
-  style={{ minHeight: "100vh" }}
->
-      
-        <div className="sr-shell">
-          <header className="sr-header">
-            <div className="sr-title">
-              <h1>Solicitações Recebidas</h1>
-              <p>
-                Acompanhe e gerencie as solicitações de serviços feitas pelos
-                clientes.
-              </p>
-            </div>
-            <div className="sr-user-area"></div>
-          </header>
+      <div className="sr-app-layout">
+        <TopBar_Prestador />
 
-          <section className="sr-top-controls" aria-label="Busca e filtros">
-            <label className="sr-search">
-              <FaSearch />
-              <input
-                type="search"
-                placeholder="Pesquisar por cliente, serviço ou localização..."
-                value={search}
-                onChange={(event) => updateSearch(event.target.value)}
-              />
-            </label>
-            <button
-              type="button"
-              className="sr-filter-main"
-              onClick={() => setFiltersOpen((open) => !open)}
-            >
-              <FaFilter />
-              Filtros
-            </button>
-          </section>
+        <div className="sr-app-body">
+          <div className="sr-sidebar-wrap">
+            <Parte_menulateral />
+          </div>
 
-          <section
-            className="sr-filter-row"
-            aria-label="Status das solicitações"
-          >
-            <StatusFilter
-              value="todos"
-              label="Todas"
-              count={items.length}
-              active={statusFilter === "todos"}
-              onClick={() => updateStatus("todos")}
-            />
-            {Object.entries(STATUS).map(([key, item]) => (
-              <StatusFilter
-                key={key}
-                value={key}
-                label={item.plural}
-                count={counts[key]}
-                active={statusFilter === key}
-                onClick={() => updateStatus(key)}
-                icon={item.icon}
-                color={item.color}
-              />
-            ))}
-          </section>
+          <main className="sr-page">
+            <div className="sr-shell">
+              <header className="sr-header">
+                <div className="sr-title">
+                  <h1>Solicitações Recebidas</h1>
+                  <p>
+                    Acompanhe e gerencie as solicitações de serviços feitas pelos
+                    clientes.
+                  </p>
+                </div>
+                <div className="sr-user-area"></div>
+              </header>
 
-          {filtersOpen && (
-            <section className="sr-filter-row" aria-label="Filtros adicionais">
-              <StatusFilter
-                value="todos"
-                label="Mais recentes"
-                count={filteredItems.length}
-                active
-                onClick={() => updateStatus(statusFilter)}
-              />
-              <StatusFilter
-                value="todos"
-                label="Maior valor"
-                count={filteredItems.length}
-                active={false}
-                onClick={() => updateStatus(statusFilter)}
-              />
-            </section>
-          )}
+              <section className="sr-top-controls" aria-label="Busca e filtros">
+                <label className="sr-search">
+                  <FaSearch />
+                  <input
+                    type="search"
+                    placeholder="Pesquisar por cliente, serviço ou localização..."
+                    value={search}
+                    onChange={(event) => updateSearch(event.target.value)}
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="sr-filter-main"
+                  onClick={() => setFiltersOpen((open) => !open)}
+                >
+                  <FaFilter />
+                  Filtros
+                </button>
+              </section>
 
-          <section className="sr-content">
-            <div>
-              <div className="sr-list">
-                {visibleItems.length > 0 ? (
-                  visibleItems.map((item, index) => (
-                    <RequestCard
-                      key={item.id}
-                      item={item}
-                      index={index}
-                      onAction={handleAction}
-                      onVerDetalhes={handleVerDetalhes}
-                    />
-                  ))
-                ) : (
-                  <div className="sr-empty">
-                    Nenhuma solicitação cadastrada no momento. Assim que um
-                    cliente solicitar um serviço, ela aparecerá aqui.
+              <section
+                className="sr-filter-row"
+                aria-label="Status das solicitações"
+              >
+                <StatusFilter
+                  value="todos"
+                  label="Todas"
+                  count={items.length}
+                  active={statusFilter === "todos"}
+                  onClick={() => updateStatus("todos")}
+                />
+                {Object.entries(STATUS).map(([key, item]) => (
+                  <StatusFilter
+                    key={key}
+                    value={key}
+                    label={item.plural}
+                    count={counts[key]}
+                    active={statusFilter === key}
+                    onClick={() => updateStatus(key)}
+                    icon={item.icon}
+                    color={item.color}
+                  />
+                ))}
+              </section>
+
+              {filtersOpen && (
+                <section className="sr-filter-row" aria-label="Filtros adicionais">
+                  <StatusFilter
+                    value="todos"
+                    label="Mais recentes"
+                    count={filteredItems.length}
+                    active
+                    onClick={() => updateStatus(statusFilter)}
+                  />
+                  <StatusFilter
+                    value="todos"
+                    label="Maior valor"
+                    count={filteredItems.length}
+                    active={false}
+                    onClick={() => updateStatus(statusFilter)}
+                  />
+                </section>
+              )}
+
+              <section className="sr-content">
+                <div>
+                  <div className="sr-list">
+                    {visibleItems.length > 0 ? (
+                      visibleItems.map((item, index) => (
+                        <RequestCard
+                          key={item.id}
+                          item={item}
+                          index={index}
+                          onAction={handleAction}
+                          onVerDetalhes={handleVerDetalhes}
+                        />
+                      ))
+                    ) : (
+                      <div className="sr-empty">
+                        Nenhuma solicitação cadastrada no momento. Assim que um
+                        cliente solicitar um serviço, ela aparecerá aqui.
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
 
-              <footer className="sr-footer">
-                <span>
-                  {filteredItems.length > 0
-                    ? `Mostrando ${start + 1} a ${Math.min(start + ITEMS_PER_PAGE, filteredItems.length)} de ${filteredItems.length} solicitações`
-                    : "Nenhuma solicitação encontrada"}
-                </span>
-                <nav className="sr-pagination" aria-label="Paginação">
-                  <button
-                    type="button"
-                    className="sr-page-btn"
-                    onClick={() => setCurrentPage(Math.max(1, safePage - 1))}
-                  >
-                    <FaChevronLeft />
-                  </button>
-                  {Array.from({ length: pageCount }, (_, index) => (
-                    <button
-                      key={index + 1}
-                      type="button"
-                      className={`sr-page-btn ${safePage === index + 1 ? "sr-page-btn--active" : ""}`}
-                      onClick={() => setCurrentPage(index + 1)}
-                    >
-                      {index + 1}
-                    </button>
-                  ))}
-                  <button
-                    type="button"
-                    className="sr-page-btn"
-                    onClick={() =>
-                      setCurrentPage(Math.min(pageCount, safePage + 1))
-                    }
-                  >
-                    <FaChevronRight />
-                  </button>
-                </nav>
-              </footer>
-            </div>
+                  <footer className="sr-footer">
+                    <span>
+                      {filteredItems.length > 0
+                        ? `Mostrando ${start + 1} a ${Math.min(start + ITEMS_PER_PAGE, filteredItems.length)} de ${filteredItems.length} solicitações`
+                        : "Nenhuma solicitação encontrada"}
+                    </span>
+                    <nav className="sr-pagination" aria-label="Paginação">
+                      <button
+                        type="button"
+                        className="sr-page-btn"
+                        onClick={() => setCurrentPage(Math.max(1, safePage - 1))}
+                      >
+                        <FaChevronLeft />
+                      </button>
+                      {Array.from({ length: pageCount }, (_, index) => (
+                        <button
+                          key={index + 1}
+                          type="button"
+                          className={`sr-page-btn ${safePage === index + 1 ? "sr-page-btn--active" : ""}`}
+                          onClick={() => setCurrentPage(index + 1)}
+                        >
+                          {index + 1}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        className="sr-page-btn"
+                        onClick={() =>
+                          setCurrentPage(Math.min(pageCount, safePage + 1))
+                        }
+                      >
+                        <FaChevronRight />
+                      </button>
+                    </nav>
+                  </footer>
+                </div>
 
-            <div className="sr-side">
-              <SummaryCard items={items} />
-              <TipsCard />
+                <div className="sr-side">
+                  <SummaryCard items={items} />
+                  <TipsCard />
+                </div>
+              </section>
             </div>
-          </section>
+          </main>
         </div>
-      </main>
+      </div>
 
       {solicitacaoSelecionada && (
         <DetalhesModal

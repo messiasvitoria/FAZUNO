@@ -833,8 +833,41 @@ export default function Oportunidades() {
           overflow-y: auto !important;
         }
 
-        .op-page {
+        .op-app-layout {
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
           width: 100vw;
+        }
+
+        .op-app-body {
+          display: flex;
+          flex: 1;
+          min-height: 0;
+          width: 100%;
+        }
+
+        .op-app-body > main.op-page {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .op-sidebar-wrap {
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          flex-shrink: 0;
+        }
+
+        @media (max-width: 900px) {
+          .op-sidebar-wrap {
+            position: static;
+            height: auto;
+          }
+        }
+
+        .op-page {
+          width: 100%;
           min-height: 100vh;
           overflow-x: hidden;
           background: #F7F8FB;
@@ -2219,6 +2252,10 @@ export default function Oportunidades() {
         }
 
         @media (max-width: 900px) {
+          .op-app-body {
+            flex-direction: column;
+          }
+
           .op-page {
             overflow: auto;
           }
@@ -2313,135 +2350,143 @@ export default function Oportunidades() {
         }
       `}</style>
 
-      <main className="op-page">
-        <div className="op-shell">
-          <header className="op-header">
-            <div>
-              <h1>Oportunidades</h1>
-              <p>Encontre serviços compatíveis com o seu perfil e acompanhe o status de cada oportunidade.</p>
-            </div>
-          </header>
+      <div className="op-app-layout">
+        <TopBar_Prestador />
 
-          <section className="op-toolbar" aria-label="Filtros de oportunidades">
-            <div className="op-search-line">
-              <label className="op-search">
-                <FaSearch />
-                <input 
-                  type="search"
-                  placeholder="Pesquisar por serviço, cliente ou localização..."
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                />
-              </label>
-              <button type="button" className={`op-filter-action ${filtersOpen ? "op-filter-action--active" : ""}`} onClick={() => setFiltersOpen((open) => !open)}>
-                <FaSlidersH />
-                Filtros
-                {filterCount > 0 && <span>{filterCount}</span>}
-              </button>
-            </div>
+        <div className="op-app-body">
+          <div className="op-sidebar-wrap">
+            <Parte_menulateral />
+          </div>
 
-            <div className="op-filter-line">
-              {FILTERS.map((filter) => (
-                <FilterButton key={filter.value} active={activeFilter === filter.value} onClick={() => setActiveFilter(filter.value)}>
-                  {filter.value === "todas" ? `${filter.label} (${totalCount})` : filter.label}
-                </FilterButton>
-              ))}
-              <div className="op-filter-spacer" />
-              <label className="op-select">
-                <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category === "todas" ? "Categoria" : category}
-                    </option>
+          <main className="op-page">
+            <div className="op-shell">
+              <header className="op-header">
+                <div>
+                  <h1>Oportunidades</h1>
+                  <p>Encontre serviços compatíveis com o seu perfil e acompanhe o status de cada oportunidade.</p>
+                </div>
+              </header>
+
+              <section className="op-toolbar" aria-label="Filtros de oportunidades">
+                <div className="op-search-line">
+                  <label className="op-search">
+                    <FaSearch />
+                    <input
+                      type="search"
+                      placeholder="Pesquisar por serviço, cliente ou localização..."
+                      value={search}
+                      onChange={(event) => setSearch(event.target.value)}
+                    />
+                  </label>
+                  <button type="button" className={`op-filter-action ${filtersOpen ? "op-filter-action--active" : ""}`} onClick={() => setFiltersOpen((open) => !open)}>
+                    <FaSlidersH />
+                    Filtros
+                    {filterCount > 0 && <span>{filterCount}</span>}
+                  </button>
+                </div>
+
+                <div className="op-filter-line">
+                  {FILTERS.map((filter) => (
+                    <FilterButton key={filter.value} active={activeFilter === filter.value} onClick={() => setActiveFilter(filter.value)}>
+                      {filter.value === "todas" ? `${filter.label} (${totalCount})` : filter.label}
+                    </FilterButton>
                   ))}
-                </select>
-                <FaChevronDown />
-              </label>
-              <label className="op-select">
-                <select value={priceFilter} onChange={(event) => setPriceFilter(event.target.value)}>
-                  {PRICE_RANGES.map((range) => (
-                    <option key={range.value} value={range.value}>
-                      {range.label}
-                    </option>
-                  ))}
-                </select>
-                <FaChevronDown />
-              </label>
+                  <div className="op-filter-spacer" />
+                  <label className="op-select">
+                    <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
+                      {categories.map((category) => (
+                        <option key={category} value={category}>
+                          {category === "todas" ? "Categoria" : category}
+                        </option>
+                      ))}
+                    </select>
+                    <FaChevronDown />
+                  </label>
+                  <label className="op-select">
+                    <select value={priceFilter} onChange={(event) => setPriceFilter(event.target.value)}>
+                      {PRICE_RANGES.map((range) => (
+                        <option key={range.value} value={range.value}>
+                          {range.label}
+                        </option>
+                      ))}
+                    </select>
+                    <FaChevronDown />
+                  </label>
+                </div>
+
+                {filtersOpen && (
+                  <div className="op-advanced-filters">
+                    <label>
+                      Status
+                      <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+                        {STATUS_FILTERS.map((status) => (
+                          <option key={status.value} value={status.value}>
+                            {status.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="op-check-filter">
+                      <input type="checkbox" checked={onlyPinned} onChange={(event) => setOnlyPinned(event.target.checked)} />
+                      Apenas fixadas
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCategoryFilter("todas");
+                        setPriceFilter("todas");
+                        setStatusFilter("todos");
+                        setOnlyPinned(false);
+                        setActiveFilter("todas");
+                        setSearch("");
+                      }}
+                    >
+                      Limpar filtros
+                    </button>
+                  </div>
+                )}
+              </section>
+
+              <section className="op-list-wrap" aria-label="Lista de oportunidades">
+                <div className="op-list">
+                  {sortedItems.length > 0 ? (
+                    sortedItems.map((item) => (
+                      <OpportunityCard
+                        key={item.id}
+                        item={item}
+                        onAccessRequest={handleAccessRequest}
+                        onDetails={setSelectedOpportunity}
+                        onPin={togglePin}
+                      />
+                    ))
+                  ) : (
+                    <div className="op-empty">Nenhuma oportunidade encontrada.</div>
+                  )}
+                </div>
+
+                <footer className="op-footer">
+                  <p>{visibleCount > 0 ? `Mostrando 1 a ${visibleCount} de ${visibleCount} oportunidades` : "Nenhuma oportunidade encontrada"}</p>
+                  <nav className="op-pagination" aria-label="Paginação">
+                    <button type="button" className="op-page-btn op-page-btn--active">
+                      1
+                    </button>
+                  </nav>
+                </footer>
+              </section>
             </div>
 
-            {filtersOpen && (
-              <div className="op-advanced-filters">
-                <label>
-                  Status
-                  <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-                    {STATUS_FILTERS.map((status) => (
-                      <option key={status.value} value={status.value}>
-                        {status.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="op-check-filter">
-                  <input type="checkbox" checked={onlyPinned} onChange={(event) => setOnlyPinned(event.target.checked)} />
-                  Apenas fixadas
-                </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCategoryFilter("todas");
-                    setPriceFilter("todas");
-                    setStatusFilter("todos");
-                    setOnlyPinned(false);
-                    setActiveFilter("todas");
-                    setSearch("");
-                  }}
-                >
-                  Limpar filtros
-                </button>
-              </div>
+            {selectedOpportunity && (
+              <OpportunityDetailsModal
+                item={selectedOpportunity}
+                onAccessRequest={handleAccessRequest}
+                onClose={() => setSelectedOpportunity(null)}
+                onAction={handleModalAction}
+                onPin={togglePin}
+              />
             )}
-          </section>
-
-          <section className="op-list-wrap" aria-label="Lista de oportunidades">
-            <div className="op-list">
-              {sortedItems.length > 0 ? (
-                sortedItems.map((item) => (
-                  <OpportunityCard
-                    key={item.id}
-                    item={item}
-                    onAccessRequest={handleAccessRequest}
-                    onDetails={setSelectedOpportunity}
-                    onPin={togglePin}
-                  />
-                ))
-              ) : (
-                <div className="op-empty">Nenhuma oportunidade encontrada.</div>
-              )}
-            </div>
-
-            <footer className="op-footer">
-              <p>{visibleCount > 0 ? `Mostrando 1 a ${visibleCount} de ${visibleCount} oportunidades` : "Nenhuma oportunidade encontrada"}</p>
-              <nav className="op-pagination" aria-label="Paginação">
-                <button type="button" className="op-page-btn op-page-btn--active">
-                  1
-                </button>
-              </nav>
-            </footer>
-          </section>
+          </main>
         </div>
-
-        {selectedOpportunity && (
-          <OpportunityDetailsModal
-            item={selectedOpportunity}
-            onAccessRequest={handleAccessRequest}
-            onClose={() => setSelectedOpportunity(null)}
-            onAction={handleModalAction}
-            onPin={togglePin}
-          />
-        )}
-
-      </main>
+      </div>
     </>
-    
   );
 }
