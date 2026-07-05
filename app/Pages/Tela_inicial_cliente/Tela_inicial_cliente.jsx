@@ -178,7 +178,17 @@ function CategoryCard({ cat, onClick }) {
 }
 
 function ProfessionalCard({ pro }) {
+  const router = useRouter();
   const [hovered, setHovered] = useState(false);
+  const profileParams = new URLSearchParams({
+    nome: pro.name,
+    servico: pro.role,
+    avaliacao: String(pro.rating),
+    avaliacoes: String(pro.reviews),
+    foto: pro.photo,
+    origem: "tela-inicial-cliente",
+  });
+
   return (
     <div
       style={{
@@ -209,6 +219,8 @@ function ProfessionalCard({ pro }) {
         <span style={{ fontSize: 12, color: "#16a34a", fontWeight: 500 }}>Verificada</span>
       </div>
       <button
+        type="button"
+        onClick={() => router.push(`/Pages/Perfil_prestador?${profileParams.toString()}`)}
         style={{ width: "100%", backgroundColor: "#0d1b3e", color: "white", fontWeight: 700, fontSize: 12, padding: "9px 0", borderRadius: 12, border: "none", cursor: "pointer", transition: "background 0.2s" }}
         onMouseEnter={e => e.currentTarget.style.backgroundColor = "#f97316"}
         onMouseLeave={e => e.currentTarget.style.backgroundColor = "#0d1b3e"}

@@ -106,6 +106,168 @@ const SERVICES_PREVIEW = [
   { title: "Revisão e laudo NR-10",                desc: "Vistoria completa com laudo técnico conforme norma NR-10.",                          price: "160,00", Icon: FaShieldAlt,          photo: PORTFOLIO_PHOTOS[2] },
 ];
 
+function normalizeProfileKey(value = "") {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
+const PROFILE_BY_PROFESSION = {
+  eletricista: {
+    servicesCompleted: 156,
+    completionRate: 98,
+    about: "Sou eletricista profissional com mais de 8 anos de experiência em instalações, manutenções e reparos elétricos residenciais, comerciais e prediais. Trabalho com compromisso, segurança e qualidade, sempre buscando a satisfação dos meus clientes.",
+    highlights: ["Experiência: 8+ anos", "Atendimento rápido e eficiente", "Materiais de qualidade", "Garantia nos serviços realizados"],
+    skills: ["Instalações elétricas", "Manutenção preventiva", "Quadros de distribuição", "Curto-circuitos", "Iluminação LED", "Tomadas e interruptores", "Fiação e cabeamento"],
+    certifications: [{ name: "NR 10 - Segurança em Instalações e Serviços em Eletricidade", year: 2023, verified: true }],
+    serviceInfo: {
+      neighborhoods: "Vila Madalena, Pinheiros, Perdizes, Sumaré, Pompeia e região",
+      radius: "Até 15 km",
+      topServices: "Instalações elétricas, Reparos, Troca de fiação, Iluminação",
+      schedule: "Segunda a Sexta: 8h às 18h\nSábado: 8h às 12h",
+    },
+    category: "Elétrica",
+    subcategory: "Serviço elétrico",
+    serviceFor: "Residências, comércios e pequenos condomínios",
+    services: SERVICES_PREVIEW,
+  },
+  cuidadora: {
+    servicesCompleted: 94,
+    completionRate: 97,
+    about: "Sou cuidadora com experiência no acompanhamento de idosos, crianças e pessoas que precisam de apoio na rotina. Trabalho com atenção, paciência e responsabilidade para oferecer um atendimento humanizado e seguro.",
+    highlights: ["Experiência com cuidados domiciliares", "Acompanhamento com atenção e respeito", "Comunicação clara com a família", "Pontualidade nos atendimentos"],
+    skills: ["Acompanhamento diário", "Cuidados com idosos", "Apoio em consultas", "Organização de rotina", "Administração de horários", "Companhia e bem-estar"],
+    certifications: [{ name: "Curso de cuidador domiciliar", year: 2024, verified: true }],
+    serviceInfo: {
+      neighborhoods: "Vila Madalena, Pinheiros, Perdizes, Moema e região",
+      radius: "Até 12 km",
+      topServices: "Acompanhamento domiciliar, Cuidados com idosos, Apoio em consultas",
+      schedule: "Segunda a Sexta: 7h às 19h\nPlantões sob consulta",
+    },
+    category: "Saúde e Cuidados",
+    subcategory: "Cuidado domiciliar",
+    serviceFor: "Idosos, crianças e pessoas em recuperação",
+    services: [
+      { title: "Acompanhamento domiciliar", desc: "Apoio na rotina, companhia e acompanhamento seguro durante o dia.", price: "150,00", Icon: FaHeartbeat, photo: "https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=400&h=300&fit=crop" },
+      { title: "Cuidados com idosos", desc: "Atendimento humanizado para idosos com apoio em atividades diárias.", price: "180,00", Icon: FaHeartbeat, photo: "https://images.unsplash.com/photo-1576765608866-5b51046452be?w=400&h=300&fit=crop" },
+      { title: "Apoio em consultas", desc: "Acompanhamento em consultas, exames e deslocamentos com segurança.", price: "120,00", Icon: FaCheckCircle, photo: "https://images.unsplash.com/photo-1584515933487-779824d29309?w=400&h=300&fit=crop" },
+      { title: "Plantão de cuidados", desc: "Plantões combinados para suporte em períodos específicos.", price: "220,00", Icon: FaClock, photo: "https://images.unsplash.com/photo-1581056771107-24ca5f033842?w=400&h=300&fit=crop" },
+    ],
+  },
+  faxineira: {
+    servicesCompleted: 126,
+    completionRate: 96,
+    about: "Sou profissional de limpeza residencial, com foco em organização, capricho e cuidado com cada ambiente. Atendo casas e apartamentos com materiais adequados e atenção aos detalhes.",
+    highlights: ["Limpeza detalhada", "Organização de ambientes", "Atendimento pontual", "Cuidado com móveis e superfícies"],
+    skills: ["Faxina residencial", "Limpeza pós-obra leve", "Organização", "Limpeza de cozinha", "Limpeza de banheiros", "Passadoria sob combinação"],
+    certifications: [{ name: "Boas práticas de limpeza residencial", year: 2024, verified: true }],
+    serviceInfo: {
+      neighborhoods: "Vila Madalena, Pinheiros, Pompeia, Perdizes e região",
+      radius: "Até 10 km",
+      topServices: "Faxina residencial, Limpeza pesada, Organização",
+      schedule: "Segunda a Sábado: 8h às 17h",
+    },
+    category: "Limpeza",
+    subcategory: "Limpeza residencial",
+    serviceFor: "Casas e apartamentos",
+    services: [
+      { title: "Faxina residencial", desc: "Limpeza completa de cômodos, cozinha, banheiros e áreas comuns.", price: "120,00", Icon: FaBroom, photo: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop" },
+      { title: "Limpeza pesada", desc: "Limpeza mais detalhada para ambientes que precisam de cuidado extra.", price: "180,00", Icon: FaBroom, photo: "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&h=300&fit=crop" },
+      { title: "Organização de ambientes", desc: "Organização de armários, quartos e áreas de uso diário.", price: "100,00", Icon: FaCheckCircle, photo: "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=400&h=300&fit=crop" },
+    ],
+  },
+  encanador: {
+    servicesCompleted: 98,
+    completionRate: 95,
+    about: "Sou encanador com experiência em reparos hidráulicos, instalação de torneiras, desentupimentos e manutenção preventiva. Trabalho com diagnóstico claro e solução prática para evitar novos vazamentos.",
+    highlights: ["Atendimento rápido", "Reparos com garantia", "Diagnóstico de vazamentos", "Instalações hidráulicas"],
+    skills: ["Troca de torneira", "Reparo de vazamento", "Desentupimento", "Instalação de chuveiro", "Instalação hidráulica", "Manutenção preventiva"],
+    certifications: [{ name: "Manutenção hidráulica residencial", year: 2024, verified: true }],
+    serviceInfo: {
+      neighborhoods: "Moema, Vila Madalena, Pinheiros, Brooklin e região",
+      radius: "Até 15 km",
+      topServices: "Torneiras, Vazamentos, Desentupimentos, Chuveiros",
+      schedule: "Segunda a Sexta: 8h às 18h\nEmergências sob consulta",
+    },
+    category: "Hidráulica",
+    subcategory: "Serviço hidráulico",
+    serviceFor: "Residências e pequenos comércios",
+    services: [
+      { title: "Instalação de torneira", desc: "Instalação ou troca de torneiras com teste de vedação.", price: "100,00", Icon: FaWrench, photo: "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=400&h=300&fit=crop" },
+      { title: "Reparo de vazamento", desc: "Identificação e correção de vazamentos em pias, banheiros e áreas de serviço.", price: "140,00", Icon: FaTools, photo: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop" },
+      { title: "Desentupimento simples", desc: "Desentupimento de ralos, pias e vasos com avaliação no local.", price: "160,00", Icon: FaExclamationTriangle, photo: "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=400&h=300&fit=crop" },
+    ],
+  },
+  pintora: {
+    servicesCompleted: 87,
+    completionRate: 96,
+    about: "Sou pintora residencial com experiência em pintura interna, preparação de paredes e acabamentos. Trabalho com cuidado no isolamento dos ambientes e atenção ao acabamento final.",
+    highlights: ["Acabamento profissional", "Proteção dos ambientes", "Orientação sobre tintas", "Entrega limpa e organizada"],
+    skills: ["Pintura interna", "Pintura de parede", "Preparação de superfície", "Textura simples", "Retoques", "Acabamento"],
+    certifications: [{ name: "Técnicas de pintura residencial", year: 2024, verified: true }],
+    serviceInfo: {
+      neighborhoods: "Pinheiros, Vila Madalena, Perdizes, Butantã e região",
+      radius: "Até 12 km",
+      topServices: "Pintura residencial, Retoques, Preparação de paredes",
+      schedule: "Segunda a Sexta: 8h às 18h",
+    },
+    category: "Pintura",
+    subcategory: "Pintura residencial",
+    serviceFor: "Casas, apartamentos e pequenos ambientes",
+    services: [
+      { title: "Pintura residencial", desc: "Pintura interna com preparação básica e acabamento uniforme.", price: "250,00", Icon: FaPaintRoller, photo: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=400&h=300&fit=crop" },
+      { title: "Pintura de parede", desc: "Pintura de paredes avulsas com isolamento do ambiente.", price: "160,00", Icon: FaPaintRoller, photo: "https://images.unsplash.com/photo-1560439514-4e9645039924?w=400&h=300&fit=crop" },
+      { title: "Retoques e acabamento", desc: "Correção de marcas, retoques e acabamento em áreas pequenas.", price: "90,00", Icon: FaCheckCircle, photo: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&h=300&fit=crop" },
+    ],
+  },
+  jardineiro: {
+    servicesCompleted: 71,
+    completionRate: 95,
+    about: "Sou jardineiro com experiência em manutenção de jardins, poda, limpeza de áreas verdes e cuidados com plantas ornamentais. Busco deixar o espaço bonito, saudável e bem cuidado.",
+    highlights: ["Poda cuidadosa", "Manutenção de jardins", "Cuidados com plantas", "Limpeza de área verde"],
+    skills: ["Poda", "Jardinagem", "Plantio", "Adubação", "Limpeza de quintal", "Manutenção de vasos"],
+    certifications: [{ name: "Jardinagem e manutenção paisagística", year: 2023, verified: true }],
+    serviceInfo: {
+      neighborhoods: "Perdizes, Pinheiros, Vila Madalena e região",
+      radius: "Até 15 km",
+      topServices: "Poda, Jardinagem, Manutenção de área verde",
+      schedule: "Segunda a Sábado: 7h às 17h",
+    },
+    category: "Jardinagem",
+    subcategory: "Manutenção de jardim",
+    serviceFor: "Jardins, quintais e áreas externas",
+    services: [
+      { title: "Manutenção de jardim", desc: "Corte, limpeza e organização de jardins residenciais.", price: "100,00", Icon: FaTools, photo: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop" },
+      { title: "Poda de plantas", desc: "Poda de arbustos, plantas ornamentais e pequenas árvores.", price: "120,00", Icon: FaCheckCircle, photo: "https://images.unsplash.com/photo-1599685315640-7e144c4f4d72?w=400&h=300&fit=crop" },
+      { title: "Plantio e adubação", desc: "Plantio de mudas, troca de vasos e adubação do solo.", price: "90,00", Icon: FaShieldAlt, photo: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=400&h=300&fit=crop" },
+    ],
+  },
+  cozinheira: {
+    servicesCompleted: 112,
+    completionRate: 97,
+    about: "Sou cozinheira com experiência em refeições do dia a dia, preparo de marmitas, pratos caseiros e organização básica da cozinha após o preparo. Trabalho com cuidado, higiene e atenção ao gosto do cliente.",
+    highlights: ["Comida caseira", "Preparo organizado", "Higiene no preparo", "Cardápios combinados"],
+    skills: ["Refeições caseiras", "Marmitas", "Pré-preparo", "Organização da cozinha", "Cardápio semanal", "Pratos simples"],
+    certifications: [{ name: "Boas práticas na manipulação de alimentos", year: 2024, verified: true }],
+    serviceInfo: {
+      neighborhoods: "Moema, Pinheiros, Vila Mariana, Vila Madalena e região",
+      radius: "Até 10 km",
+      topServices: "Refeições caseiras, Marmitas, Cardápio semanal",
+      schedule: "Segunda a Sexta: 8h às 17h",
+    },
+    category: "Cozinha",
+    subcategory: "Serviço de cozinha",
+    serviceFor: "Residências e pequenas rotinas familiares",
+    services: [
+      { title: "Cozinha do dia a dia", desc: "Preparo de refeições caseiras combinadas com o cliente.", price: "160,00", Icon: FaCheckCircle, photo: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=400&h=300&fit=crop" },
+      { title: "Preparo de marmitas", desc: "Preparo de marmitas semanais com organização e higiene.", price: "180,00", Icon: FaFileAlt, photo: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&h=300&fit=crop" },
+      { title: "Cardápio semanal", desc: "Organização e preparo de refeições para a semana.", price: "220,00", Icon: FaCalendar, photo: "https://images.unsplash.com/photo-1506368249639-73a05d6f6488?w=400&h=300&fit=crop" },
+    ],
+  },
+};
+
 function StarRow({ value }) {
   return (
     <span style={{ display:"inline-flex", gap:2, color:C.star, fontSize:"0.8rem" }}>
@@ -140,10 +302,13 @@ export default function PerfilPrestador() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const providerPhoto = searchParams.get("foto") || PHOTO_PROVIDER;
+  const requestedProfession = searchParams.get("servico") || PROVIDER.mainProfession;
+  const roleProfile = PROFILE_BY_PROFESSION[normalizeProfileKey(requestedProfession)] || PROFILE_BY_PROFESSION.eletricista;
   const p = {
     ...PROVIDER,
+    ...roleProfile,
     name: searchParams.get("nome") || PROVIDER.name,
-    mainProfession: searchParams.get("servico") || PROVIDER.mainProfession,
+    mainProfession: requestedProfession,
     rating: Number(searchParams.get("avaliacao")) || PROVIDER.rating,
     totalRatings: Number(searchParams.get("avaliacoes")) || PROVIDER.totalRatings,
   };
@@ -154,6 +319,7 @@ export default function PerfilPrestador() {
   const [shared, setShared] = useState(false);
   const [showCatalogo, setShowCatalogo] = useState(false);
   const carouselRef = useRef(null);
+  const offeredServices = p.services || SERVICES_PREVIEW;
 
   const visibleReviews = showAll ? p.reviews : p.reviews.slice(0, 2);
 
@@ -176,12 +342,12 @@ export default function PerfilPrestador() {
       image: service.photo,
       profilePhoto: providerPhoto,
       profileRoute: "/Pages/Perfil_prestador",
-      category: "Elétrica",
-      subcategory: "Serviço elétrico",
+      category: p.category,
+      subcategory: p.subcategory,
       description: service.desc,
-      included: ["Avaliação do ponto elétrico", "Execução do serviço contratado", "Teste de segurança ao finalizar"],
-      excluded: ["Materiais não combinados", "Mudanças estruturais fora do escopo"],
-      serviceFor: "Residências, comércios e pequenos condomínios",
+      included: ["Avaliação inicial", "Execução do serviço contratado", "Orientação ao finalizar"],
+      excluded: ["Materiais não combinados", "Demandas fora do escopo inicial"],
+      serviceFor: p.serviceFor,
       chargingType: "Por serviço",
       attendanceMode: "Presencial",
       executionTime: "Conforme complexidade do serviço",
@@ -198,7 +364,14 @@ export default function PerfilPrestador() {
   }
 
   if (showCatalogo) {
-    return <TodosServicosPrestador onVoltar={() => setShowCatalogo(false)} />;
+    return (
+      <TodosServicosPrestador
+        onVoltar={() => setShowCatalogo(false)}
+        providerData={p}
+        providerPhoto={providerPhoto}
+        servicesData={offeredServices}
+      />
+    );
   }
 
   return (
@@ -237,7 +410,7 @@ export default function PerfilPrestador() {
                   {/* ── PADRONIZADO: mesma foto do Modal_Detalhes_Cliente ── */}
                   <img
                     src={providerPhoto}
-                    alt="João Silva"
+                    alt={p.name}
                     style={{ width:"100%", height:"100%", objectFit:"cover" }}
                     onError={e => { e.target.src="https://picsum.photos/seed/electrician42/200/200"; }}
                   />
@@ -407,7 +580,7 @@ onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; 
                 </button>
 
                 <div ref={carouselRef} className="services-carousel" style={{ display:"flex", gap:14, overflowX:"auto", scrollSnapType:"x mandatory", paddingBottom:4, scrollbarWidth:"none" }}>
-                  {SERVICES_PREVIEW.map((s,i) => (
+                  {offeredServices.map((s,i) => (
                     <div key={i}
                       style={{ minWidth:212, maxWidth:212, flexShrink:0, scrollSnapAlign:"start", border:`1.5px solid ${C.border}`, borderRadius:12, overflow:"hidden", background:C.bg, transition:"transform 0.2s, box-shadow 0.2s" }}
                       onMouseEnter={e => { e.currentTarget.style.transform="translateY(-3px)"; e.currentTarget.style.boxShadow="0 10px 24px rgba(6,16,74,0.10)"; }}

@@ -67,8 +67,49 @@ const SERVICES = [
 
 const pageBtnStyle = { width:32, height:32, borderRadius:7, border:`1.5px solid ${C.border2}`, background:"#fff", color:C.navy, fontSize:".82rem", fontWeight:700, fontFamily:"'Sora',sans-serif", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" };
 
-export default function TodosServicosPrestador({ onVoltar }) {
+function parsePrice(value) {
+  if (typeof value === "number") return value;
+  const normalized = String(value || "0").replace(/[^\d,]/g, "").replace(",", ".");
+  return Number(normalized) || 0;
+}
+
+export default function TodosServicosPrestador({ onVoltar, providerData, providerPhoto, servicesData }) {
   const router = useRouter();
+  const currentProvider = providerData
+    ? {
+        name: providerData.name,
+        profession: `${providerData.mainProfession} profissional`,
+        city: providerData.city,
+        state: providerData.state,
+        rating: providerData.rating,
+        totalRatings: providerData.totalRatings,
+        verified: providerData.verified,
+        category: providerData.category,
+        serviceArea: providerData.serviceInfo?.neighborhoods,
+        serviceFor: providerData.serviceFor,
+      }
+    : PROVIDER;
+  const currentProviderPhoto = providerPhoto || PHOTO_PROVIDER;
+  const allServices = useMemo(() => {
+    if (!servicesData?.length) return SERVICES;
+    return servicesData.map((service, index) => ({
+      id: 9000 + index,
+      title: service.title,
+      category: service.category || service.subcategory || "Serviço",
+      desc: service.desc,
+      price: parsePrice(service.price),
+      rating: currentProvider.rating || 4.8,
+      reviews: currentProvider.totalRatings || 0,
+      contratacoes: Math.max(8, Math.round((currentProvider.totalRatings || 40) / 4) + index),
+      Icon: service.Icon || FaTools,
+      destaque: index === 0,
+      photo: service.photo,
+    }));
+  }, [servicesData, currentProvider.rating, currentProvider.totalRatings]);
+  const categories = useMemo(() => {
+    const unique = Array.from(new Set(allServices.map((service) => service.category).filter(Boolean)));
+    return ["Todas as categorias", ...unique];
+  }, [allServices]);
   const [search, setSearch]         = useState("");
   const [category, setCategory]     = useState("Todas as categorias");
   const [sort, setSort]             = useState("Mais contratados");
@@ -91,7 +132,7 @@ export default function TodosServicosPrestador({ onVoltar }) {
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
-    let list = SERVICES.filter(s => {
+    let list = allServices.filter(s => {
       const matchesTerm = !term || (s.title + " " + s.desc).toLowerCase().includes(term);
       const matchesCat  = category === "Todas as categorias" || s.category === category;
       return matchesTerm && matchesCat;
@@ -100,7 +141,7 @@ export default function TodosServicosPrestador({ onVoltar }) {
     else if (sort === "Maior avaliação") list = [...list].sort((a,b) => b.rating - a.rating);
     else                                  list = [...list].sort((a,b) => b.contratacoes - a.contratacoes);
     return list;
-  }, [search, category, sort]);
+  }, [search, category, sort, allServices]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
   const safePage  = Math.min(page, pageCount);
@@ -115,25 +156,25 @@ export default function TodosServicosPrestador({ onVoltar }) {
     return {
       id: 8000 + service.id,
       title: service.title,
-      professional: PROVIDER.name,
+      professional: currentProvider.name,
       rating: String(service.rating),
       reviews: String(service.reviews),
       price: `R$ ${service.price.toLocaleString("pt-BR", { minimumFractionDigits: 0 })}`,
       distance: "3 km",
       eta: "10 min",
       image: service.photo,
-      profilePhoto: PHOTO_PROVIDER,
+      profilePhoto: currentProviderPhoto,
       profileRoute: "/Pages/Perfil_prestador",
-      category: "Elétrica",
+      category: currentProvider.category || service.category,
       subcategory: service.category,
       description: service.desc,
-      included: ["Avaliação do ponto elétrico", "Execução do serviço contratado", "Teste de segurança ao finalizar"],
-      excluded: ["Materiais não combinados", "Mudanças estruturais fora do escopo"],
-      serviceFor: "Residências, comércios e pequenos condomínios",
+      included: ["Avaliação inicial", "Execução do serviço contratado", "Orientação ao finalizar"],
+      excluded: ["Materiais não combinados", "Demandas fora do escopo inicial"],
+      serviceFor: currentProvider.serviceFor || "Residências e pequenos comércios",
       chargingType: "Por serviço",
       attendanceMode: "Presencial",
       executionTime: "Conforme complexidade do serviço",
-      serviceArea: "São Paulo e regiões próximas",
+      serviceArea: currentProvider.serviceArea || "São Paulo e regiões próximas",
       nextAvailability: "Hoje após 14h",
       completedServices: `${service.contratacoes} contratações`,
       address: "Rua das Flores, 123, Vila Madalena, São Paulo - SP",
@@ -176,21 +217,21 @@ export default function TodosServicosPrestador({ onVoltar }) {
 
                 <div style={{ display:"flex", alignItems:"center", gap:16 }}>
                   <div style={{ width:64, height:64, borderRadius:"50%", border:"3px solid rgba(255,255,255,0.5)", overflow:"hidden", flexShrink:0 }}>
-                    <img src={PHOTO_PROVIDER} alt={PROVIDER.name} style={{ width:"100%", height:"100%", objectFit:"cover" }} onError={e => { e.target.src="https://picsum.photos/seed/electrician42/200/200"; }}/>
+                    <img src={currentProviderPhoto} alt={currentProvider.name} style={{ width:"100%", height:"100%", objectFit:"cover" }} onError={e => { e.target.src="https://picsum.photos/seed/electrician42/200/200"; }}/>
                   </div>
                   <div>
-                    <div style={{ fontFamily:"'Sora',sans-serif", fontSize:"1.3rem", fontWeight:800, color:"#fff" }}>{PROVIDER.name}</div>
+                    <div style={{ fontFamily:"'Sora',sans-serif", fontSize:"1.3rem", fontWeight:800, color:"#fff" }}>{currentProvider.name}</div>
                     <div style={{ display:"flex", alignItems:"center", gap:6, color:"rgba(255,255,255,0.7)", fontSize:".82rem", fontWeight:600, marginTop:3 }}>
-                      <FaBolt style={{ color:C.orange }}/> {PROVIDER.profession}
+                      <FaBolt style={{ color:C.orange }}/> {currentProvider.profession}
                     </div>
                     <div style={{ display:"flex", flexWrap:"wrap", gap:14, marginTop:8 }}>
                       <span style={{ display:"flex", alignItems:"center", gap:5, color:"rgba(255,255,255,0.8)", fontSize:".8rem", fontWeight:600 }}>
-                        <FaMapMarkerAlt style={{ color:C.orange }}/> {PROVIDER.city}, {PROVIDER.state}
+                        <FaMapMarkerAlt style={{ color:C.orange }}/> {currentProvider.city}, {currentProvider.state}
                       </span>
                       <span style={{ display:"flex", alignItems:"center", gap:5, color:"rgba(255,255,255,0.8)", fontSize:".8rem", fontWeight:600 }}>
-                        <FaStar style={{ color:C.star }}/> {PROVIDER.rating} ({PROVIDER.totalRatings} avaliações)
+                        <FaStar style={{ color:C.star }}/> {currentProvider.rating} ({currentProvider.totalRatings} avaliações)
                       </span>
-                      {PROVIDER.verified && (
+                      {currentProvider.verified && (
                         <span style={{ display:"inline-flex", alignItems:"center", gap:5, background:"rgba(22,163,74,0.18)", color:"#4ade80", border:"1px solid rgba(74,222,128,0.4)", fontSize:".72rem", fontWeight:700, borderRadius:999, padding:"3px 10px" }}>
                           <FaCheckCircle size={10}/> Perfil Verificado
                         </span>
@@ -202,7 +243,7 @@ export default function TodosServicosPrestador({ onVoltar }) {
 
               <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                 <button
-                  onClick={() => router.push(`/Pages/Chat?nome=${encodeURIComponent(PROVIDER.name)}&tipo=prestador&servico=${encodeURIComponent("Servicos do prestador")}&origem=perfil-prestador`)}
+                  onClick={() => router.push(`/Pages/Chat?nome=${encodeURIComponent(currentProvider.name)}&tipo=prestador&servico=${encodeURIComponent("Servicos do prestador")}&origem=perfil-prestador`)}
                   onMouseEnter={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.7)"; e.currentTarget.style.background="rgba(255,255,255,0.08)"; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
                   style={{ ...headerBtnBase, background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", color:"#fff" }}>
@@ -238,7 +279,7 @@ export default function TodosServicosPrestador({ onVoltar }) {
           <div style={{ marginBottom:22 }}>
             <h1 style={{ fontFamily:"'Sora',sans-serif", fontSize:"1.55rem", fontWeight:800, color:C.navy, margin:"0 0 6px" }}>Todos os serviços</h1>
             <p style={{ color:C.muted, fontSize:".9rem", fontWeight:500, margin:0 }}>
-              Confira todos os serviços que {PROVIDER.name} oferece. Escolha o serviço ideal para sua necessidade.
+              Confira todos os serviços que {currentProvider.name} oferece. Escolha o serviço ideal para sua necessidade.
             </p>
           </div>
 
@@ -254,7 +295,7 @@ export default function TodosServicosPrestador({ onVoltar }) {
             </div>
             <select value={category} onChange={e => updateCategory(e.target.value)}
               style={{ height:46, padding:"0 14px", borderRadius:9, border:`1.5px solid ${C.border2}`, fontSize:".84rem", fontWeight:600, color:C.navy, background:"#fff", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
-              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+              {categories.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
             <select value={sort} onChange={e => updateSort(e.target.value)}
               style={{ height:46, padding:"0 14px", borderRadius:9, border:`1.5px solid ${C.border2}`, fontSize:".84rem", fontWeight:600, color:C.navy, background:"#fff", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}>
