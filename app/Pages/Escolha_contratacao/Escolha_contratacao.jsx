@@ -800,8 +800,8 @@ function OptionCard({ option, selected, onSelect }) {
         </ul>
       </div>
       <button type="button" onClick={() => onSelect(option.key)}>
-        <FaCheck />
         Continuar
+        <FaArrowRight />
       </button>
     </article>
   );
@@ -2061,19 +2061,20 @@ export default function EscolhaContratacao() {
 
         .choice-grid {
           display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 14px;
+          grid-template-columns: 1fr;
+          gap: 16px;
+          max-width: 980px;
+          margin: 0 auto;
         }
 
         .choice-card {
           position: relative;
-          min-height: 270px;
+          min-height: 178px;
           display: grid;
-          grid-template-columns: 176px minmax(0, 1fr);
-          grid-template-rows: 1fr auto;
-          gap: 0 22px;
-          align-items: stretch;
-          padding: 22px 24px;
+          grid-template-columns: 150px minmax(0, 1fr) 178px;
+          gap: 0 24px;
+          align-items: center;
+          padding: 24px 30px;
           border: 1.5px solid #E6E8EF;
           border-radius: 8px;
           background: #FFFFFF;
@@ -2089,8 +2090,8 @@ export default function EscolhaContratacao() {
         }
 
         .choice-illustration {
-          width: 154px;
-          height: 154px;
+          width: 136px;
+          height: 136px;
           position: relative;
           display: flex;
           align-items: center;
@@ -2101,15 +2102,15 @@ export default function EscolhaContratacao() {
 
         .choice-glow {
           position: absolute;
-          width: 132px;
-          height: 132px;
+          width: 124px;
+          height: 124px;
           border-radius: 8px;
           background: var(--soft);
         }
 
         .choice-main-icon {
-          width: 76px;
-          height: 76px;
+          width: 72px;
+          height: 72px;
           position: relative;
           z-index: 2;
           display: inline-flex;
@@ -2179,17 +2180,19 @@ export default function EscolhaContratacao() {
 
         .choice-card-body {
           min-width: 0;
-          padding-left: 22px;
+          padding-left: 26px;
           border-left: 1px solid #EEF0F5;
           text-align: left;
         }
 
         .choice-card-kicker {
           display: block;
-          margin-bottom: 4px;
-          color: #8A90A0;
+          margin-bottom: 7px;
+          color: var(--accent);
           font-size: 0.72rem;
           font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
         }
 
         .choice-card h2 {
@@ -2201,8 +2204,8 @@ export default function EscolhaContratacao() {
         }
 
         .choice-card p {
-          max-width: 420px;
-          margin: 0 0 18px;
+          max-width: 560px;
+          margin: 0;
           color: #666B7A;
           font-size: 0.86rem;
           font-weight: 500;
@@ -2210,9 +2213,13 @@ export default function EscolhaContratacao() {
         }
 
         .choice-card ul {
-          width: min(100%, 340px);
-          margin: 0;
-          padding: 0;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px 24px;
+          width: 100%;
+          margin: 16px 0 0;
+          padding: 14px 0 0;
+          border-top: 1px solid #EEF0F5;
           list-style: none;
           text-align: left;
         }
@@ -2227,7 +2234,7 @@ export default function EscolhaContratacao() {
         }
 
         .choice-card li + li {
-          margin-top: 13px;
+          margin-top: 0;
         }
 
         .choice-card li span {
@@ -2244,15 +2251,15 @@ export default function EscolhaContratacao() {
         }
 
         .choice-card button {
-          width: 100%;
-          min-height: 38px;
-          grid-column: 2;
+          width: 156px;
+          min-height: 46px;
+          grid-column: 3;
           justify-self: end;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
-          margin-top: 20px;
+          margin-top: 0;
           border: 1.5px solid transparent;
           border-radius: 8px;
           background: #0A0B2D;
@@ -2267,7 +2274,7 @@ export default function EscolhaContratacao() {
 
         .choice-card button:hover {
           border-color: var(--hover);
-          background: var(--hover);
+          background: #111342;
           box-shadow: 0 8px 22px rgba(241, 103, 15, 0.22);
         }
 
@@ -4015,6 +4022,7 @@ export default function EscolhaContratacao() {
           .choice-grid {
             grid-template-columns: 1fr;
             gap: 14px;
+            max-width: 100%;
           }
 
           .choice-card {
@@ -4098,6 +4106,7 @@ export default function EscolhaContratacao() {
 
           .choice-card button {
             grid-column: 1 / -1;
+            width: 100%;
             min-height: 46px;
             margin-top: 0;
           }

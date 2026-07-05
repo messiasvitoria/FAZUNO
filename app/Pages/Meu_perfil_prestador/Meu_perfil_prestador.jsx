@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import TodosServicosPrestador from "./Todos_servicos_prestador";
+import TodosServicosPrestador from "../Perfil_prestador/Todos_servicos_prestador";
 import {
   FaStar, FaStarHalfAlt, FaRegStar,
   FaMapMarkerAlt, FaCheckCircle,

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import StatCards from "../../components/StatCards";
 import SolicitacoesRecebidas from "../../components/SolicitacoesRecebidas";
 import OportunidadesParaVoce from "../../components/OportunidadesParaVoce";
@@ -175,7 +175,7 @@ function StatusDropdown({ isOnline, onChange, onClose }) {
 
 export default function Tela_inicio_prestador() {
   const router = useRouter();
-  const [activeNav, setActiveNav] = useState(2);
+  const pathname = usePathname();
   const [notifOpen, setNotifOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
@@ -189,8 +189,13 @@ export default function Tela_inicio_prestador() {
     if (item.route) {
       router.push(item.route);
     } else {
-      setActiveNav(i);
+      router.push("/Pages/Tela_Inicial_prestador");
     }
+  };
+
+  const isActiveNav = (item) => {
+    const route = item.route?.split("?")[0] || "/Pages/Tela_Inicial_prestador";
+    return pathname === route || pathname.startsWith(`${route}/`);
   };
 
   // ── Trava o body nesta tela com layout fixo ──
@@ -224,15 +229,20 @@ export default function Tela_inicio_prestador() {
       {/* ── SIDEBAR ── */}
       <div
         style={{
-          width: 200,
-          minWidth: 200,
-          height: "100%",
+          width: 216,
+          minWidth: 216,
+          height: "100vh",
+          minHeight: "100vh",
+          position: "sticky",
+          top: 0,
+          left: 0,
           backgroundColor: "#0d1b3e",
           display: "flex",
           flexDirection: "column",
           flexShrink: 0,
           zIndex: 30,
           boxShadow: "4px 0 24px rgba(0,0,0,0.25)",
+          overflow: "hidden",
         }}
       >
         {/* Logo */}
@@ -265,7 +275,7 @@ export default function Tela_inicio_prestador() {
           }}
         >
           {navItems.map((item, i) => {
-            const active = activeNav === i;
+            const active = isActiveNav(item);
             return (
               <button
                 key={i}
@@ -273,7 +283,7 @@ export default function Tela_inicio_prestador() {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 9,
+                  gap: 10,
                   padding: "9px 10px" /* ← padding vertical menor */,
                   borderRadius: 10,
                   border: "none",
@@ -306,10 +316,11 @@ export default function Tela_inicio_prestador() {
                 </span>
                 <span
                   style={{
-                    fontSize: 12.5,
-                    fontWeight: 500,
-                    lineHeight: 1.3,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    lineHeight: 1.2,
                     flex: 1,
+                    whiteSpace: "nowrap",
                   }}
                 >
                   {item.label}
@@ -635,11 +646,11 @@ export default function Tela_inicio_prestador() {
                       border: "none",
                       cursor: "pointer",
                       backgroundColor:
-                        activeNav === i
+                        isActiveNav(item)
                           ? "rgba(255,255,255,0.15)"
                           : "transparent",
                       color:
-                        activeNav === i ? "white" : "rgba(255,255,255,0.55)",
+                        isActiveNav(item) ? "white" : "rgba(255,255,255,0.55)",
                       fontSize: 12.5,
                       fontWeight: 500,
                       width: "100%",
@@ -649,7 +660,7 @@ export default function Tela_inicio_prestador() {
                       name={item.icon}
                       size={16}
                       color={
-                        activeNav === i ? "white" : "rgba(255,255,255,0.5)"
+                        isActiveNav(item) ? "white" : "rgba(255,255,255,0.5)"
                       }
                       strokeWidth={2}
                     />

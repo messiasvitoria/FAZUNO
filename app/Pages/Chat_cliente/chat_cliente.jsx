@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 const ME_AVATAR = "https://i.pravatar.cc/150?img=47";
 
 const conversations = [
-  { id: 1, name: "João Eletricista", service: "Instalação elétrica", time: "10:30", preview: "Perfeito! Pode ser amanhã às 9h.", unread: 2, online: true, avatar: "https://i.pravatar.cc/150?img=12" },
+  { id: 1, name: "João Silva", service: "Instalação elétrica", time: "10:30", preview: "Perfeito! Pode ser amanhã às 9h.", unread: 2, online: true, avatar: "https://i.pravatar.cc/150?img=12" },
   { id: 2, name: "Ana Diarista", service: "Diarista", time: "Ontem", preview: "Obrigada pela avaliação! Qualquer...", unread: 0, online: false, avatar: "https://i.pravatar.cc/150?img=32" },
   { id: 3, name: "Carlos Pintor", service: "Pintura residencial", time: "Ontem", preview: "Segue as fotos do trabalho concluído.", unread: 1, online: false, avatar: "https://i.pravatar.cc/150?img=53" },
   { id: 4, name: "Mariana Designer", service: "Design de interiores", time: "2 dias", preview: "Vou preparar a proposta e te envio.", unread: 0, online: false, avatar: "https://i.pravatar.cc/150?img=44" },
@@ -22,6 +22,17 @@ const initialMessages = [
   { id: 5, from: "me", text: "Isso mesmo! Rua das Flores, 123 - Centro. Qualquer coisa, me avise por aqui.", time: "10:20", read: true },
   { id: 6, from: "other", text: "Perfeito! Pode ser amanhã às 9h.", time: "10:30", reaction: "❤️" },
 ];
+
+function normalizeContactName(value = "") {
+  const plain = value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+
+  if (plain.includes("joao")) return "joao-silva";
+  return plain.replace(/\s+/g, "-");
+}
 
 function Avatar({ name, src, color, letter, size = 40, online = false }) {
   const initials = name ? name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase() : "?";
@@ -40,7 +51,10 @@ export default function ChatCliente() {
   const incomingName = searchParams.get("nome");
   const incomingService = searchParams.get("servico") || "Contratação";
   const incomingAvatar = searchParams.get("foto");
-  const incomingId = incomingName ? "incoming" : 1;
+  const existingIncoming = incomingName
+    ? conversations.find((conv) => normalizeContactName(conv.name) === normalizeContactName(incomingName))
+    : null;
+  const incomingId = incomingName ? (existingIncoming?.id || "incoming") : 1;
   const [activeId, setActiveId] = useState(incomingId);
   const [tab, setTab] = useState("Todas");
   const [message, setMessage] = useState("");
@@ -48,6 +62,21 @@ export default function ChatCliente() {
 
   const visibleConversations = useMemo(() => {
     if (!incomingName) return conversations;
+    if (existingIncoming) {
+      return conversations.map((conv) =>
+        conv.id === existingIncoming.id
+          ? {
+              ...conv,
+              name: "João Silva",
+              service: incomingService || conv.service,
+              time: "Agora",
+              preview: "Conversa da solicitação selecionada.",
+              online: true,
+              avatar: incomingAvatar || conv.avatar,
+            }
+          : conv
+      );
+    }
 
     return [
       {
@@ -60,13 +89,13 @@ export default function ChatCliente() {
         online: true,
         avatar: incomingAvatar,
       },
-      ...conversations.filter((conv) => conv.name !== incomingName),
+      ...conversations.filter((conv) => normalizeContactName(conv.name) !== normalizeContactName(incomingName)),
     ];
-  }, [incomingAvatar, incomingName, incomingService]);
+  }, [existingIncoming, incomingAvatar, incomingName, incomingService]);
 
   useEffect(() => {
-    if (incomingName) setActiveId("incoming");
-  }, [incomingName]);
+    if (incomingName) setActiveId(incomingId);
+  }, [incomingId, incomingName]);
 
   const active = visibleConversations.find((c) => c.id === activeId) || visibleConversations[0];
 
@@ -77,7 +106,7 @@ export default function ChatCliente() {
   }
 
   return (
-    <div style={{ display: "flex", height: "100vh", fontFamily: "'Inter', sans-serif", background: "#F9FAFB", color: "#111827" }}>
+    <div style={{ display: "flex", height: "100%", fontFamily: "'Inter', sans-serif", background: "#F9FAFB", color: "#111827" }}>
 
       {/* SIDEBAR */}
       <aside style={{ width: 280, borderRight: "1px solid #E5E7EB", background: "#fff", display: "flex", flexDirection: "column" }}>

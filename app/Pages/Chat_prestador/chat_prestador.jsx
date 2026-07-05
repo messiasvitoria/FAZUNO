@@ -22,6 +22,15 @@ const initialMessages = [
   { id: 6, from: "me", text: "Perfeito! Obrigada 🙂", time: "10:30", read: true, reaction: "❤️" },
 ];
 
+function normalizeContactName(value = "") {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
 function Avatar({ name, src, color, letter, size = 40, online = false }) {
   const initials = name ? name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase() : "?";
   return (
@@ -39,7 +48,10 @@ export default function ChatPrestador() {
   const incomingName = searchParams.get("nome");
   const incomingService = searchParams.get("servico") || "Solicitação";
   const incomingAvatar = searchParams.get("foto");
-  const incomingId = incomingName ? "incoming" : 1;
+  const existingIncoming = incomingName
+    ? conversations.find((conv) => normalizeContactName(conv.name) === normalizeContactName(incomingName))
+    : null;
+  const incomingId = incomingName ? (existingIncoming?.id || "incoming") : 1;
   const [activeId, setActiveId] = useState(incomingId);
   const [tab, setTab] = useState("Todas");
   const [message, setMessage] = useState("");
@@ -47,6 +59,20 @@ export default function ChatPrestador() {
 
   const visibleConversations = useMemo(() => {
     if (!incomingName) return conversations;
+    if (existingIncoming) {
+      return conversations.map((conv) =>
+        conv.id === existingIncoming.id
+          ? {
+              ...conv,
+              service: incomingService || conv.service,
+              time: "Agora",
+              preview: "Conversa da solicitação selecionada.",
+              online: true,
+              avatar: incomingAvatar || conv.avatar,
+            }
+          : conv
+      );
+    }
 
     return [
       {
@@ -60,13 +86,13 @@ export default function ChatPrestador() {
         avatar: incomingAvatar,
         badge: "Cliente",
       },
-      ...conversations.filter((conv) => conv.name !== incomingName),
+      ...conversations.filter((conv) => normalizeContactName(conv.name) !== normalizeContactName(incomingName)),
     ];
-  }, [incomingAvatar, incomingName, incomingService]);
+  }, [existingIncoming, incomingAvatar, incomingName, incomingService]);
 
   useEffect(() => {
-    if (incomingName) setActiveId("incoming");
-  }, [incomingName]);
+    if (incomingName) setActiveId(incomingId);
+  }, [incomingId, incomingName]);
 
   const active = visibleConversations.find((c) => c.id === activeId) || visibleConversations[0];
 
@@ -77,7 +103,7 @@ export default function ChatPrestador() {
   }
 
   return (
-    <div style={{ display: "flex", height: "100vh", fontFamily: "'Inter', sans-serif", background: "#F9FAFB", color: "#111827" }}>
+    <div style={{ display: "flex", height: "100%", fontFamily: "'Inter', sans-serif", background: "#F9FAFB", color: "#111827" }}>
 
       {/* SIDEBAR */}
       <aside style={{ width: 280, borderRight: "1px solid #E5E7EB", background: "#fff", display: "flex", flexDirection: "column" }}>

@@ -1,5 +1,10 @@
 import Oportunidades from "./Oportunidades";
+import PrestadorLayout from "../../components/PrestadorLayout";
 
 export default function Page() {
-  return <Oportunidades />;
+  return (
+    <PrestadorLayout title="Oportunidades" subtitle="Encontre serviços compatíveis com seu perfil.">
+      <Oportunidades />
+    </PrestadorLayout>
+  );
 }

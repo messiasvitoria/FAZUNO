@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import SidebarPrestador from "../../components/Sidebarprestador";
-import TopBarCliente from "../../components/TopBar_cliente";
+import TopBarPrestador from "../../components/TopBarPrestador";
 import AvailabilityHeader from "../../components/AvailabilityHeader";
 import CalendarGrid from "../../components/CalendarGrid";
 import CalendarToolbar from "../../components/CalendarToolbar";
@@ -65,7 +65,7 @@ export default function TelaCalendarioPrestador() {
 
   return (
     <div className="min-h-screen bg-[#F4F6FA] text-[#0A0B2D]">
-      <TopBarCliente />
+      <TopBarPrestador title="Minha Agenda" subtitle="Organize seus atendimentos e disponibilidade." />
       <div className="flex min-h-[calc(100vh-72px)]">
         <SidebarPrestador />
         <main className="min-w-0 flex-1 px-8 py-7">
