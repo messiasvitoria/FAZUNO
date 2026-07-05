@@ -161,7 +161,7 @@ function ProfileMenu({ onClose, onNavigate, onLogout }) {
   const menuItems = [
     { icon: "user",       label: "Meu Perfil",               route: "/Pages/Meu_perfil_cliente", color: "#0d1b3e" },
     { icon: "creditCard", label: "Pagamentos e Reembolsos",   route: null,  color: "#0d1b3e" },
-    { icon: "heart",      label: "Favoritos",                 route: null,                        color: "#0d1b3e" },
+    { icon: "heart",      label: "Favoritos",                 route: "/Pages/Favoritos",          color: "#0d1b3e" },
     { icon: "settings",   label: "Configurações da Conta",    route: null,                        color: "#0d1b3e" },
   ];
 

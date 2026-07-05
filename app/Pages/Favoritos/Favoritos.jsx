@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Sidebar from "../../components/SideBar_cliente";
+import Topbar from "../../components/TopBar_cliente";
 import {
   FaBolt,
   FaArrowLeft,
@@ -438,7 +440,11 @@ export default function Favoritos({ view = "overview" }) {
       : "Serviços e profissionais que você salvou para depois.";
 
   return (
-    <main className="favorites-page">
+    <div className="favorites-shell">
+      <Sidebar />
+      <div className="favorites-content">
+        <Topbar />
+        <main className="favorites-page">
       <header className="favorites-header">
         <div>
           <button
@@ -522,12 +528,32 @@ export default function Favoritos({ view = "overview" }) {
       </section>}
 
       <style jsx global>{`
+        .favorites-shell {
+          display: flex;
+          width: 100%;
+          height: 100vh;
+          overflow: hidden;
+          background: ${C.bg};
+          font-family: Poppins, Arial, sans-serif;
+        }
+
+        .favorites-content {
+          flex: 1;
+          min-width: 0;
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+
         .favorites-page {
-          min-height: 100vh;
+          flex: 1;
+          min-height: 0;
+          overflow-y: auto;
+          overflow-x: hidden;
           background: ${C.bg};
           color: ${C.text};
           padding: 22px 32px 38px;
-          font-family: Poppins, Arial, sans-serif;
         }
 
         .favorites-header {
@@ -1004,6 +1030,8 @@ export default function Favoritos({ view = "overview" }) {
           }
         }
       `}</style>
-    </main>
+        </main>
+      </div>
+    </div>
   );
 }
