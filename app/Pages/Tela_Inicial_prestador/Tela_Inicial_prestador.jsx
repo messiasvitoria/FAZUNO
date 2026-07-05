@@ -269,7 +269,7 @@ export default function Tela_inicio_prestador() {
             padding: "10px 8px",
             display: "flex",
             flexDirection: "column",
-            gap: 2 /* ← espaço fixo e pequeno entre itens */,
+            gap: 4,
             alignItems: "stretch",
             overflowY: "auto",
           }}
@@ -284,7 +284,7 @@ export default function Tela_inicio_prestador() {
                   display: "flex",
                   alignItems: "center",
                   gap: 10,
-                  padding: "9px 10px" /* ← padding vertical menor */,
+                  padding: "10px 12px",
                   borderRadius: 10,
                   border: "none",
                   cursor: "pointer",
@@ -293,8 +293,8 @@ export default function Tela_inicio_prestador() {
                   backgroundColor: active
                     ? "rgba(255,255,255,0.15)"
                     : "transparent",
-                  color: active ? "white" : "rgba(255,255,255,0.55)",
-                  transition: "all 0.2s",
+                  color: active ? "white" : "rgba(255,255,255,0.68)",
+                  transition: "background 0.2s, color 0.2s",
                 }}
                 onMouseEnter={(e) => {
                   if (!active)
@@ -306,11 +306,11 @@ export default function Tela_inicio_prestador() {
                     e.currentTarget.style.backgroundColor = "transparent";
                 }}
               >
-                <span style={{ flexShrink: 0 }}>
+                <span style={{ flexShrink: 0, height: 18, display: "inline-flex", alignItems: "center" }}>
                   <Icon
                     name={item.icon}
-                    size={16}
-                    color={active ? "white" : "rgba(255,255,255,0.5)"}
+                    size={17}
+                    color={active ? "white" : "rgba(255,255,255,0.58)"}
                     strokeWidth={2}
                   />
                 </span>
@@ -364,14 +364,15 @@ export default function Tela_inicio_prestador() {
             backgroundColor: "#0d1b3e",
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             padding: "0 24px",
             flexShrink: 0,
+            position: "relative",
             zIndex: 20,
             boxShadow: "0 2px 12px rgba(0,0,0,0.2)",
           }}
         >
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ position: "absolute", left: 24, top: "50%", transform: "translateY(-50%)", display: "flex", flexDirection: "column" }}>
             <span style={{ color: "white", fontSize: 14, fontWeight: 700 }}>
               Olá, João! 👋
             </span>
@@ -380,7 +381,7 @@ export default function Tela_inicio_prestador() {
             </span>
           </div>
 
-          <div ref={statusRef} style={{ position: "relative" }}>
+          <div ref={statusRef} style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
             <button
               onClick={() => setStatusOpen((o) => !o)}
               style={{
@@ -629,7 +630,7 @@ export default function Tela_inicio_prestador() {
                   />
                 </button>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {navItems.map((item, i) => (
                   <button
                     key={i}
@@ -641,7 +642,7 @@ export default function Tela_inicio_prestador() {
                       display: "flex",
                       alignItems: "center",
                       gap: 9,
-                      padding: "9px 10px",
+                      padding: "10px 12px",
                       borderRadius: 10,
                       border: "none",
                       cursor: "pointer",
@@ -710,3 +711,4 @@ export default function Tela_inicio_prestador() {
     </div>
   );
 }
+
