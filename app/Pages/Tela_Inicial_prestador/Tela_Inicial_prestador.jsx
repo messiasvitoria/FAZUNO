@@ -42,6 +42,10 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
       "M12 15a3 3 0 100-6 3 3 0 000 6z",
       "M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z",
     ],
+    creditCard: ["M3 6h18v12H3z", "M3 10h18"],
+    barChart: ["M4 19V9", "M12 19V5", "M20 19v-8"],
+    logOut: ["M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4", "M16 17l5-5-5-5", "M21 12H9"],
+    shield: ["M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z", "M9 12l2 2 4-4"],
     chevDown: ["M6 9l6 6 6-6"],
     user: [
       "M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2",
@@ -173,11 +177,145 @@ function StatusDropdown({ isOnline, onChange, onClose }) {
   );
 }
 
+function ProfileMenu({ onClose }) {
+  const router = useRouter();
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handler = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) onClose();
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [onClose]);
+
+  const menuItems = [
+    { icon: "user", label: "Meu Perfil", route: "/Pages/Meu_perfil_prestador" },
+    { icon: "creditCard", label: "Financeiro e Repasses", route: null },
+    { icon: "barChart", label: "Desempenho", route: null },
+    { icon: "settings", label: "Configurações da Conta", route: null },
+  ];
+
+  const goTo = (route) => {
+    if (!route) return;
+    onClose();
+    router.push(route);
+  };
+
+  return (
+    <>
+      <style>{`
+        @keyframes providerProfileMenuIn {
+          from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
+      <div
+        ref={menuRef}
+        style={{
+          position: "fixed",
+          top: 64,
+          right: 16,
+          width: 320,
+          backgroundColor: "white",
+          borderRadius: 20,
+          boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
+          zIndex: 1000,
+          overflow: "hidden",
+          border: "1px solid #f1f5f9",
+          animation: "providerProfileMenuIn 0.18s ease",
+        }}
+      >
+        <div style={{ padding: "20px 20px 16px", display: "flex", alignItems: "center", gap: 14 }}>
+          <div style={{ width: 56, height: 56, borderRadius: "50%", overflow: "hidden", border: "2.5px solid #22c55e", flexShrink: 0 }}>
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="João Silva" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          </div>
+          <div>
+            <div style={{ fontSize: 17, fontWeight: 800, color: "#0d1b3e", lineHeight: 1.2 }}>João Silva</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
+              <span style={{ fontSize: 12, color: "#64748b", fontWeight: 600 }}>Prestador Verificado</span>
+              <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 17, height: 17, borderRadius: "50%", background: "#22c55e" }}>
+                <Icon name="shield" size={12} color="white" strokeWidth={2.4} />
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ height: 1, backgroundColor: "#f1f5f9", margin: "0 20px" }} />
+
+        <div style={{ padding: "8px 10px" }}>
+          {menuItems.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => goTo(item.route)}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                gap: 14,
+                padding: "13px 12px",
+                borderRadius: 12,
+                border: "none",
+                backgroundColor: "transparent",
+                cursor: item.route ? "pointer" : "default",
+                textAlign: "left",
+                transition: "background 0.15s",
+              }}
+              onMouseEnter={(event) => {
+                event.currentTarget.style.backgroundColor = "#f8fafc";
+              }}
+              onMouseLeave={(event) => {
+                event.currentTarget.style.backgroundColor = "transparent";
+              }}
+            >
+              <Icon name={item.icon} size={20} color="#0d1b3e" strokeWidth={1.8} />
+              <span style={{ fontSize: 14, fontWeight: 600, color: "#0d1b3e" }}>{item.label}</span>
+            </button>
+          ))}
+        </div>
+
+        <div style={{ height: 1, backgroundColor: "#f1f5f9", margin: "0 20px" }} />
+
+        <div style={{ padding: "8px 10px 10px" }}>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+              padding: "13px 12px",
+              borderRadius: 12,
+              border: "none",
+              backgroundColor: "transparent",
+              cursor: "pointer",
+              textAlign: "left",
+              transition: "background 0.15s",
+            }}
+            onMouseEnter={(event) => {
+              event.currentTarget.style.backgroundColor = "#fff1f2";
+            }}
+            onMouseLeave={(event) => {
+              event.currentTarget.style.backgroundColor = "transparent";
+            }}
+          >
+            <Icon name="logOut" size={20} color="#ef4444" strokeWidth={1.8} />
+            <span style={{ fontSize: 14, fontWeight: 600, color: "#ef4444" }}>Sair</span>
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function Tela_inicio_prestador() {
   const router = useRouter();
   const pathname = usePathname();
   const [notifOpen, setNotifOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -530,7 +668,7 @@ export default function Tela_inicio_prestador() {
             />
 
             <div
-              onClick={() => router.push("/Pages/Meu_perfil_prestador")}
+              onClick={() => setProfileOpen((open) => !open)}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -577,6 +715,7 @@ export default function Tela_inicio_prestador() {
               </div>
               <Icon name="chevDown" size={14} color="rgba(255,255,255,0.4)" />
             </div>
+            {profileOpen && <ProfileMenu onClose={() => setProfileOpen(false)} />}
           </div>
         </div>
 
