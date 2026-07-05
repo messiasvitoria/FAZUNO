@@ -300,7 +300,11 @@ export default function DetalhesModal({ onClose, solicitacao }) {
               {/* Ações por status */}
               <div>
                 {status === "Solicitação Enviada" && (
-                  <button className="action-btn" style={{ ...btnBase, background: "#FEF2F2", color: "#DC2626", border: "1.5px solid #FECACA" }}>
+                  <button
+                    className="action-btn"
+                    onClick={() => router.push(`/Pages/Cancelamento_cliente?id=${encodeURIComponent(sol.id)}`)}
+                    style={{ ...btnBase, background: "#FEF2F2", color: "#DC2626", border: "1.5px solid #FECACA" }}
+                  >
                     <i className="ti ti-x" style={{ fontSize: 15 }} /> Cancelar Solicitação
                   </button>
                 )}

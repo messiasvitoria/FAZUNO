@@ -7,7 +7,7 @@ import {
   FaMoneyBillWave, FaCommentDots, FaShieldAlt, FaClipboardList,
   FaRedoAlt, FaHome,
 } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useNotificacoes } from "@/context/NotificacoesContext"; // ← substituído
 import SideBar_cliente from "../../components/SideBar_cliente";
 import TopBar_cliente from "../../components/TopBar_cliente";
@@ -29,6 +29,8 @@ const STEPS_INFO = [
   { id: 5, title: "Status atualizado",      desc: "Solicitação é atualizada para cancelada." },
 ];
 
+const VISIBLE_STEPS = STEPS_INFO.slice(1, 4);
+
 const MOTIVOS = [
   "Mudança de planos",
   "Serviço não é mais necessário",
@@ -37,7 +39,7 @@ const MOTIVOS = [
   "Outro motivo",
 ];
 
-const REQUEST = {
+const DEFAULT_REQUEST = {
   servico: "Instalação elétrica completa",
   prestador: { nome: "João Silva", iniciais: "JS", rating: "4,8", avaliacoes: 128 },
   cliente: { nome: "Brenda Barbosa", iniciais: "BB" },
@@ -46,6 +48,48 @@ const REQUEST = {
   valor: "R$ 350,00",
   canceladoEm: "10/06/2025 às 16:30",
 };
+
+const OPPORTUNITY_REQUEST = {
+  servico: "Reforma de banheiro",
+  prestador: { nome: "Prestador ainda não aceito", iniciais: "OP", rating: "-", avaliacoes: 0 },
+  cliente: { nome: "Isaac", iniciais: "IS" },
+  dataAgendada: "30/05/2025 às 14:00",
+  endereco: "Vila Madalena, São Paulo – SP",
+  valor: "R$ 1.500,00",
+  canceladoEm: "10/06/2025 às 16:30",
+};
+
+const REQUESTS_BY_ID = {
+  "1": {
+    servico: "Instalação de TV",
+    prestador: { nome: "João Silva", iniciais: "JS", rating: "4,8", avaliacoes: 32 },
+    cliente: { nome: "Isaac", iniciais: "IS" },
+    dataAgendada: "20/05/2024 às 14:30",
+    endereco: "Moema, São Paulo – SP",
+    valor: "R$ 180,00",
+    canceladoEm: "10/06/2025 às 16:30",
+  },
+  "5": {
+    servico: "Troca de Tomadas",
+    prestador: { nome: "Ricardo Almeida", iniciais: "RA", rating: "4,7", avaliacoes: 16 },
+    cliente: { nome: "Isaac", iniciais: "IS" },
+    dataAgendada: "08/05/2024 às 11:40",
+    endereco: "Tatuapé, São Paulo – SP",
+    valor: "R$ 120,00",
+    canceladoEm: "10/06/2025 às 16:30",
+  },
+  "6": {
+    servico: "Instalação de Ar-condicionado",
+    prestador: { nome: "Fernanda Lima", iniciais: "FL", rating: "4,9", avaliacoes: 52 },
+    cliente: { nome: "Isaac", iniciais: "IS" },
+    dataAgendada: "05/05/2024 às 13:00",
+    endereco: "Pinheiros, São Paulo – SP",
+    valor: "R$ 280,00",
+    canceladoEm: "10/06/2025 às 16:30",
+  },
+};
+
+let REQUEST = DEFAULT_REQUEST;
 
 function statusStyle(status) {
   const map = {
@@ -56,7 +100,13 @@ function statusStyle(status) {
 }
 
 export default function CancelamentoCliente() {
-  const [step, setStep]           = useState(1);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const tipo = searchParams.get("tipo");
+  REQUEST = REQUESTS_BY_ID[id] || (tipo === "oportunidade" ? OPPORTUNITY_REQUEST : DEFAULT_REQUEST);
+
+  const [step, setStep]           = useState(2);
   const [motivo, setMotivo]       = useState("");
   const [obs, setObs]             = useState("");
   const [notifOpen, setNotifOpen] = useState(true);
@@ -65,7 +115,7 @@ export default function CancelamentoCliente() {
   const irPara = (n) => setStep(n);
 
   const reiniciar = () => {
-    setStep(1);
+    setStep(2);
     setMotivo("");
     setObs("");
     setNotifOpen(true);
@@ -85,7 +135,7 @@ export default function CancelamentoCliente() {
   };
 
   const podeContinuar = motivo !== "";
-  const status        = step >= 6 ? "Cancelada" : "Em andamento";
+  const status        = step >= 4 ? "Cancelada" : "Em andamento";
   const statusColors  = statusStyle(status);
 
   return (
@@ -119,9 +169,6 @@ export default function CancelamentoCliente() {
 
             {/* Cabeçalho */}
             <div style={{ marginBottom: 28 }}>
-              <div style={{ fontFamily: FONTS.heading, fontWeight: 800, fontSize: 14, color: C.orange, letterSpacing: 0.4, textTransform: "uppercase", marginBottom: 6 }}>
-                Fluxo do cliente
-              </div>
               <h1 style={{ fontFamily: FONTS.heading, fontWeight: 700, fontSize: 28, color: C.navy, margin: 0 }}>
                 Cancelamento de solicitação
               </h1>
@@ -132,20 +179,20 @@ export default function CancelamentoCliente() {
 
             {/* Stepper */}
             <div style={{ display: "flex", gap: 4, overflowX: "auto", paddingBottom: 14, marginBottom: 24 }}>
-              {STEPS_INFO.map((s, idx) => {
+              {VISIBLE_STEPS.map((s, idx) => {
                 const isDone    = step > s.id;
                 const isCurrent = step === s.id;
                 return (
                   <div key={s.id} style={{ display: "flex", alignItems: "center", minWidth: 168, flex: 1 }}>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, opacity: isDone || isCurrent ? 1 : 0.55, textAlign: "center" }}>
-                      <div style={{ width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, fontFamily: FONTS.heading, flexShrink: 0, background: isDone ? C.green : isCurrent ? C.orange : C.white, color: isDone || isCurrent ? C.white : C.muted, border: isDone || isCurrent ? "none" : `1.5px solid ${C.border}` }}>
-                        {isDone ? <FaCheckCircle size={13} /> : s.id}
+                      <div style={{ width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, fontFamily: FONTS.heading, flexShrink: 0, background: isDone ? C.green : isCurrent ? C.navy : C.white, color: isDone || isCurrent ? C.white : C.muted, border: isDone || isCurrent ? "none" : `1.5px solid ${C.border}` }}>
+                        {isDone ? <FaCheckCircle size={13} /> : idx + 1}
                       </div>
                       <div style={{ fontSize: 12.5, fontWeight: 700, color: isCurrent ? C.navy : C.muted, fontFamily: FONTS.heading, whiteSpace: "nowrap" }}>
                         {s.title}
                       </div>
                     </div>
-                    {idx < STEPS_INFO.length - 1 && (
+                    {idx < VISIBLE_STEPS.length - 1 && (
                       <div style={{ flex: 1, height: 2, background: isDone ? C.green : C.border, margin: "0 8px", minWidth: 16 }} />
                     )}
                   </div>
@@ -156,11 +203,9 @@ export default function CancelamentoCliente() {
             {/* Conteúdo + sidebar informativa */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 24, alignItems: "start" }}>
               <div key={step} className="cancel-step-anim">
-                {step === 1 && <Step1 status={status} statusColors={statusColors} onCancelar={() => irPara(2)} />}
-                {step === 2 && <Step2 motivo={motivo} setMotivo={setMotivo} obs={obs} setObs={setObs} podeContinuar={podeContinuar} onVoltar={() => irPara(1)} onContinuar={() => irPara(3)} />}
+                {step === 2 && <Step2 motivo={motivo} setMotivo={setMotivo} obs={obs} setObs={setObs} podeContinuar={podeContinuar} onVoltar={() => router.back()} onContinuar={() => irPara(3)} />}
                 {step === 3 && <Step3 motivo={motivo} obs={obs} onVoltar={() => irPara(2)} onConfirmar={confirmarCancelamento} />}
-                {step === 4 && <Step4 motivo={motivo} onContinuar={() => irPara(5)} />}
-                {step === 5 && <Step5 motivo={motivo} statusColors={statusStyle("Cancelada")} onReiniciar={reiniciar} />}
+                {step === 4 && <Step4 motivo={motivo} onContinuar={() => router.push("/Pages/Minhas_Solicitacoes")} />}
               </div>
 
               <Sidebar step={step} />

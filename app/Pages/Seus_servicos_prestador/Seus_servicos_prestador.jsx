@@ -1,5 +1,6 @@
 'use client';
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Briefcase,
   CheckCircle,
@@ -165,6 +166,7 @@ function CategoryBadge({ category }) {
 }
 
 export default function MeusServicos() {
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
@@ -178,7 +180,10 @@ export default function MeusServicos() {
             <h1 className="text-2xl font-bold text-gray-900">Meus Serviços</h1>
             <p className="text-sm text-gray-500 mt-0.5">Gerencie todos os serviços que você oferece na plataforma.</p>
           </div>
-          <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors shadow-sm">
+          <button
+            onClick={() => router.push("/Pages/Tela_CadastroServico_Prestador")}
+            className="flex items-center gap-2 bg-[#06104A] hover:bg-[#0A1663] text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors shadow-sm"
+          >
             <Plus size={16} />
             Novo Serviço
           </button>

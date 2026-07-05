@@ -868,7 +868,8 @@ export default function Oportunidades() {
         }
 
         .op-page {
-          width: 100vw;
+          width: 100%;
+          max-width: 100%;
           min-height: 100vh;
           overflow-x: hidden;
           background: #F7F8FB;

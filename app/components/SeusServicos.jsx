@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
 
 const servicos = [
@@ -9,6 +10,8 @@ const servicos = [
 ];
 
 export default function SeusServicos() {
+  const router = useRouter();
+
   return (
     <div style={{ background: "#fff", borderRadius: 12, border: "0.5px solid rgba(0,0,0,0.10)", padding: "20px 24px", flex: 1, minWidth: 0 }}>
       {/* Header */}
@@ -19,7 +22,10 @@ export default function SeusServicos() {
             12 serviços cadastrados
           </span>
         </div>
-        <button style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, color: "#fff", background: "#1e293b", border: "none", borderRadius: 8, padding: "8px 14px", cursor: "pointer" }}>
+        <button
+          onClick={() => router.push("/Pages/Tela_CadastroServico_Prestador")}
+          style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, color: "#fff", background: "#06104A", border: "none", borderRadius: 8, padding: "8px 14px", cursor: "pointer" }}
+        >
           <FaPlus size={11} /> Adicionar serviço
         </button>
       </div>

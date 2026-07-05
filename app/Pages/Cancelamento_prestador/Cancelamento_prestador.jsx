@@ -18,6 +18,7 @@ import {
   FaClipboardList,
   FaRedoAlt,
 } from "react-icons/fa";
+import { useRouter, useSearchParams } from "next/navigation";
 // ⚠️ Ajuste este caminho relativo conforme a pasta real deste arquivo
 // (lib/notifications.js fica em app/lib/notifications.js)
 import { addNotification } from "../../lib/notifications";
@@ -78,6 +79,8 @@ const STEPS_INFO = [
   },
 ];
 
+const VISIBLE_STEPS = STEPS_INFO.slice(1, 4);
+
 const MOTIVOS = [
   "Indisponibilidade",
   "Problema de agenda",
@@ -86,7 +89,7 @@ const MOTIVOS = [
   "Outro motivo",
 ];
 
-const REQUEST = {
+const DEFAULT_REQUEST = {
   servico: "Instalação elétrica completa",
   prestador: { nome: "João Silva", iniciais: "JE" },
   cliente: {
@@ -101,6 +104,29 @@ const REQUEST = {
   canceladoEm: "10/06/2025 às 16:45",
 };
 
+const REQUESTS_BY_ID = {
+  "2": {
+    servico: "Instalação de chuveiro elétrico",
+    prestador: { nome: "João Silva", iniciais: "JS" },
+    cliente: { nome: "Carlos Mendes", iniciais: "CM", rating: "4,6", avaliacoes: 7 },
+    dataAgendada: "19/05/2024 às 09:15",
+    endereco: "Santo André, São Paulo – SP",
+    valor: "R$ 150,00",
+    canceladoEm: "10/06/2025 às 16:45",
+  },
+  "3": {
+    servico: "Pintura interna de sala",
+    prestador: { nome: "João Silva", iniciais: "JS" },
+    cliente: { nome: "Juliana Oliveira", iniciais: "JO", rating: "5,0", avaliacoes: 18 },
+    dataAgendada: "18/05/2024 às 16:45",
+    endereco: "Moema, São Paulo – SP",
+    valor: "R$ 350,00",
+    canceladoEm: "10/06/2025 às 16:45",
+  },
+};
+
+let REQUEST = DEFAULT_REQUEST;
+
 function statusStyle(status) {
   const map = {
     Aceita: { bg: "#F1ECFF", fg: C.purple },
@@ -113,7 +139,10 @@ function statusStyle(status) {
    Componente
 --------------------------------------------------------- */
 export default function CancelamentoPrestador() {
-  const [step, setStep] = useState(1);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  REQUEST = REQUESTS_BY_ID[searchParams.get("id")] || DEFAULT_REQUEST;
+  const [step, setStep] = useState(2);
   const [motivo, setMotivo] = useState("");
   const [obs, setObs] = useState("");
   const [notifOpen, setNotifOpen] = useState(true);
@@ -121,7 +150,7 @@ export default function CancelamentoPrestador() {
   const irPara = (n) => setStep(n);
 
   const reiniciar = () => {
-    setStep(1);
+    setStep(2);
     setMotivo("");
     setObs("");
     setNotifOpen(true);
@@ -140,14 +169,14 @@ export default function CancelamentoPrestador() {
   };
 
   const podeContinuar = motivo !== "";
-  const status = step >= 6 ? "Cancelada" : "Aceita";
+  const status = step >= 4 ? "Cancelada" : "Aceita";
   const statusColors = statusStyle(status);
 
   return (
     <div
       style={{
-        position: "fixed",
-        inset: 0,
+        width: "100%",
+        minHeight: "100vh",
         overflowY: "auto",
         background: C.bg,
       }}
@@ -170,19 +199,6 @@ export default function CancelamentoPrestador() {
       >
         {/* Cabeçalho */}
         <div style={{ marginBottom: 28 }}>
-          <div
-            style={{
-              fontFamily: FONTS.heading,
-              fontWeight: 800,
-              fontSize: 14,
-              color: C.purple,
-              letterSpacing: 0.4,
-              textTransform: "uppercase",
-              marginBottom: 6,
-            }}
-          >
-            Fluxo do prestador
-          </div>
           <h1
             style={{
               fontFamily: FONTS.heading,
@@ -209,7 +225,7 @@ export default function CancelamentoPrestador() {
             marginBottom: 24,
           }}
         >
-          {STEPS_INFO.map((s, idx) => {
+          {VISIBLE_STEPS.map((s, idx) => {
             const isDone = step > s.id;
             const isCurrent = step === s.id;
 
@@ -247,7 +263,7 @@ export default function CancelamentoPrestador() {
                       background: isDone
                         ? C.green
                         : isCurrent
-                          ? C.purple
+                          ? C.navy
                           : C.white,
                       color: isDone || isCurrent ? C.white : C.muted,
                       border:
@@ -256,7 +272,7 @@ export default function CancelamentoPrestador() {
                           : `1.5px solid ${C.border}`,
                     }}
                   >
-                    {isDone ? <FaCheckCircle size={13} /> : s.id}
+                    {isDone ? <FaCheckCircle size={13} /> : idx + 1}
                   </div>
 
                   <div
@@ -275,7 +291,7 @@ export default function CancelamentoPrestador() {
                   </div>
                 </div>
 
-                {idx < STEPS_INFO.length - 1 && (
+                {idx < VISIBLE_STEPS.length - 1 && (
                   <div
                     style={{
                       flex: 1,
@@ -301,13 +317,6 @@ export default function CancelamentoPrestador() {
           }}
         >
           <div key={step} className="cancel-step-anim-p">
-            {step === 1 && (
-              <Step1
-                status={status}
-                statusColors={statusColors}
-                onCancelar={() => irPara(2)}
-              />
-            )}
             {step === 2 && (
               <Step2
                 motivo={motivo}
@@ -315,7 +324,7 @@ export default function CancelamentoPrestador() {
                 obs={obs}
                 setObs={setObs}
                 podeContinuar={podeContinuar}
-                onVoltar={() => irPara(1)}
+                onVoltar={() => router.back()}
                 onContinuar={() => irPara(3)}
               />
             )}
@@ -328,13 +337,9 @@ export default function CancelamentoPrestador() {
               />
             )}
             {step === 4 && (
-              <Step4 motivo={motivo} onContinuar={() => irPara(5)} />
-            )}
-            {step === 5 && (
-              <Step5
+              <Step4
                 motivo={motivo}
-                statusColors={statusStyle("Cancelada")}
-                onReiniciar={reiniciar}
+                onContinuar={() => router.push("/Pages/Solicitacao_prestador")}
               />
             )}
           </div>

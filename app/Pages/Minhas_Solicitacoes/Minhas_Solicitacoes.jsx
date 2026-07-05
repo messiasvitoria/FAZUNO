@@ -235,7 +235,10 @@ function ActionButton({ type, item, onClick }) {
 
   const handleClick = () => {
     if (type === "cancelar" || type === "cancelar_oportunidade") {
-      router.push("/Pages/Cancelamento_cliente");
+      const params = new URLSearchParams();
+      if (item?.id) params.set("id", String(item.id));
+      if (type === "cancelar_oportunidade") params.set("tipo", "oportunidade");
+      router.push(`/Pages/Cancelamento_cliente${params.toString() ? `?${params.toString()}` : ""}`);
       return;
     }
     if (type === "pagamento") {
@@ -595,7 +598,7 @@ function OpportunityDetailsModal({ oportunidade, initialView = "detalhes", onClo
             ))}
 
             <button
-              onClick={() => router.push("/Pages/Cancelamento_cliente")}
+              onClick={() => router.push(`/Pages/Cancelamento_cliente?id=${encodeURIComponent(oportunidade.id)}&tipo=oportunidade`)}
               style={{ width: "100%", marginTop: 10, padding: "11px 14px", borderRadius: 8, border: "1.5px solid #FECACA", background: "#FEF2F2", color: "#DC2626", fontWeight: 700, cursor: "pointer" }}
             >
               Cancelar oportunidade

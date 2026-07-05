@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import SidebarPrestador from "../../components/Sidebarprestador";
-import TopBarPrestador from "../../components/TopBarPrestador";
+import PrestadorLayout from "../../components/PrestadorLayout";
 import AvailabilityHeader from "../../components/AvailabilityHeader";
 import CalendarGrid from "../../components/CalendarGrid";
 import CalendarToolbar from "../../components/CalendarToolbar";
@@ -64,36 +63,32 @@ export default function TelaCalendarioPrestador() {
   const [activeView, setActiveView] = useState("Semana");
 
   return (
-    <div className="min-h-screen bg-[#F4F6FA] text-[#0A0B2D]">
-      <TopBarPrestador title="Minha Agenda" subtitle="Organize seus atendimentos e disponibilidade." />
-      <div className="flex min-h-[calc(100vh-72px)]">
-        <SidebarPrestador />
-        <main className="min-w-0 flex-1 px-8 py-7">
-          <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
-            <section className="min-w-0">
-              <div className="mb-5">
-                <h1 className="text-4xl font-bold tracking-tight text-[#0A0B2D]">Minha Agenda</h1>
-                <p className="mt-1 text-sm text-gray-500">Segunda-feira, 08 de Junho de 2026</p>
-              </div>
+    <PrestadorLayout title="Minha Agenda" subtitle="Organize seus atendimentos e disponibilidade.">
+      <div className="min-h-screen bg-[#F4F6FA] px-8 py-7 text-[#0A0B2D]">
+        <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+          <section className="min-w-0">
+            <div className="mb-5">
+              <h1 className="text-4xl font-bold tracking-tight text-[#0A0B2D]">Minha Agenda</h1>
+              <p className="mt-1 text-sm text-gray-500">Segunda-feira, 08 de Junho de 2026</p>
+            </div>
 
-              <StatsCards />
+            <StatsCards />
 
-              <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-                <CalendarToolbar activeView={activeView} onViewChange={setActiveView} />
-                <CalendarGrid />
-              </section>
+            <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+              <CalendarToolbar activeView={activeView} onViewChange={setActiveView} />
+              <CalendarGrid />
             </section>
+          </section>
 
-            <aside className="space-y-4">
-              <AvailabilityHeader />
-              <UpcomingServicesPanel />
-              <PendingRequests />
-              <WeeklyAvailability />
-              <QuickActionsPanel />
-            </aside>
-          </div>
-        </main>
+          <aside className="space-y-4">
+            <AvailabilityHeader />
+            <UpcomingServicesPanel />
+            <PendingRequests />
+            <WeeklyAvailability />
+            <QuickActionsPanel />
+          </aside>
+        </div>
       </div>
-    </div>
+    </PrestadorLayout>
   );
 }
