@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-const ME_AVATAR = "https://i.pravatar.cc/150?img=12";
+const ME_AVATAR = "https://randomuser.me/api/portraits/men/32.jpg";
 
 const conversations = [
   { id: 1, name: "Brenda Santos", service: "Instalação elétrica", time: "10:30", preview: "Perfeito! Pode ser amanhã às 9h.", unread: 2, online: true, avatar: "https://i.pravatar.cc/150?img=47", badge: "Cliente • desde Mai/2025" },
@@ -104,8 +104,6 @@ export default function ChatPrestador() {
 
   return (
     <div style={{ display: "flex", height: "100%", fontFamily: "'Inter', sans-serif", background: "#F9FAFB", color: "#111827" }}>
-
-      {/* SIDEBAR */}
       <aside style={{ width: 280, borderRight: "1px solid #E5E7EB", background: "#fff", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "20px 16px 12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>Mensagens</h2>
@@ -155,9 +153,7 @@ export default function ChatPrestador() {
         </div>
       </aside>
 
-      {/* MAIN CHAT */}
       <main style={{ flex: 1, display: "flex", flexDirection: "column", background: "#fff" }}>
-
         <div style={{ padding: "12px 20px", borderBottom: "1px solid #E5E7EB", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <Avatar name={active.name} src={active.avatar} color={active.avatarColor} letter={active.avatarLetter} size={44} online={active.online} />
@@ -246,4 +242,3 @@ export default function ChatPrestador() {
     </div>
   );
 }
-

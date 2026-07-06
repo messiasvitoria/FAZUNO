@@ -3,10 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-const ME_AVATAR = "https://i.pravatar.cc/150?img=47";
+const ME_AVATAR = "/homem1.avif";
 
 const conversations = [
-  { id: 1, name: "João Silva", service: "Instalação elétrica", time: "10:30", preview: "Perfeito! Pode ser amanhã às 9h.", unread: 2, online: true, avatar: "https://i.pravatar.cc/150?img=12" },
+  { id: 1, name: "João Silva", service: "Instalação elétrica", time: "10:30", preview: "Perfeito! Pode ser amanhã às 9h.", unread: 2, online: true, avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
   { id: 2, name: "Ana Diarista", service: "Diarista", time: "Ontem", preview: "Obrigada pela avaliação! Qualquer...", unread: 0, online: false, avatar: "https://i.pravatar.cc/150?img=32" },
   { id: 3, name: "Carlos Pintor", service: "Pintura residencial", time: "Ontem", preview: "Segue as fotos do trabalho concluído.", unread: 1, online: false, avatar: "https://i.pravatar.cc/150?img=53" },
   { id: 4, name: "Mariana Designer", service: "Design de interiores", time: "2 dias", preview: "Vou preparar a proposta e te envio.", unread: 0, online: false, avatar: "https://i.pravatar.cc/150?img=44" },
@@ -67,7 +67,6 @@ export default function ChatCliente() {
         conv.id === existingIncoming.id
           ? {
               ...conv,
-              name: "João Silva",
               service: incomingService || conv.service,
               time: "Agora",
               preview: "Conversa da solicitação selecionada.",
@@ -107,8 +106,6 @@ export default function ChatCliente() {
 
   return (
     <div style={{ display: "flex", height: "100%", fontFamily: "'Inter', sans-serif", background: "#F9FAFB", color: "#111827" }}>
-
-      {/* SIDEBAR */}
       <aside style={{ width: 280, borderRight: "1px solid #E5E7EB", background: "#fff", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "20px 16px 12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>Mensagens</h2>
@@ -158,9 +155,7 @@ export default function ChatCliente() {
         </div>
       </aside>
 
-      {/* MAIN CHAT */}
       <main style={{ flex: 1, display: "flex", flexDirection: "column", background: "#fff" }}>
-
         <div style={{ padding: "12px 20px", borderBottom: "1px solid #E5E7EB", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <Avatar name={active.name} src={active.avatar} color={active.avatarColor} letter={active.avatarLetter} size={44} online={active.online} />
@@ -249,4 +244,3 @@ export default function ChatCliente() {
     </div>
   );
 }
-

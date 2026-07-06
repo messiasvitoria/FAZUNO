@@ -80,6 +80,11 @@ function ProfileMenu({ onClose }) {
     router.push(route);
   };
 
+  const logout = () => {
+    onClose();
+    router.push("/Pages/Login");
+  };
+
   return (
     <>
       <style>{`
@@ -158,7 +163,7 @@ function ProfileMenu({ onClose }) {
         <div style={{ padding: "8px 10px 10px" }}>
           <button
             type="button"
-            onClick={onClose}
+            onClick={logout}
             style={{
               width: "100%",
               display: "flex",
