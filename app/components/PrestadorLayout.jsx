@@ -1,6 +1,6 @@
 "use client";
 
-import SidebarPrestador from "./Sidebarprestador";
+import SidebarPrestador from "./SidebarPrestador";
 import TopBarPrestador from "./TopBarPrestador";
 
 const SIDEBAR_WIDTH = 216;

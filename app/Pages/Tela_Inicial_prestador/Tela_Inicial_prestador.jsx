@@ -37,10 +37,10 @@ const statusStyle = {
 
 // ─── DADOS: Oportunidades para você ─────────────────────────────────
 const oportunidades = [
-  { titulo: "Pintura de apartamento",   local: "Princesinha, Floriano - PI", valor: "R$ 1.200,00", distancia: "2,1 km de distância", icon: FaPaintRoller, iconBg: "#ede9fe", iconColor: "#7c3aed" },
-  { titulo: "Vazamento no banheiro",    local: "Catumbi, Floriano - PI",     valor: "R$ 250,00",    distancia: "3,4 km de distância", icon: FaTint,        iconBg: "#e0f2fe", iconColor: "#0284c7" },
-  { titulo: "Instalação de luminária",  local: "Campo Velho, Floriano - PI", valor: "R$ 180,00",    distancia: "4,2 km de distância", icon: FaBolt,        iconBg: "#fef3c7", iconColor: "#d97706" },
-  { titulo: "Limpeza pós-obra",         local: "Alto da Cruz, Floriano - PI",valor: "R$ 400,00",    distancia: "5,8 km de distância", icon: FaBroom,       iconBg: "#d1fae5", iconColor: "#059669" },
+  { titulo: "Pintura de apartamento",   local: "Princesinha, Floriano - PI", distancia: "2,1 km de distância", icon: FaPaintRoller, iconBg: "#ede9fe", iconColor: "#7c3aed" },
+  { titulo: "Vazamento no banheiro",    local: "Catumbi, Floriano - PI",     distancia: "3,4 km de distância", icon: FaTint,        iconBg: "#e0f2fe", iconColor: "#0284c7" },
+  { titulo: "Instalação de luminária",  local: "Campo Velho, Floriano - PI", distancia: "4,2 km de distância", icon: FaBolt,        iconBg: "#fef3c7", iconColor: "#d97706" },
+  { titulo: "Limpeza pós-obra",         local: "Alto da Cruz, Floriano - PI",distancia: "5,8 km de distância", icon: FaBroom,       iconBg: "#d1fae5", iconColor: "#059669" },
 ];
 
 // ─── DADOS: Agenda de hoje ───────────────────────────────────────────
@@ -201,7 +201,7 @@ export default function Tela_inicio_prestador() {
                         </div>
                         <p style={{ fontWeight: 600, fontSize: 12, color: "#111827", margin: "0 0 2px" }}>{op.titulo}</p>
                         <p style={{ fontSize: 11, color: "#6b7280", margin: "0 0 6px" }}>{op.local}</p>
-                        <p style={{ fontWeight: 700, fontSize: 13, color: "#111827", margin: "0 0 4px" }}>{op.valor}</p>
+                        <p style={{ fontWeight: 700, fontSize: 13, color: "#059669", margin: "0 0 4px" }}>Preço a combinar</p>
                         <p style={{ fontSize: 11, color: "#6b7280", margin: 0, display: "flex", alignItems: "center", gap: 3 }}>
                           <FaMapMarkerAlt size={10} /> {op.distancia}
                         </p>
