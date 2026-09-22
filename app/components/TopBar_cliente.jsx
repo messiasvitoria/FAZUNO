@@ -1,7 +1,12 @@
 "use client";
+<<<<<<< HEAD
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useNotificacoes } from "@/context/NotificacoesContext";
+=======
+
+import { useState, useEffect, useRef } from "react";
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 
 // ─── ICON COMPONENT ──────────────────────────────────────────────────────────
 function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
@@ -14,10 +19,13 @@ function Icon({ name, size = 20, color = "currentColor", strokeWidth = 1.8 }) {
     xIcon:        ["M18 6L6 18", "M6 6l12 12"],
     externalLink: ["M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6", "M15 3h6v6", "M10 14L21 3"],
     clock:        ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", "M12 6v6l4 2"],
+<<<<<<< HEAD
     user:         ["M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2", "M12 11a4 4 0 100-8 4 4 0 000 8z"],
     creditCard:   ["M1 4h22v16H1z", "M1 10h22"],
     heart:        ["M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"],
     logOut:       ["M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4", "M16 17l5-5-5-5", "M21 12H9"],
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   };
 
   const d = paths[name];
@@ -40,7 +48,11 @@ function NotifIcon({ icon, iconColor }) {
 }
 
 // ─── NOTIF DETAIL MODAL ───────────────────────────────────────────────────────
+<<<<<<< HEAD
 function NotifDetailModal({ notif, onClose, onAction }) {
+=======
+function NotifDetailModal({ notif, onClose }) {
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   useEffect(() => {
     const handler = (e) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", handler);
@@ -66,6 +78,10 @@ function NotifDetailModal({ notif, onClose, onAction }) {
         onClick={(e) => e.stopPropagation()}
         style={{ backgroundColor: "white", borderRadius: 24, width: 460, maxWidth: "90vw", boxShadow: "0 32px 80px rgba(0,0,0,0.22)", overflow: "hidden", animation: "modalIn 0.2s ease" }}
       >
+<<<<<<< HEAD
+=======
+        {/* Modal Header */}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         <div style={{ backgroundColor: notif.iconBg, padding: "24px 24px 20px", position: "relative" }}>
           <button
             onClick={onClose}
@@ -87,6 +103,11 @@ function NotifDetailModal({ notif, onClose, onAction }) {
             </div>
           </div>
         </div>
+<<<<<<< HEAD
+=======
+
+        {/* Modal Body */}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         <div style={{ padding: "20px 24px 24px" }}>
           <div style={{ backgroundColor: "#f8fafc", borderRadius: 12, padding: "14px 16px", marginBottom: 16, borderLeft: `3px solid ${notif.iconColor}` }}>
             <p style={{ margin: 0, fontSize: 13, color: "#374151", lineHeight: 1.6 }}>{notif.desc}</p>
@@ -108,7 +129,11 @@ function NotifDetailModal({ notif, onClose, onAction }) {
               Fechar
             </button>
             <button
+<<<<<<< HEAD
               onClick={() => onAction?.(notif)}
+=======
+              onClick={onClose}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
               style={{ flex: 2, padding: "11px 0", borderRadius: 12, border: "none", backgroundColor: content.color, color: "white", fontSize: 13, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
               onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.88")}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
@@ -146,6 +171,7 @@ const allNotifs = [
   { id: 12, icon: "payment", title: "Reembolso Processado",                   desc: "Seu reembolso de R$ 90,00 foi processado e será creditado em até 5 dias úteis.",   time: "Há 5 dias",      sortOrder: 13, unread: false, category: "pagamentos",   iconColor: "#8b5cf6", iconBg: "#ede9fe" },
 ].sort((a, b) => a.sortOrder - b.sortOrder);
 
+<<<<<<< HEAD
 // ─── PROFILE MENU ─────────────────────────────────────────────────────────────
 function ProfileMenu({ onClose, onNavigate, onLogout }) {
   const menuRef = useRef(null);
@@ -302,6 +328,17 @@ export default function TopBar_cliente() {
   const notifRef = useRef(null);
 
   // Close notif dropdown on outside click
+=======
+// ─── TOPBAR COMPONENT ─────────────────────────────────────────────────────────
+export default function TopBar_cliente() {
+  const [notifOpen, setNotifOpen]         = useState(false);
+  const [notifFilter, setNotifFilter]     = useState("todas");
+  const [showAllNotifs, setShowAllNotifs] = useState(false);
+  const [notifs, setNotifs]               = useState(allNotifs);
+  const [selectedNotif, setSelectedNotif] = useState(null);
+  const notifRef = useRef(null);
+
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   useEffect(() => {
     if (!notifOpen) return;
     const handler = (e) => {
@@ -343,6 +380,7 @@ export default function TopBar_cliente() {
     setSelectedNotif(n);
   };
 
+<<<<<<< HEAD
   const handleNavigate = (route) => {
     setProfileOpen(false);
     router.push(route);
@@ -401,11 +439,26 @@ export default function TopBar_cliente() {
               backgroundColor: notifOpen ? "rgba(255,255,255,0.15)" : "transparent",
               cursor: "pointer",
             }}
+=======
+  return (
+    <>
+      {selectedNotif && (
+        <NotifDetailModal notif={selectedNotif} onClose={() => setSelectedNotif(null)} />
+      )}
+
+      <div style={{ height: 56, backgroundColor: "#0d1b3e", display: "flex", alignItems: "center", justifyContent: "flex-end", padding: "0 20px", flexShrink: 0, zIndex: 20, gap: 4 }}>
+        {/* Bell */}
+        <div ref={notifRef} style={{ position: "relative" }}>
+          <button
+            onClick={() => setNotifOpen((o) => !o)}
+            style={{ position: "relative", padding: 8, borderRadius: 8, border: "none", backgroundColor: notifOpen ? "rgba(255,255,255,0.15)" : "transparent", cursor: "pointer" }}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
             onMouseEnter={(e) => { if (!notifOpen) e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)"; }}
             onMouseLeave={(e) => { if (!notifOpen) e.currentTarget.style.backgroundColor = notifOpen ? "rgba(255,255,255,0.15)" : "transparent"; }}
           >
             <Icon name="bell" size={20} color="rgba(255,255,255,0.75)" />
             {unreadCount > 0 && (
+<<<<<<< HEAD
               <span
                 style={{
                   position: "absolute", top: 4, right: 4, width: 16, height: 16,
@@ -413,11 +466,15 @@ export default function TopBar_cliente() {
                   fontSize: 9, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center",
                 }}
               >
+=======
+              <span style={{ position: "absolute", top: 4, right: 4, width: 16, height: 16, borderRadius: "50%", backgroundColor: "#f97316", color: "white", fontSize: 9, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
                 {unreadCount}
               </span>
             )}
           </button>
 
+<<<<<<< HEAD
           {/* Notif Dropdown */}
           {notifOpen && (
             <div
@@ -427,6 +484,12 @@ export default function TopBar_cliente() {
                 overflow: "hidden", border: "1px solid #f1f5f9",
               }}
             >
+=======
+          {/* Dropdown */}
+          {notifOpen && (
+            <div style={{ position: "fixed", top: 60, right: 20, width: 420, backgroundColor: "white", borderRadius: 20, boxShadow: "0 16px 48px rgba(0,0,0,0.18)", zIndex: 999, overflow: "hidden", border: "1px solid #f1f5f9" }}>
+              {/* Header */}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "18px 20px 12px" }}>
                 <div>
                   <h3 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "#0d1b3e" }}>Notificações</h3>
@@ -442,6 +505,10 @@ export default function TopBar_cliente() {
                 </button>
               </div>
 
+<<<<<<< HEAD
+=======
+              {/* Filters */}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
               <div style={{ display: "flex", gap: 6, padding: "0 20px 12px", overflowX: "auto", scrollbarWidth: "none" }}>
                 {filters.map((f, i) => {
                   const key = filterKey(f, i);
@@ -451,6 +518,7 @@ export default function TopBar_cliente() {
                     <button
                       key={f}
                       onClick={() => handleFilterClick(f, i)}
+<<<<<<< HEAD
                       style={{
                         flexShrink: 0, display: "flex", alignItems: "center", gap: 5,
                         padding: "5px 14px", borderRadius: 9999, fontSize: 12, fontWeight: 600,
@@ -458,6 +526,9 @@ export default function TopBar_cliente() {
                         backgroundColor: active ? "#0d1b3e" : "#f1f5f9",
                         color: active ? "white" : "#64748b", transition: "all 0.2s",
                       }}
+=======
+                      style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 5, padding: "5px 14px", borderRadius: 9999, fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none", backgroundColor: active ? "#0d1b3e" : "#f1f5f9", color: active ? "white" : "#64748b", transition: "all 0.2s" }}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
                     >
                       {f}
                       {badge > 0 && (
@@ -470,6 +541,10 @@ export default function TopBar_cliente() {
                 })}
               </div>
 
+<<<<<<< HEAD
+=======
+              {/* List */}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
               <div style={{ maxHeight: showAllNotifs ? 520 : 380, overflowY: "auto", scrollbarWidth: "none", transition: "max-height 0.3s ease" }}>
                 {filteredNotifs.length === 0 ? (
                   <div style={{ padding: "32px 20px", textAlign: "center", color: "#94a3b8", fontSize: 13 }}>Nenhuma notificação aqui.</div>
@@ -478,11 +553,15 @@ export default function TopBar_cliente() {
                     <div
                       key={n.id}
                       onClick={() => handleNotifClick(n)}
+<<<<<<< HEAD
                       style={{
                         display: "flex", alignItems: "flex-start", gap: 14, padding: "14px 20px",
                         borderTop: i > 0 ? "1px solid #f8fafc" : "none",
                         backgroundColor: n.unread ? "#fafbff" : "white", cursor: "pointer", transition: "background 0.15s",
                       }}
+=======
+                      style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "14px 20px", borderTop: i > 0 ? "1px solid #f8fafc" : "none", backgroundColor: n.unread ? "#fafbff" : "white", cursor: "pointer", transition: "background 0.15s" }}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
                       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f1f5f9")}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = n.unread ? "#fafbff" : "white")}
                     >
@@ -503,6 +582,10 @@ export default function TopBar_cliente() {
                 )}
               </div>
 
+<<<<<<< HEAD
+=======
+              {/* Footer */}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
               <div style={{ padding: "12px 20px", borderTop: "1px solid #f1f5f9", textAlign: "center" }}>
                 <button
                   onClick={() => setShowAllNotifs((v) => !v)}
@@ -539,6 +622,7 @@ export default function TopBar_cliente() {
         {/* Divider */}
         <div style={{ width: 1, height: 28, backgroundColor: "rgba(255,255,255,0.2)", margin: "0 8px" }} />
 
+<<<<<<< HEAD
         {/* User — clicável para abrir menu de perfil */}
         <div
           onClick={() => { setProfileOpen((o) => !o); setNotifOpen(false); }}
@@ -551,6 +635,10 @@ export default function TopBar_cliente() {
           onMouseEnter={(e) => { if (!profileOpen) e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)"; }}
           onMouseLeave={(e) => { if (!profileOpen) e.currentTarget.style.backgroundColor = "transparent"; }}
         >
+=======
+        {/* User */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           <div style={{ width: 32, height: 32, borderRadius: "50%", overflow: "hidden", border: "2px solid #f97316", flexShrink: 0 }}>
             <img
               src="/homem1.avif"
@@ -568,4 +656,8 @@ export default function TopBar_cliente() {
       </div>
     </>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b

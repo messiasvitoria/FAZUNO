@@ -1,4 +1,5 @@
 import MeusServicos from './Seus_servicos_prestador'
+<<<<<<< HEAD
 import PrestadorLayout from '../../components/PrestadorLayout'
 
 export default function MeusServicosPage_prestador() {
@@ -8,3 +9,9 @@ export default function MeusServicosPage_prestador() {
     </PrestadorLayout>
   );
 }
+=======
+
+export default function MeusServicosPage_prestador() {
+  return <MeusServicos />;
+}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b

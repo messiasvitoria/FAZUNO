@@ -72,10 +72,19 @@ export default function NewPassword() {
         .eye-btn:hover { opacity: 0.8; }
       `}</style>
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
        <div className="absolute z-20" style={{ top: 24, left: 12 }}>
           <img src="/Logo_branca.png" alt="FazUno" style={{ height: 60, width: "auto" }} />
         </div>
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> b985e188f20250c5cd6fb9e9be22a7b6bec04c60
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       <div
         className="relative w-screen h-screen overflow-hidden flex items-center justify-center"
         style={{ background: "#0A0B2D", fontFamily: "'DM Sans', sans-serif", color: "#E6E6E6" }}
@@ -216,4 +225,8 @@ export default function NewPassword() {
       </div>
     </>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b

@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+<<<<<<< HEAD
 import { useRouter } from "next/navigation";
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 import DetalhesModal from "../Detalhes_solicitacao_prestador/Detalhes_solicitacao_prestador";
 import {
   FaBolt,
@@ -11,6 +14,10 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaClock,
+<<<<<<< HEAD
+=======
+  FaEllipsisV,
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   FaFilter,
   FaHammer,
   FaMapMarkerAlt,
@@ -431,6 +438,12 @@ function RequestCard({ item, index, onAction, onVerDetalhes }) {
               {actionLabel}
             </button>
           )}
+<<<<<<< HEAD
+=======
+          <button type="button" className="sr-more" aria-label="Mais opções">
+            <FaEllipsisV />
+          </button>
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         </div>
       </section>
     </article>
@@ -465,8 +478,11 @@ function SummaryCard({ items }) {
 }
 
 function TipsCard() {
+<<<<<<< HEAD
   const router = useRouter();
 
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   const tips = [
     "Mantenha seu perfil sempre atualizado para receber mais oportunidades.",
     "Responda rápido para aumentar suas chances de ser escolhido.",
@@ -483,11 +499,15 @@ function TipsCard() {
           {tip}
         </p>
       ))}
+<<<<<<< HEAD
       <button
         type="button"
         className="sr-profile-btn"
         onClick={() => router.push("/Pages/Meu_perfil_prestador")}
       >
+=======
+      <button type="button" className="sr-profile-btn">
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         <FaUserAlt />
         Ver meu perfil
       </button>
@@ -495,14 +515,22 @@ function TipsCard() {
   );
 }
 
+<<<<<<< HEAD
 export default function SolicitacoesRecebidas() {
+=======
+export default function Oportunidades() {
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   const [items, setItems] = useState(REQUESTS);
   const [statusFilter, setStatusFilter] = useState("todos");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
+<<<<<<< HEAD
   const [solicitacaoSelecionadaId, setSolicitacaoSelecionadaId] = useState(null);
   const [detalhesKey, setDetalhesKey] = useState(0);
+=======
+  const [solicitacaoSelecionada, setSolicitacaoSelecionada] = useState(null);
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 
   useEffect(() => {
   const transferred = readTransferredOpportunities();
@@ -514,7 +542,11 @@ export default function SolicitacoesRecebidas() {
   const selected = transferred.find((item) => String(item.id) === targetId);
 
   if (selected) {
+<<<<<<< HEAD
     setTimeout(() => setSolicitacaoSelecionadaId(selected.id), 0);
+=======
+    setTimeout(() => setSolicitacaoSelecionada(selected), 0);
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   }
 
   setTimeout(() => {
@@ -528,6 +560,7 @@ export default function SolicitacoesRecebidas() {
   }, 0);
 }, []);
 
+<<<<<<< HEAD
   useEffect(() => {
     const restorePageInteractivity = () => {
       document.body.style.pointerEvents = "";
@@ -545,6 +578,8 @@ export default function SolicitacoesRecebidas() {
     };
   }, []);
 
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   const counts = useMemo(() => {
     return Object.fromEntries(
       Object.keys(STATUS).map((key) => [
@@ -592,6 +627,7 @@ export default function SolicitacoesRecebidas() {
   const safePage = Math.min(currentPage, pageCount);
   const start = (safePage - 1) * ITEMS_PER_PAGE;
   const visibleItems = filteredItems.slice(start, start + ITEMS_PER_PAGE);
+<<<<<<< HEAD
   const solicitacaoSelecionada = useMemo(
     () =>
       solicitacaoSelecionadaId == null
@@ -599,6 +635,8 @@ export default function SolicitacoesRecebidas() {
         : items.find((item) => String(item.id) === String(solicitacaoSelecionadaId)) || null,
     [items, solicitacaoSelecionadaId],
   );
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 
   function updateSearch(value) {
     setSearch(value);
@@ -610,11 +648,19 @@ export default function SolicitacoesRecebidas() {
     setCurrentPage(1);
   }
 
+<<<<<<< HEAD
   function handleAction(id, forcedStatus) {
     setItems((current) =>
       current.map((item) => {
         if (item.id !== id) return item;
         const nextStatus = forcedStatus || getNextStatus(item.status);
+=======
+  function handleAction(id) {
+    setItems((current) =>
+      current.map((item) => {
+        if (item.id !== id) return item;
+        const nextStatus = getNextStatus(item.status);
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         return {
           ...item,
           status: nextStatus,
@@ -626,6 +672,7 @@ export default function SolicitacoesRecebidas() {
   }
 
   function handleVerDetalhes(item) {
+<<<<<<< HEAD
     setDetalhesKey((current) => current + 1);
     setSolicitacaoSelecionadaId(item.id);
   }
@@ -635,6 +682,13 @@ export default function SolicitacoesRecebidas() {
     document.body.style.overflow = "";
     document.documentElement.style.overflow = "";
     setSolicitacaoSelecionadaId(null);
+=======
+    setSolicitacaoSelecionada(item);
+  }
+
+  function handleFecharDetalhes() {
+    setSolicitacaoSelecionada(null);
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   }
 
   return (
@@ -871,7 +925,11 @@ export default function SolicitacoesRecebidas() {
         .sr-card {
           min-height: 142px;
           display: grid;
+<<<<<<< HEAD
           grid-template-columns: minmax(225px, 0.9fr) minmax(310px, 1.18fr) minmax(288px, 0.84fr);
+=======
+          grid-template-columns: minmax(235px, 0.95fr) minmax(330px, 1.15fr) minmax(320px, 0.9fr);
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           gap: 20px;
           padding: 20px 22px;
           border: 1.5px solid #E2E7F0;
@@ -1023,6 +1081,7 @@ export default function SolicitacoesRecebidas() {
           flex-direction: column;
           justify-content: space-between;
           gap: 18px;
+<<<<<<< HEAD
           padding-left: 18px;
           border-left: 1px solid #E7EBF3;
           min-width: 0;
@@ -1032,6 +1091,16 @@ export default function SolicitacoesRecebidas() {
           display: grid;
           grid-template-columns: minmax(0, 1fr) auto;
           align-items: start;
+=======
+          padding-left: 20px;
+          border-left: 1px solid #E7EBF3;
+        }
+
+        .sr-value-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           gap: 14px;
           }
 
@@ -1052,6 +1121,7 @@ export default function SolicitacoesRecebidas() {
         }
 
         .sr-status {
+<<<<<<< HEAD
           width: fit-content;
           min-width: 0;
           min-height: 25px;
@@ -1067,17 +1137,37 @@ export default function SolicitacoesRecebidas() {
           line-height: 1;
           white-space: nowrap;
           justify-self: end;
+=======
+          min-width: 82px;
+          min-height: 33px;
+          padding: 0 14px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px;
+          background: var(--status-bg);
+          color: var(--status-color);
+          font-size: 0.86rem;
+          font-weight: 800;
+          white-space: nowrap;
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         .sr-action-row {
           display: grid;
+<<<<<<< HEAD
           grid-template-columns: minmax(112px, 1fr) minmax(122px, 1fr);
           gap: 8px;
+=======
+          grid-template-columns: 138px minmax(156px, 1fr) 26px;
+          gap: 12px;
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           align-items: center;
         }
 
         .sr-btn {
           height: 40px;
+<<<<<<< HEAD
           padding: 0 12px;
           display: inline-flex;
           align-items: center;
@@ -1089,6 +1179,17 @@ export default function SolicitacoesRecebidas() {
           font-weight: 800;
           line-height: 1.15;
           text-align: center;
+=======
+          padding: 0 16px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          border-radius: 6px;
+          font: inherit;
+          font-size: 0.9rem;
+          font-weight: 800;
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           cursor: pointer;
           transition: transform 0.16s, box-shadow 0.2s, background 0.2s, color 0.2s;
         }
@@ -1112,6 +1213,21 @@ export default function SolicitacoesRecebidas() {
           transform: translateY(-1px);
         }
 
+<<<<<<< HEAD
+=======
+        .sr-more {
+          width: 26px;
+          height: 40px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border: 0;
+          background: transparent;
+          color: #06104A;
+          cursor: pointer;
+        }
+
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         .sr-side {
           display: flex;
           flex-direction: column;
@@ -1292,8 +1408,13 @@ export default function SolicitacoesRecebidas() {
           .sr-client { grid-template-columns: 58px minmax(0, 1fr); }
           .sr-avatar { width: 56px; height: 56px; }
           .sr-action-row { grid-template-columns: 1fr; }
+<<<<<<< HEAD
           .sr-value-row { grid-template-columns: 1fr; }
           .sr-status { justify-self: start; }
+=======
+          .sr-more { width: 100%; border: 1.5px solid #DDE3EE; border-radius: 6px; }
+          .sr-value-row { flex-direction: column; }
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1452,10 +1573,15 @@ export default function SolicitacoesRecebidas() {
 
       {solicitacaoSelecionada && (
         <DetalhesModal
+<<<<<<< HEAD
           key={`${solicitacaoSelecionada.id}-${detalhesKey}`}
           solicitacao={solicitacaoSelecionada}
           onClose={handleFecharDetalhes}
           onStatusChange={handleAction}
+=======
+          solicitacao={solicitacaoSelecionada}
+          onClose={handleFecharDetalhes}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         />
       )}
     </>

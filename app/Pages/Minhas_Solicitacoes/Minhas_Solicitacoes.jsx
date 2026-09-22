@@ -2,6 +2,7 @@
 
 import Sidebar from "../../components/SideBar_cliente";
 import Topbar  from "../../components/TopBar_cliente";
+<<<<<<< HEAD
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import DetalhesModal from "./Modal_Detalhes_Cliente";
@@ -46,6 +47,12 @@ const SAMPLE_INTERESSADOS = [
 const STATUS_CONFIG = {
   "Nova":                  { color: "#F1670F", bg: "#FFF7ED", border: "#FED7AA", label: "NOVA" },
   "Pendente":              { color: "#F1670F", bg: "#FFF7ED", border: "#FED7AA", label: "PENDENTE" },
+=======
+import { useState } from "react";
+import DetalhesModal from "./Modal_Detalhes_Cliente";
+
+const STATUS_CONFIG = {
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   "Solicitação Enviada":  { color: "#2563EB", bg: "#EFF6FF", border: "#BFDBFE", label: "SOLICITAÇÃO ENVIADA" },
   "Em Análise":           { color: "#EA580C", bg: "#FFF7ED", border: "#FED7AA", label: "EM ANÁLISE" },
   "Aceita":               { color: "#7C3AED", bg: "#F5F3FF", border: "#DDD6FE", label: "ACEITA" },
@@ -65,6 +72,7 @@ const SOLICITACOES = [
   { id: 7, prestador: { nome: "Carlos Mendes",   avaliacao: 4.6, avaliacoes: 11, avatar: "CM", avatarColor: "#DC2626", foto: "https://randomuser.me/api/portraits/men/11.jpg"   }, servico: "Conserto de Portão",             descricao: "Reparo no motor do portão automático.",              local: "Santana, São Paulo – SP",      data: "02/05/2024 às 08:30", status: "Cancelada",            statusMsg: "Solicitação cancelada pelo cliente.",                                                          valorLabel: "Valor estimado",    valor: "R$ 200,00", acoes: ["novamente"] },
 ];
 
+<<<<<<< HEAD
 function loadExtraSolicitacoes() {
   if (typeof window === "undefined") return [];
   try {
@@ -127,6 +135,10 @@ const TABS = [
   { label: "Todas",                key: "Todas" },
   { label: "Oportunidades",        key: "Nova" },
   { label: "Pendentes",            key: "Pendente" },
+=======
+const TABS = [
+  { label: "Todas",                key: "Todas" },
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   { label: "Solicitação Enviada",  key: "Solicitação Enviada" },
   { label: "Em Análise",           key: "Em Análise" },
   { label: "Aceita",               key: "Aceita" },
@@ -194,6 +206,7 @@ function StatusBadge({ status }) {
   );
 }
 
+<<<<<<< HEAD
 // ─── ACTION BUTTON com navegação ──────────────────────────────────────────────
 function buildChatUrlFromSolicitacao(item) {
   const params = new URLSearchParams({
@@ -225,6 +238,18 @@ function ActionButton({ type, item, onClick }) {
     cancelar_oportunidade: { label: "Cancelar oportunidade",  style: "danger"  },
   };
 
+=======
+function ActionButton({ type, onClick }) {
+  const configs = {
+    detalhes:  { label: "Ver detalhes",         style: "primary" },
+    conversar: { label: "Conversar",            style: "outline", icon: <ChatIcon /> },
+    pagamento: { label: "Realizar pagamento",   style: "warning" },
+    andamento: { label: "Ver andamento",        style: "outline" },
+    novamente: { label: "Solicitar novamente",  style: "outline" },
+    avaliar:   { label: "Avaliar serviço",      style: "outline" },
+    cancelar:  { label: "Cancelar solicitação", style: "danger" },
+  };
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   const cfg = configs[type] || { label: type, style: "outline" };
   const styles = {
     primary: { background: "#111827", color: "#fff",    border: "1.5px solid #111827" },
@@ -232,6 +257,7 @@ function ActionButton({ type, item, onClick }) {
     outline: { background: "#fff",    color: "#374151", border: "1.5px solid #E5E7EB" },
     danger:  { background: "#FEF2F2", color: "#DC2626", border: "1.5px solid #FECACA" },
   };
+<<<<<<< HEAD
 
   const handleClick = () => {
     if (type === "cancelar" || type === "cancelar_oportunidade") {
@@ -255,6 +281,11 @@ function ActionButton({ type, item, onClick }) {
   return (
     <button
       onClick={handleClick}
+=======
+  return (
+    <button
+      onClick={onClick}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       style={{ ...styles[cfg.style], borderRadius: 8, padding: "8px 14px", fontSize: "0.78rem", fontWeight: 600, fontFamily: "'Sora', sans-serif", cursor: "pointer", transition: "all 0.18s ease", whiteSpace: "nowrap", width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
       onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.82"; }}
       onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
@@ -265,6 +296,7 @@ function ActionButton({ type, item, onClick }) {
   );
 }
 
+<<<<<<< HEAD
 function RatingStars({ value, onChange, size = 26 }) {
   return (
     <div style={{ display: "flex", gap: 6 }}>
@@ -393,11 +425,20 @@ function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
         transition: "box-shadow 0.2s, transform 0.2s",
         position: "relative",
       }}
+=======
+function SolicitacaoCard({ item, delay, onVerDetalhes }) {
+  const statusCfg = STATUS_CONFIG[item.status];
+  return (
+    <div
+      className="card-in"
+      style={{ animationDelay: `${delay}ms`, display: "grid", gridTemplateColumns: "88px 1fr 200px 168px", gap: "0 20px", alignItems: "center", background: "#fff", border: "1px solid #F3F4F6", borderLeft: `4px solid ${statusCfg.color}`, borderRadius: 14, padding: "20px 22px", boxShadow: "0 1px 4px rgba(0,0,0,0.05)", transition: "box-shadow 0.2s, transform 0.2s" }}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 6px 24px rgba(0,0,0,0.09)"; e.currentTarget.style.transform = "translateY(-1px)"; }}
       onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.05)"; e.currentTarget.style.transform = "translateY(0)"; }}
     >
       {/* Coluna 1 — Avatar */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 7 }}>
+<<<<<<< HEAD
         {isOpportunity ? (
           <div style={{ width: 54, height: 54, borderRadius: "50%", background: "#FFF7ED", color: "#F1670F", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Sora', sans-serif", fontWeight: 800, fontSize: "0.9rem", boxShadow: "0 2px 8px rgba(241,103,15,0.14)" }}>
             <FaBullhorn size={22} />
@@ -415,10 +456,22 @@ function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
             </div>
           </>
         )}
+=======
+        <Avatar initials={item.prestador.avatar} color={item.prestador.avatarColor} foto={item.prestador.foto} />
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "#111827", lineHeight: 1.3 }}>{item.prestador.nome}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 3, justifyContent: "center", marginTop: 3 }}>
+            <StarIcon />
+            <span style={{ fontSize: "0.7rem", color: "#92400E", fontWeight: 600 }}>{item.prestador.avaliacao}</span>
+          </div>
+          <div style={{ fontSize: "0.62rem", color: "#9CA3AF", marginTop: 1 }}>({item.prestador.avaliacoes} avaliações)</div>
+        </div>
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       </div>
 
       {/* Coluna 2 — Serviço */}
       <div>
+<<<<<<< HEAD
         {isOpportunity && (
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 8, padding: "4px 9px", borderRadius: 999, background: "#FFF7ED", border: "1px solid #FED7AA", color: "#F1670F", fontSize: "0.62rem", fontWeight: 700, fontFamily: "'Sora', sans-serif", letterSpacing: "0.02em" }}>
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#F1670F" }} />
@@ -431,16 +484,21 @@ function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
             Nova solicitação direta
           </span>
         )}
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         <div style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: "0.98rem", color: "#111827", marginBottom: 3 }}>{item.servico}</div>
         <div style={{ fontSize: "0.78rem", color: "#6B7280", marginBottom: 12 }}>{item.descricao}</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.74rem", color: "#6B7280" }}><LocationIcon /> {item.local}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.74rem", color: "#6B7280" }}><CalendarIcon /> {item.data}</div>
+<<<<<<< HEAD
           {isOpportunity && (
             <div style={{ fontSize: "0.74rem", color: "#F1670F", fontWeight: 700 }}>
               Interessados: {item.interessadosCount || 0} prestadores
             </div>
           )}
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         </div>
       </div>
 
@@ -448,11 +506,14 @@ function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <StatusBadge status={item.status} />
         <p style={{ fontSize: "0.74rem", color: "#6B7280", lineHeight: 1.55, margin: 0 }}>{item.statusMsg}</p>
+<<<<<<< HEAD
         {isClosed && !isOpportunity && (
           <p style={{ fontSize: "0.72rem", color: avaliacao ? "#16A34A" : "#F1670F", lineHeight: 1.45, margin: 0, fontWeight: 700 }}>
             {avaliacao ? "✓ Avaliação enviada" : "Você ainda não avaliou este serviço."}
           </p>
         )}
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       </div>
 
       {/* Coluna 4 — Valor + Ações */}
@@ -462,6 +523,7 @@ function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
           <div style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: "1.05rem", color: "#111827" }}>{item.valor}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%" }}>
+<<<<<<< HEAD
           {actions.map((acao) => (
             <ActionButton
               key={acao}
@@ -475,6 +537,10 @@ function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
                   : () => {}
               }
             />
+=======
+          {item.acoes.map((acao) => (
+            <ActionButton key={acao} type={acao} onClick={acao === "detalhes" ? onVerDetalhes : () => {}} />
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           ))}
         </div>
       </div>
@@ -482,6 +548,7 @@ function SolicitacaoCard({ item, delay, onVerDetalhes, onAvaliar, avaliacao }) {
   );
 }
 
+<<<<<<< HEAD
 function OpportunityDetailsModal({ oportunidade, initialView = "detalhes", onClose }) {
   const router = useRouter();
   const cfg = STATUS_CONFIG[oportunidade.status] || STATUS_CONFIG.Nova;
@@ -610,11 +677,14 @@ function OpportunityDetailsModal({ oportunidade, initialView = "detalhes", onClo
   );
 }
 
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 // ─── PAGE CONTENT ─────────────────────────────────────────────────────────────
 function PageContent() {
   const [activeTab, setActiveTab] = useState("Todas");
   const [search, setSearch]       = useState("");
   const [page, setPage]           = useState(1);
+<<<<<<< HEAD
   const [extraSolicitacoes] = useState(loadExtraSolicitacoes);
   const [solicitacaoSelecionada, setSolicitacaoSelecionada] = useState(() => getInitialOpenSolicitacao(extraSolicitacoes));
   const [opportunityModalView, setOpportunityModalView] = useState("detalhes");
@@ -654,6 +724,21 @@ function PageContent() {
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const paginated  = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
   const getTabCount = (key) => key === "Todas" ? solicitacoes.length : solicitacoes.filter((s) => s.status === key).length;
+=======
+  const [solicitacaoSelecionada, setSolicitacaoSelecionada] = useState(null);
+
+  const PER_PAGE = 6;
+
+  const filtered = SOLICITACOES.filter((s) => {
+    const matchTab    = activeTab === "Todas" || s.status === activeTab;
+    const matchSearch = !search || s.servico.toLowerCase().includes(search.toLowerCase()) || s.prestador.nome.toLowerCase().includes(search.toLowerCase()) || s.status.toLowerCase().includes(search.toLowerCase());
+    return matchTab && matchSearch;
+  });
+
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const paginated  = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const getTabCount = (key) => key === "Todas" ? SOLICITACOES.length : SOLICITACOES.filter((s) => s.status === key).length;
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 
   return (
     <>
@@ -722,6 +807,7 @@ function PageContent() {
               </div>
             ) : (
               paginated.map((item, i) => (
+<<<<<<< HEAD
                 <SolicitacaoCard
                   key={item.id}
                   item={item}
@@ -730,6 +816,9 @@ function PageContent() {
                   onAvaliar={openAvaliacao}
                   onVerDetalhes={(acao) => openDetails(item, acao === "interessados" ? "interessados" : "detalhes")}
                 />
+=======
+                <SolicitacaoCard key={item.id} item={item} delay={i * 55} onVerDetalhes={() => setSolicitacaoSelecionada(item)} />
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
               ))
             )}
           </div>
@@ -754,6 +843,7 @@ function PageContent() {
       </div>
 
       {solicitacaoSelecionada && (
+<<<<<<< HEAD
         solicitacaoSelecionada.tipo === "oportunidade" ? (
           <OpportunityDetailsModal oportunidade={solicitacaoSelecionada} initialView={opportunityModalView} onClose={closeDetails} />
         ) : (
@@ -767,6 +857,9 @@ function PageContent() {
           onClose={() => setAvaliacaoModal(null)}
           onSubmit={saveAvaliacao}
         />
+=======
+        <DetalhesModal solicitacao={solicitacaoSelecionada} onClose={() => setSolicitacaoSelecionada(null)} />
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       )}
     </>
   );
@@ -808,4 +901,8 @@ export default function MinhasSolicitacoes() {
       </div>
     </>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b

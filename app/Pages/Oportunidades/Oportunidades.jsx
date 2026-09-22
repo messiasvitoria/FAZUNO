@@ -44,12 +44,21 @@ const STATUS = {
 const CATEGORY_ICONS = {
   Reformas: <FaHammer />,
   Limpeza: <FaBroom />,
+<<<<<<< HEAD
   "Hidráulica": <FaTint />,
   "Elétrica": <FaBolt />,
   Pintura: <FaPaintRoller />,
   Jardinagem: <FaLeaf />,
   "Ar-condicionado": <FaSnowflake />,
   "Manutenção": <FaTools />,
+=======
+  Hidráulica: <FaTint />,
+  Elétrica: <FaBolt />,
+  Pintura: <FaPaintRoller />,
+  Jardinagem: <FaLeaf />,
+  "Ar-condicionado": <FaSnowflake />,
+  Manutenção: <FaTools />,
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 };
 
 const FILTERS = [
@@ -254,7 +263,11 @@ const DETAIL_STATUS = {
     secondaryIcon: <FaTimes />,
     disabledPrimary: true,
     disabledNotice: "Seu interesse ja foi enviado. Aguarde a resposta do cliente.",
+<<<<<<< HEAD
     disabledMessage: "Seu interesse já foi enviado. Aguarde a resposta do cliente.",
+=======
+    disabledMessage: "Seu interesse jÃ¡ foi enviado. Aguarde a resposta do cliente.",
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   },
   encerrada: {
     badge: "ENCERRADA",
@@ -292,6 +305,7 @@ function writeTransferredOpportunity(item) {
   window.localStorage.setItem(TRANSFERRED_OPPORTUNITIES_KEY, JSON.stringify([item]));
 }
 
+<<<<<<< HEAD
 function buildChatUrl({ nome, tipo = "cliente", servico, id, foto, origem = "oportunidades" }) {
   const params = new URLSearchParams({
     nome: nome || "Contato",
@@ -317,6 +331,8 @@ function buildClientProfileUrl(item) {
   return `/Pages/Perfil_cliente?${params.toString()}`;
 }
 
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 function opportunityToRequest(item) {
   return {
     id: `opp-${item.id}`,
@@ -392,7 +408,11 @@ function FilterButton({ children, active, onClick }) {
   );
 }
 
+<<<<<<< HEAD
 function OpportunityCard({ item, onAccessRequest, onDetails, onPin, onChat }) {
+=======
+function OpportunityCard({ item, onAccessRequest, onDetails, onPin }) {
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   const isAccepted = item.status === "aceita";
   const isPinned = item.pinned || isAccepted;
 
@@ -461,7 +481,11 @@ function OpportunityCard({ item, onAccessRequest, onDetails, onPin, onChat }) {
               <button type="button" className="op-details" onClick={() => onDetails(item)}>
                 Ver detalhes
               </button>
+<<<<<<< HEAD
               <button type="button" className="op-chat" onClick={() => onChat(item)} aria-label="Abrir chat com cliente" title="Chat com cliente">
+=======
+              <button type="button" className="op-chat" aria-label="Abrir chat com cliente" title="Chat com cliente">
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
                 <FaComments />
               </button>
               <PinButton pinned={isPinned} onClick={() => onPin(item.id)} />
@@ -495,7 +519,11 @@ function DetailRow({ icon, label, value }) {
   );
 }
 
+<<<<<<< HEAD
 function OpportunityDetailsModal({ item, onAccessRequest, onClose, onAction, onPin, onChat, onProfile }) {
+=======
+function OpportunityDetailsModal({ item, onAccessRequest, onClose, onAction, onPin }) {
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   const status = DETAIL_STATUS[item.status] || DETAIL_STATUS.nova;
   const [modalNotice, setModalNotice] = useState("");
   const canExpire = item.status === "nova" || item.status === "analise" || item.status === "interesse";
@@ -509,6 +537,13 @@ function OpportunityDetailsModal({ item, onAccessRequest, onClose, onAction, onP
     item.expectations ||
     "Cliente procura um profissional cuidadoso, com disponibilidade no prazo solicitado e comunicacao rapida durante o atendimento.";
   const attachments = item.attachments || ["Fotos do local", "Referencia do servico", "Documento do atendimento"];
+<<<<<<< HEAD
+=======
+  const openMaps = () => {
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.address)}`;
+    window.open(mapsUrl, "_blank", "noopener,noreferrer");
+  };
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   const handlePrimaryAction = () => {
     if (status.disabledPrimary) {
       setModalNotice(status.disabledNotice || status.disabledMessage || "Esta acao nao esta disponivel no momento.");
@@ -542,6 +577,7 @@ function OpportunityDetailsModal({ item, onAccessRequest, onClose, onAction, onP
             {status.badge}
           </span>
           <div className="op-modal-header-actions">
+<<<<<<< HEAD
             <button
               type="button"
               className={`op-modal-pin ${item.pinned ? "op-modal-pin--active" : ""}`}
@@ -551,6 +587,8 @@ function OpportunityDetailsModal({ item, onAccessRequest, onClose, onAction, onP
             >
               <FaThumbtack />
             </button>
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
             <button type="button" aria-label="Mais opções" title="Mais opções">
               <FaEllipsisV />
             </button>
@@ -598,6 +636,7 @@ function OpportunityDetailsModal({ item, onAccessRequest, onClose, onAction, onP
               </div>
             </div>
             <div className="op-quick-actions">
+<<<<<<< HEAD
               <button type="button" onClick={() => onProfile(item)}>
                 <FaUser />
                 Ver Perfil
@@ -606,6 +645,24 @@ function OpportunityDetailsModal({ item, onAccessRequest, onClose, onAction, onP
                 <FaComments />
                 Chat
               </button>
+=======
+              <button type="button">
+                <FaUser />
+                Ver Perfil
+              </button>
+              <button type="button" onClick={openMaps}>
+                <FaMapMarkerAlt />
+                Ver Localização
+              </button>
+              <button type="button">
+                <FaComments />
+                Chat
+              </button>
+              <button type="button" onClick={() => onPin(item.id)}>
+                <FaThumbtack />
+                {item.pinned ? "Fixada" : "Fixar"}
+              </button>
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
             </div>
           </article>
 
@@ -811,6 +868,7 @@ export default function Oportunidades() {
     router.push(`/Pages/Solicitacao_prestador?origem=oportunidades&id=${request.id}`);
   }
 
+<<<<<<< HEAD
   function handleOpenChat(item) {
     router.push(buildChatUrl({
       nome: item.client,
@@ -825,6 +883,8 @@ export default function Oportunidades() {
     router.push(buildClientProfileUrl(item));
   }
 
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   function handleModalAction(item, action) {
     const status = item.status;
 
@@ -868,8 +928,12 @@ export default function Oportunidades() {
         }
 
         .op-page {
+<<<<<<< HEAD
           width: 100%;
           max-width: 100%;
+=======
+          width: 100vw;
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           min-height: 100vh;
           overflow-x: hidden;
           background: #F7F8FB;
@@ -1699,6 +1763,7 @@ export default function Oportunidades() {
           color: #F1670F;
         }
 
+<<<<<<< HEAD
         .op-modal-header-actions .op-modal-pin {
           border: 1.5px solid #E0E3EB;
           background: #FFFFFF;
@@ -1723,6 +1788,8 @@ export default function Oportunidades() {
           color: #FFFFFF;
         }
 
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         .op-details-modal h2 {
           margin: 16px 0 18px;
           color: #0A0B2D;
@@ -2471,7 +2538,10 @@ export default function Oportunidades() {
                     onAccessRequest={handleAccessRequest}
                     onDetails={setSelectedOpportunity}
                     onPin={togglePin}
+<<<<<<< HEAD
                     onChat={handleOpenChat}
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
                   />
                 ))
               ) : (
@@ -2497,8 +2567,11 @@ export default function Oportunidades() {
             onClose={() => setSelectedOpportunity(null)}
             onAction={handleModalAction}
             onPin={togglePin}
+<<<<<<< HEAD
             onChat={handleOpenChat}
             onProfile={handleOpenProfile}
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           />
         )}
 

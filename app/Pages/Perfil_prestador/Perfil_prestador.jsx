@@ -1,7 +1,11 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+<<<<<<< HEAD
 import { useRouter, useSearchParams } from "next/navigation";
 import TodosServicosPrestador from "./Todos_servicos_prestador";
+=======
+import { useRouter } from "next/navigation"; // ← ADICIONADO
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 import {
   FaStar, FaStarHalfAlt, FaRegStar,
   FaMapMarkerAlt, FaCheckCircle,
@@ -9,16 +13,24 @@ import {
   FaHeart, FaRegHeart,
   FaBroom, FaPaintRoller, FaHeartbeat, FaGraduationCap, FaCut,
   FaLaptop, FaEllipsisH, FaExclamationCircle, FaBan,
+<<<<<<< HEAD
   FaWrench, FaBolt, FaFileAlt, FaCalendar,
   FaArrowLeft, FaArrowRight, FaChevronLeft, FaChevronRight,
   FaCommentDots, FaPlug, FaLightbulb, FaTools, FaExclamationTriangle, FaShareAlt,
+=======
+  FaWrench, FaBolt, FaEdit, FaFileAlt, FaCalendar,
+  FaArrowLeft, // ← ADICIONADO
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 } from "react-icons/fa";
 
 const C = {
   navy:    "#06104A",
   band:    "#143660",
   orange:  "#f1670f",
+<<<<<<< HEAD
   purple:  "#7C5CFC",
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   muted:   "#6975A8",
   border:  "#E2E7F0",
   border2: "#DDE3EE",
@@ -32,7 +44,10 @@ const C = {
 
 // ── PADRONIZADO: mesma foto usada no Modal_Detalhes_Cliente ──
 const PHOTO_PROVIDER = "https://randomuser.me/api/portraits/men/32.jpg";
+<<<<<<< HEAD
 const EXTERNAL_DIRECT_SERVICE_KEY = "fazuno_solicitacao_direta_servico_externo";
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 
 // Fotos realistas de eletricista
 const PORTFOLIO_PHOTOS = [
@@ -94,6 +109,7 @@ const PROVIDER = {
   ],
 };
 
+<<<<<<< HEAD
 // ── PADRONIZADO: prévia de "Serviços ofertados" (todas elétricas) ──
 const SERVICES_PREVIEW = [
   { title: "Instalação elétrica residencial",      desc: "Instalações elétricas residenciais e comerciais completas, do projeto à execução.", price: "120,00", Icon: FaBolt,               photo: PORTFOLIO_PHOTOS[0] },
@@ -268,6 +284,8 @@ const PROFILE_BY_PROFESSION = {
   },
 };
 
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 function StarRow({ value }) {
   return (
     <span style={{ display:"inline-flex", gap:2, color:C.star, fontSize:"0.8rem" }}>
@@ -299,6 +317,7 @@ const card = { border:`1.5px solid ${C.border}`, borderRadius:12, background:C.b
 const secTitle = { fontFamily:"'Sora',sans-serif", fontSize:"1rem", fontWeight:700, color:C.navy, marginBottom:18, marginTop:0 };
 
 export default function PerfilPrestador() {
+<<<<<<< HEAD
   const router = useRouter();
   const searchParams = useSearchParams();
   const providerPhoto = searchParams.get("foto") || PHOTO_PROVIDER;
@@ -374,6 +393,16 @@ export default function PerfilPrestador() {
     );
   }
 
+=======
+  const router = useRouter(); // ← ADICIONADO
+  const p = PROVIDER;
+  const [showAll, setShowAll]       = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [skillHover, setSkillHover] = useState(null);
+
+  const visibleReviews = showAll ? p.reviews : p.reviews.slice(0, 2);
+
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   return (
     <>
       <style>{`
@@ -384,7 +413,10 @@ export default function PerfilPrestador() {
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width:6px; height:6px; }
         ::-webkit-scrollbar-thumb { background:#c7cde0; border-radius:99px; }
+<<<<<<< HEAD
         .services-carousel::-webkit-scrollbar { display:none; }
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       `}</style>
 
       <div style={{ fontFamily:"'DM Sans','Segoe UI',sans-serif", background:"#EEF1F8", color:C.navy, position:"fixed", inset:0, overflowY:"auto" }}>
@@ -409,8 +441,13 @@ export default function PerfilPrestador() {
                 <div style={{ width:96, height:96, borderRadius:"50%", border:"3.5px solid rgba(255,255,255,0.5)", overflow:"hidden", boxShadow:"0 4px 20px rgba(0,0,0,0.3)" }}>
                   {/* ── PADRONIZADO: mesma foto do Modal_Detalhes_Cliente ── */}
                   <img
+<<<<<<< HEAD
                     src={providerPhoto}
                     alt={p.name}
+=======
+                    src={PHOTO_PROVIDER}
+                    alt="João Silva"
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
                     style={{ width:"100%", height:"100%", objectFit:"cover" }}
                     onError={e => { e.target.src="https://picsum.photos/seed/electrician42/200/200"; }}
                   />
@@ -447,6 +484,7 @@ export default function PerfilPrestador() {
                 </p>
               </div>
 
+<<<<<<< HEAD
               {/* ── BOTÕES "ENVIAR MENSAGEM" + "FAVORITAR PERFIL" (substituindo "Editar perfil") ── */}
               <div style={{ display:"flex", flexDirection:"column", gap:10, flexShrink:0 }}>
                 <button
@@ -476,6 +514,14 @@ onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; 
                   <FaShareAlt size={13}/> {shared ? "Link copiado" : "Compartilhar perfil"}
                 </button>
               </div>
+=======
+              <button
+                onMouseEnter={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.7)"; e.currentTarget.style.background="rgba(255,255,255,0.08)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; e.currentTarget.style.background="transparent"; }}
+                style={{ height:40, padding:"0 18px", background:"transparent", border:"1.5px solid rgba(255,255,255,0.3)", borderRadius:8, color:"#fff", fontSize:".84rem", fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:7, flexShrink:0, transition:"all 0.15s" }}>
+                <FaEdit size={13}/> Editar perfil
+              </button>
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
             </div>
           </div>
         </div>
@@ -553,6 +599,7 @@ onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; 
             </div>
           </AnimCard>
 
+<<<<<<< HEAD
           {/* ── SERVIÇOS OFERTADOS (carrossel) ── */}
           <AnimCard delay={95} style={{ ...card, marginBottom:20 }}>
             <div style={{ padding:"24px 26px" }}>
@@ -609,6 +656,8 @@ onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; 
             </div>
           </AnimCard>
 
+=======
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           {/* Habilidades + Atendimento */}
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:20 }}>
             <AnimCard delay={100} style={card}>
@@ -687,7 +736,11 @@ onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; 
             </div>
           </AnimCard>
 
+<<<<<<< HEAD
         {/* Avaliações */}
+=======
+          {/* Avaliações */}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           <AnimCard delay={160} style={{ ...card, marginBottom:10 }}>
             <div style={{ padding:"24px 26px" }}>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
@@ -698,11 +751,24 @@ onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; 
               {visibleReviews.map((r,idx) => (
                 <div key={r.id} style={{ padding:"14px 0", borderBottom: idx < visibleReviews.length-1 ? `1px solid ${C.bgLight}` : "none" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:9 }}>
+<<<<<<< HEAD
                     <div style={{ width:42, height:42, borderRadius:"50%", background:C.bgLight, border:`2px solid ${C.border}`, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                       <FaBan style={{ color:C.muted, fontSize:"1rem" }}/>
                     </div>
                     <div>
                       <div style={{ fontFamily:"'Sora',sans-serif", fontSize:".88rem", fontWeight:700, color:C.navy }}>Avaliação anônima</div>
+=======
+                    <div style={{ width:42, height:42, borderRadius:"50%", overflow:"hidden", flexShrink:0, border:`2px solid ${C.border}` }}>
+                      <img
+                        src={AVATAR_PHOTOS[idx % AVATAR_PHOTOS.length]}
+                        alt={r.author}
+                        style={{ width:"100%", height:"100%", objectFit:"cover" }}
+                        onError={e => { e.target.src=`https://picsum.photos/seed/person${idx+1}/80/80`; }}
+                      />
+                    </div>
+                    <div>
+                      <div style={{ fontFamily:"'Sora',sans-serif", fontSize:".88rem", fontWeight:700, color:C.navy }}>{r.author}</div>
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
                       <StarRow value={r.rating}/>
                     </div>
                     <div style={{ fontSize:".74rem", color:C.muted, fontWeight:600, marginLeft:"auto" }}>{r.date}</div>
@@ -722,6 +788,7 @@ onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; 
             </div>
           </AnimCard>
 
+<<<<<<< HEAD
           {/* ── Banner Segurança ── */}
           <div style={{ background:"linear-gradient(130deg,#06104A 0%,#143660 100%)", borderRadius:16, padding:"20px 24px", display:"flex", alignItems:"center", gap:16, position:"relative", overflow:"hidden", marginTop:20 }}>
             <div style={{ position:"absolute", inset:0, pointerEvents:"none", backgroundImage:"radial-gradient(ellipse at 100% 50%, rgba(241,103,15,0.12) 0%, transparent 60%)" }}/>
@@ -771,3 +838,35 @@ onMouseLeave={e => { e.currentTarget.style.borderColor="rgba(255,255,255,0.3)"; 
     </>
   );
 }
+=======
+          <button onClick={() => setReportOpen(true)}
+            onMouseEnter={e => e.currentTarget.style.color=C.red}
+            onMouseLeave={e => e.currentTarget.style.color=C.muted}
+            style={{ display:"flex", alignItems:"center", gap:7, justifyContent:"center", background:"none", border:"none", color:C.muted, fontSize:".78rem", fontWeight:600, cursor:"pointer", padding:"10px 0", margin:"4px auto 0", transition:"color 0.15s" }}>
+            <FaExclamationCircle/> Denunciar este perfil
+          </button>
+        </div>
+
+        {/* ── Modal de denúncia ── */}
+        {reportOpen && (
+          <div onClick={() => setReportOpen(false)} style={{ position:"fixed", inset:0, background:"rgba(6,16,74,0.55)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:60, animation:"ppFadeBg 0.2s ease" }}>
+            <div onClick={e => e.stopPropagation()} style={{ background:C.bg, borderRadius:14, padding:"28px 24px", width:"min(360px,94vw)", boxShadow:"0 24px 60px rgba(6,16,74,0.25)", animation:"ppSlideIn 0.3s ease" }}>
+              <div style={{ fontFamily:"'Sora',sans-serif", fontSize:"1rem", fontWeight:700, color:C.navy, marginBottom:10 }}>Denunciar perfil</div>
+              <p style={{ fontSize:".84rem", color:C.muted, fontWeight:500, marginBottom:18, lineHeight:1.6 }}>Selecione o motivo. Analisaremos e tomaremos as medidas necessárias.</p>
+              {["Informações falsas","Comportamento inadequado","Spam ou fraude","Outro"].map(m => (
+                <button key={m} onClick={() => setReportOpen(false)}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor=C.band; e.currentTarget.style.background="#EFF6FF"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.background="#F8FAFF"; }}
+                  style={{ display:"block", width:"100%", textAlign:"left", background:"#F8FAFF", border:`1.5px solid ${C.border}`, borderRadius:8, padding:"11px 14px", marginBottom:8, fontSize:".84rem", fontWeight:600, color:C.navy, cursor:"pointer", transition:"all 0.15s" }}>
+                  {m}
+                </button>
+              ))}
+              <button onClick={() => setReportOpen(false)} style={{ width:"100%", background:"none", border:"none", color:C.muted, fontSize:".82rem", fontWeight:600, cursor:"pointer", marginTop:6, padding:6 }}>Cancelar</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b

@@ -35,7 +35,11 @@ const navItems = [
   { icon: "home", label: "Início",                   route: "/Pages/Tela_inicial_cliente" },
   { icon: "plus", label: "Abrir novas solicitações", route: "/Pages/Escolha_contratacao" },
   { icon: "list", label: "Minhas solicitações",      route: "/Pages/Minhas_Solicitacoes" },
+<<<<<<< HEAD
   { icon: "chat", label: "Chat",                     route: "/Pages/Chat?perfil=cliente" },
+=======
+  { icon: "chat", label: "Chat",                     route: null },
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 ];
 
 // ─── SIDEBAR ──────────────────────────────────────────────────────────────────
@@ -43,6 +47,7 @@ export default function Sidebar() {
   const router   = useRouter();
   const pathname = usePathname();
 
+<<<<<<< HEAD
   const isActive = (item) => {
     if (!item.route) return false;
     if (item.route === "/Pages/Tela_inicial_cliente") {
@@ -50,6 +55,9 @@ export default function Sidebar() {
     }
     return pathname === item.route;
   };
+=======
+  const isActive = (item) => item.route ? pathname === item.route : false;
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 
   const handleClick = (item) => {
     if (item.route) router.push(item.route);
@@ -60,9 +68,13 @@ export default function Sidebar() {
       style={{
         width: 180,
         minWidth: 180,
+<<<<<<< HEAD
         maxWidth: 180,   
         height: "100vh",
         minHeight: "100vh",
+=======
+        height: "100%",
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         backgroundColor: "#0d1b3e",
         display: "flex",
         flexDirection: "column",
@@ -108,7 +120,11 @@ export default function Sidebar() {
                 padding: "10px 12px",
                 borderRadius: 12,
                 border: "none",
+<<<<<<< HEAD
                 cursor: "pointer",
+=======
+                cursor: item.route ? "pointer" : "default",
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
                 textAlign: "left",
                 width: "100%",
                 backgroundColor: active ? "rgba(255,255,255,0.15)" : "transparent",
@@ -116,7 +132,11 @@ export default function Sidebar() {
                 transition: "all 0.2s",
               }}
               onMouseEnter={(e) => {
+<<<<<<< HEAD
                 if (!active)
+=======
+                if (!active && item.route)
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
                   e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)";
               }}
               onMouseLeave={(e) => {
@@ -141,4 +161,8 @@ export default function Sidebar() {
       </nav>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
