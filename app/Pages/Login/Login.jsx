@@ -22,7 +22,52 @@ function EyeClosedIcon() {
 }
 
 export default function Login() {
+  const router = useRouter();
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const [mensagemErro, setMensagemErro] = useState("");
+  const [carregando, setCarregando] = useState(false);
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    setMensagemErro("");
+
+    if (!username || !password) {
+      setMensagemErro("Preencha o usuário e a senha.");
+      return;
+    }
+
+    setCarregando(true);
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        router.push("/Pages/Tela_de_perfil");
+      } else {
+        setMensagemErro(data.erro || "Usuário ou senha incorretos.");
+      }
+    } catch (err) {
+      setMensagemErro("Erro ao se conectar com o servidor Django.");
+    } finally {
+      setCarregando(false);
+    }
+  }
 
   return (
     <>
@@ -71,21 +116,29 @@ export default function Login() {
 
           {/* Painel direito */}
           <div className="absolute left-[52%] top-0 w-[48%] h-full z-[3] flex items-center justify-center px-10">
-            <div className="w-full max-w-[340px]">
-              {/* ALTERADO: mb-8 para mb-12 para dar mais espaço */}
-              <h1 className="text-[2.2rem] font-bold text-[#E6E6E6] tracking-[-1px] mb-12 leading-none"
+            <form onSubmit={handleLogin} className="w-full max-w-[340px]">
+              <h1 className="text-[2.2rem] font-bold text-[#E6E6E6] tracking-[-1px] mb-8 leading-none"
               style={{ fontFamily: "'Sora', sans-serif" }}>
                 Login
               </h1>
 
-              {/* Campo email */}
+              {/* Alerta de erro */}
+              {mensagemErro && (
+                <div className="mb-4 p-3 rounded-[8px] bg-[rgba(255,77,77,0.15)] border border-[#FF4D4D] text-[#FF4D4D] text-[0.85rem]">
+                  {mensagemErro}
+                </div>
+              )}
+
+              {/* Campo usuário */}
               <div className="mb-4">
                 <label className="block text-[0.78rem] font-medium text-[#DCDCDC] mb-[7px]">
-                  E-mail
+                  Usuário
                 </label>
                 <input
-                  type="email"
-                  placeholder="seu@email.com"
+                  type="text"
+                  placeholder="Digite seu nome de usuário"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="input-neon w-full px-4 py-[13px] bg-[rgba(230,230,230,0.08)] border rounded-[10px] text-[#E6E6E6] outline-none placeholder:text-[rgba(230,230,230,0.3)] transition-all duration-300"
                   style={{ borderColor: "rgba(230,230,230,0.15)", boxSizing: "border-box" }}
                 />
@@ -100,6 +153,8 @@ export default function Login() {
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="input-neon w-full bg-[rgba(230,230,230,0.08)] border rounded-[10px] text-[#E6E6E6] outline-none placeholder:text-[rgba(230,230,230,0.3)] transition-all duration-300"
                     style={{
                       borderColor: "rgba(230,230,230,0.15)",
@@ -131,29 +186,34 @@ export default function Login() {
                 </Link>
               </div>
 
-              {/* Botão */}
-              <Link
-                href="/Pages/Tela_de_perfil"
-                className="w-full py-[14px] bg-[#E6E6E6] text-[#0A0B2D] rounded-[10px] font-semibold flex items-center justify-center"
+              {/* Botão Entrar */}
+              <button
+                type="submit"
+                disabled={carregando}
+                className="w-full py-[14px] bg-[#E6E6E6] text-[#0A0B2D] rounded-[10px] font-semibold flex items-center justify-center cursor-pointer"
                 style={{
-                  textDecoration: "none",
                   border: "1.5px solid transparent",
                   transition: "border 0.2s, box-shadow 0.2s, background 0.2s",
                   boxSizing: "border-box",
+                  opacity: carregando ? 0.7 : 1
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.border = "1.5px solid #E87722";
-                  e.currentTarget.style.boxShadow = "0 0 10px rgba(232,119,34,0.45), 0 0 24px rgba(232,119,34,0.2)";
-                  e.currentTarget.style.background = "#DCDCDC";
+                  if (!carregando) {
+                    e.currentTarget.style.border = "1.5px solid #E87722";
+                    e.currentTarget.style.boxShadow = "0 0 10px rgba(232,119,34,0.45), 0 0 24px rgba(232,119,34,0.2)";
+                    e.currentTarget.style.background = "#DCDCDC";
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.border = "1.5px solid transparent";
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.background = "#E6E6E6";
+                  if (!carregando) {
+                    e.currentTarget.style.border = "1.5px solid transparent";
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.background = "#E6E6E6";
+                  }
                 }}
               >
-                Entrar
-              </Link>
+                {carregando ? "Entrando..." : "Entrar"}
+              </button>
 
               {/* Cadastro */}
               <p className="text-center mt-[22px] text-[0.85rem] text-[rgba(230,230,230,0.4)]">
@@ -166,17 +226,12 @@ export default function Login() {
                   Cadastre-se
                 </Link>
               </p>
-            </div>
+            </form>
           </div>
 
           {/* Rodapé */}
           <div className="absolute bottom-[26px] right-10 text-[0.7rem] text-[rgba(230,230,230,0.25)] text-right z-[5]">
-            <a href="#" className="text-[rgba(230,230,230,0.4)] hover:text-white">
-            </a>
-            {" · "}
-            <a href="#" className="text-[rgba(230,230,230,0.4)] hover:text-white">
-              
-            </a>
+            © 2026
           </div>
         </div>
       </div>

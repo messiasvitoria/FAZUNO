@@ -1,12 +1,20 @@
 "use client";
-import {useState, useRef} from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
+  const router = useRouter();
+
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
+
+  const [mensagemErro, setMensagemErro] = useState("");
+  const [mensagemSucesso, setMensagemSucesso] = useState("");
+  const [carregando, setCarregando] = useState(false);
+
   const btnRef = useRef(null);
 
   function handleRipple(e) {
@@ -32,8 +40,51 @@ export default function Register() {
     circle.addEventListener("animationend", () => circle.remove());
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    setMensagemErro("");
+    setMensagemSucesso("");
+
+    if (!nome || !email || !senha || !confirmarSenha) {
+      setMensagemErro("Preencha todos os campos.");
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
+      setMensagemErro("As senhas não coincidem.");
+      return;
+    }
+
+    setCarregando(true);
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: nome,
+          email: email,
+          password: senha,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMensagemSucesso("Conta criada com sucesso! Redirecionando...");
+        setTimeout(() => {
+          router.push("/Pages/Login");
+        }, 1500);
+      } else {
+        setMensagemErro(data.erro || "Ocorreu um erro ao cadastrar.");
+      }
+    } catch (err) {
+      setMensagemErro("Erro ao se conectar com o servidor Django.");
+    } finally {
+      setCarregando(false);
+    }
   }
 
   const inputBase = {
@@ -134,16 +185,45 @@ export default function Register() {
           <p style={{
             fontSize: "0.85rem",
             color: "rgba(230,230,230,0.5)",
-            marginBottom: 28,
+            marginBottom: 20,
           }}>
             Preencha os campos abaixo para criar sua conta.
           </p>
 
-          <div style={{ marginBottom: 20 }}>
-            <label style={labelStyle}>Nome completo</label>
+          {/* Mensagens de feedback */}
+          {mensagemErro && (
+            <div style={{
+              marginBottom: 16,
+              padding: "12px",
+              borderRadius: "8px",
+              background: "rgba(255, 77, 77, 0.15)",
+              border: "1px solid #FF4D4D",
+              color: "#FF4D4D",
+              fontSize: "0.85rem"
+            }}>
+              {mensagemErro}
+            </div>
+          )}
+
+          {mensagemSucesso && (
+            <div style={{
+              marginBottom: 16,
+              padding: "12px",
+              borderRadius: "8px",
+              background: "rgba(77, 255, 136, 0.15)",
+              border: "1px solid #4DFF88",
+              color: "#4DFF88",
+              fontSize: "0.85rem"
+            }}>
+              {mensagemSucesso}
+            </div>
+          )}
+
+          <div style={{ marginBottom: 16 }}>
+            <label style={labelStyle}>Nome de usuário</label>
             <input
               type="text"
-              placeholder="Digite seu nome completo"
+              placeholder="Digite seu nome de usuário"
               value={nome}
               onChange={(e) => setNome(e.target.value)}
               style={inputBase}
@@ -151,7 +231,7 @@ export default function Register() {
             />
           </div>
 
-          <div style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: 16 }}>
             <label style={labelStyle}>Email</label>
             <input
               type="email"
@@ -163,7 +243,7 @@ export default function Register() {
             />
           </div>
 
-          <div style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: 16 }}>
             <label style={labelStyle}>Senha</label>
             <input
               type="password"
@@ -175,7 +255,7 @@ export default function Register() {
             />
           </div>
 
-          <div style={{ marginBottom: 32 }}>
+          <div style={{ marginBottom: 24 }}>
             <label style={labelStyle}>Confirmar senha</label>
             <input
               type="password"
@@ -187,8 +267,11 @@ export default function Register() {
             />
           </div>
 
-          <Link
-            href="/Pages/Login"
+          <button
+            ref={btnRef}
+            type="submit"
+            disabled={carregando}
+            onClick={handleRipple}
             style={{
               display: "flex",
               alignItems: "center",
@@ -203,23 +286,29 @@ export default function Register() {
               fontWeight: 600,
               letterSpacing: "0.01em",
               cursor: "pointer",
-              textDecoration: "none",
               transition: "background 0.2s, box-shadow 0.2s, border 0.2s",
               boxShadow: "0 4px 20px rgba(230,230,230,0.15)",
+              opacity: carregando ? 0.7 : 1,
+              position: "relative",
+              overflow: "hidden"
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#DCDCDC";
-              e.currentTarget.style.border = "1.5px solid #E87722";
-              e.currentTarget.style.boxShadow = "0 0 10px rgba(232,119,34,0.45), 0 0 24px rgba(232,119,34,0.2)";
+              if (!carregando) {
+                e.currentTarget.style.background = "#DCDCDC";
+                e.currentTarget.style.border = "1.5px solid #E87722";
+                e.currentTarget.style.boxShadow = "0 0 10px rgba(232,119,34,0.45), 0 0 24px rgba(232,119,34,0.2)";
+              }
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#E6E6E6";
-              e.currentTarget.style.border = "1.5px solid transparent";
-              e.currentTarget.style.boxShadow = "0 4px 20px rgba(230,230,230,0.15)";
+              if (!carregando) {
+                e.currentTarget.style.background = "#E6E6E6";
+                e.currentTarget.style.border = "1.5px solid transparent";
+                e.currentTarget.style.boxShadow = "0 4px 20px rgba(230,230,230,0.15)";
+              }
             }}
           >
-            Criar conta
-          </Link>
+            {carregando ? "Criando conta..." : "Criar conta"}
+          </button>
 
           <div style={{ textAlign: "center", marginTop: 24, fontSize: "0.85rem", color: "rgba(230,230,230,0.4)" }}>
             Já tem uma conta?{" "}

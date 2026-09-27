@@ -1,11 +1,16 @@
 "use client";
-import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function ResetPasswordCode() {
+function ResetPasswordCodeContent() {
   const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState("");
+
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email") || "";
   const btnRef = useRef(null);
 
   function handleRipple(e) {
@@ -31,9 +36,46 @@ export default function ResetPasswordCode() {
     circle.addEventListener("animationend", () => circle.remove());
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    router.push('/Pages/Recuperacao_de_senha_nova_senha');
+    setErro("");
+
+    if (!code) {
+      setErro("Por favor, digite o código de verificação.");
+      return;
+    }
+
+    if (!email) {
+      setErro("Sessão inválida. Volte ao início e informe o seu e-mail novamente.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/password-reset/verify/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, code }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Redireciona para o Passo 3 enviando o e-mail e o código validado
+        router.push(
+          `/Pages/Recuperacao_de_senha_nova_senha?email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}`
+        );
+      } else {
+        setErro(data.erro || "Código inválido ou expirado.");
+      }
+    } catch (err) {
+      setErro("Não foi possível conectar ao servidor. Verifique a sua ligação.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -49,9 +91,9 @@ export default function ResetPasswordCode() {
         .reset-btn:hover { border: 1.5px solid #E87722 !important; box-shadow: 0 0 10px rgba(232,119,34,0.45), 0 0 24px rgba(232,119,34,0.2) !important; }
       `}</style>
 
-       <div className="absolute z-20" style={{ top: 24, left: 12 }}>
-          <img src="/Logo_branca.png" alt="FazUno" style={{ height: 60, width: "auto" }} />
-        </div>
+      <div className="absolute z-20" style={{ top: 24, left: 12 }}>
+        <img src="/Logo_branca.png" alt="FazUno" style={{ height: 60, width: "auto" }} />
+      </div>
 
       <div
         className="relative w-screen h-screen overflow-hidden flex items-center justify-center"
@@ -73,9 +115,26 @@ export default function ResetPasswordCode() {
             Digite seu código
           </h1>
 
-          <p style={{ fontSize: "0.85rem", color: "rgba(230,230,230,0.5)", lineHeight: 1.6, marginBottom: 32 }}>
-            Insira o código enviado para o seu email.
+          <p style={{ fontSize: "0.85rem", color: "rgba(230,230,230,0.5)", lineHeight: 1.6, marginBottom: 24 }}>
+            Insira o código enviado para {email ? <strong style={{ color: "#E6E6E6" }}>{email}</strong> : "o seu e-mail"}.
           </p>
+
+          {/* Mensagem de Erro */}
+          {erro && (
+            <div
+              style={{
+                padding: "10px 14px",
+                borderRadius: 8,
+                background: "rgba(239, 68, 68, 0.15)",
+                border: "1px solid rgba(239, 68, 68, 0.4)",
+                color: "#FCA5A5",
+                fontSize: "0.82rem",
+                marginBottom: 20,
+              }}
+            >
+              {erro}
+            </div>
+          )}
 
           {/* Campo de Código */}
           <div style={{ marginBottom: 16 }}>
@@ -86,9 +145,11 @@ export default function ResetPasswordCode() {
               type="text"
               placeholder="Código"
               autoComplete="off"
+              maxLength={6}
               value={code}
               onChange={(e) => setCode(e.target.value)}
               className="reset-input"
+              required
               style={{
                 width: "100%",
                 padding: "13px 16px",
@@ -100,6 +161,7 @@ export default function ResetPasswordCode() {
                 color: "#E6E6E6",
                 transition: "border-color 0.2s, background 0.2s, box-shadow 0.2s",
                 boxSizing: "border-box",
+                letterSpacing: "2px",
               }}
             />
           </div>
@@ -108,6 +170,7 @@ export default function ResetPasswordCode() {
           <button
             type="submit"
             ref={btnRef}
+            disabled={loading}
             onMouseDown={(e) => { handleRipple(e); e.currentTarget.style.transform = "translateY(0)"; }}
             className="w-full relative overflow-hidden reset-btn"
             style={{
@@ -121,23 +184,26 @@ export default function ResetPasswordCode() {
               fontSize: "0.97rem",
               fontWeight: 600,
               letterSpacing: "0.01em",
-              cursor: "pointer",
+              cursor: loading ? "wait" : "pointer",
+              opacity: loading ? 0.7 : 1,
               transition: "background 0.2s, transform 0.15s, box-shadow 0.2s",
               boxShadow: "0 4px 20px rgba(230,230,230,0.15)",
               boxSizing: "border-box",
             }}
             onMouseEnter={(e) => {
+              if (loading) return;
               e.currentTarget.style.background = "#DCDCDC";
               e.currentTarget.style.transform = "translateY(-2px)";
               e.currentTarget.style.boxShadow = "0 8px 28px rgba(230,230,230,0.2)";
             }}
             onMouseLeave={(e) => {
+              if (loading) return;
               e.currentTarget.style.background = "#E6E6E6";
               e.currentTarget.style.transform = "translateY(0)";
               e.currentTarget.style.boxShadow = "0 4px 20px rgba(230,230,230,0.15)";
             }}
           >
-            Confirmar
+            {loading ? "A verificar..." : "Confirmar"}
           </button>
 
           {/* Link Voltar ao Login */}
@@ -155,5 +221,13 @@ export default function ResetPasswordCode() {
         </form>
       </div>
     </>
+  );
+}
+
+export default function ResetPasswordCode() {
+  return (
+    <Suspense fallback={<div style={{ background: "#0A0B2D", minHeight: "100vh" }} />}>
+      <ResetPasswordCodeContent />
+    </Suspense>
   );
 }

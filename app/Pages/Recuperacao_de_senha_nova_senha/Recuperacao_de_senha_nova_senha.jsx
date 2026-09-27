@@ -1,6 +1,6 @@
 "use client";
-import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 function EyeOpenIcon() {
@@ -21,13 +21,20 @@ function EyeClosedIcon() {
   );
 }
 
-export default function NewPassword() {
+function NewPasswordContent() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState("");
+
   const btnRef = useRef(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const email = searchParams.get("email") || "";
+  const code = searchParams.get("code") || "";
 
   function handleRipple(e) {
     const btn = btnRef.current;
@@ -52,9 +59,54 @@ export default function NewPassword() {
     circle.addEventListener("animationend", () => circle.remove());
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    router.push('/Pages/Login');
+    setErro("");
+
+    if (!password || !confirmPassword) {
+      setErro("Por favor, preencha todos os campos.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setErro("As senhas não coincidem.");
+      return;
+    }
+
+    if (!email || !code) {
+      setErro("Sessão expirada. Volte ao início do processo de redefinição.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/password-reset/confirm/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          code,
+          new_password: password,
+          confirm_password: confirmPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Redireciona para o login após alterar a senha com sucesso
+        router.push("/Pages/Login");
+      } else {
+        setErro(data.erro || "Não foi possível redefinir a senha.");
+      }
+    } catch (err) {
+      setErro("Não foi possível conectar ao servidor. Verifique sua conexão.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -72,19 +124,10 @@ export default function NewPassword() {
         .eye-btn:hover { opacity: 0.8; }
       `}</style>
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
-       <div className="absolute z-20" style={{ top: 24, left: 12 }}>
-          <img src="/Logo_branca.png" alt="FazUno" style={{ height: 60, width: "auto" }} />
-        </div>
+      <div className="absolute z-20" style={{ top: 24, left: 12 }}>
+        <img src="/Logo_branca.png" alt="FazUno" style={{ height: 60, width: "auto" }} />
+      </div>
 
-<<<<<<< HEAD
-=======
-=======
->>>>>>> b985e188f20250c5cd6fb9e9be22a7b6bec04c60
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       <div
         className="relative w-screen h-screen overflow-hidden flex items-center justify-center"
         style={{ background: "#0A0B2D", fontFamily: "'DM Sans', sans-serif", color: "#E6E6E6" }}
@@ -105,9 +148,26 @@ export default function NewPassword() {
             Colocar nova senha
           </h1>
 
-          <p style={{ fontSize: "0.85rem", color: "rgba(230,230,230,0.5)", lineHeight: 1.6, marginBottom: 32 }}>
+          <p style={{ fontSize: "0.85rem", color: "rgba(230,230,230,0.5)", lineHeight: 1.6, marginBottom: 24 }}>
             Digite e confirme sua nova senha para concluir a redefinição.
           </p>
+
+          {/* Mensagem de Erro */}
+          {erro && (
+            <div
+              style={{
+                padding: "10px 14px",
+                borderRadius: 8,
+                background: "rgba(239, 68, 68, 0.15)",
+                border: "1px solid rgba(239, 68, 68, 0.4)",
+                color: "#FCA5A5",
+                fontSize: "0.82rem",
+                marginBottom: 20,
+              }}
+            >
+              {erro}
+            </div>
+          )}
 
           {/* Campo de Senha */}
           <div style={{ marginBottom: 16 }}>
@@ -122,6 +182,7 @@ export default function NewPassword() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="reset-input"
+                required
                 style={{
                   width: "100%",
                   padding: "13px 40px 13px 16px",
@@ -154,6 +215,7 @@ export default function NewPassword() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="reset-input"
+                required
                 style={{
                   width: "100%",
                   padding: "13px 40px 13px 16px",
@@ -177,6 +239,7 @@ export default function NewPassword() {
           <button
             type="submit"
             ref={btnRef}
+            disabled={loading}
             onMouseDown={(e) => { handleRipple(e); e.currentTarget.style.transform = "translateY(0)"; }}
             className="w-full relative overflow-hidden reset-btn"
             style={{
@@ -190,23 +253,26 @@ export default function NewPassword() {
               fontSize: "0.97rem",
               fontWeight: 600,
               letterSpacing: "0.01em",
-              cursor: "pointer",
+              cursor: loading ? "wait" : "pointer",
+              opacity: loading ? 0.7 : 1,
               transition: "background 0.2s, transform 0.15s, box-shadow 0.2s",
               boxShadow: "0 4px 20px rgba(230,230,230,0.15)",
               boxSizing: "border-box",
             }}
             onMouseEnter={(e) => {
+              if (loading) return;
               e.currentTarget.style.background = "#DCDCDC";
               e.currentTarget.style.transform = "translateY(-2px)";
               e.currentTarget.style.boxShadow = "0 8px 28px rgba(230,230,230,0.2)";
             }}
             onMouseLeave={(e) => {
+              if (loading) return;
               e.currentTarget.style.background = "#E6E6E6";
               e.currentTarget.style.transform = "translateY(0)";
               e.currentTarget.style.boxShadow = "0 4px 20px rgba(230,230,230,0.15)";
             }}
           >
-            Cadastrar
+            {loading ? "Cadastrando..." : "Cadastrar"}
           </button>
 
           {/* Link Voltar ao Login */}
@@ -225,8 +291,12 @@ export default function NewPassword() {
       </div>
     </>
   );
-<<<<<<< HEAD
 }
-=======
+
+export default function NewPassword() {
+  return (
+    <Suspense fallback={<div style={{ background: "#0A0B2D", minHeight: "100vh" }} />}>
+      <NewPasswordContent />
+    </Suspense>
+  );
 }
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b

@@ -5,6 +5,8 @@ import Link from "next/link";
 
 export default function ResetPassword() {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState("");
   const router = useRouter();
   const btnRef = useRef(null);
 
@@ -31,9 +33,39 @@ export default function ResetPassword() {
     circle.addEventListener("animationend", () => circle.remove());
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    router.push('/Pages/Recuperacao_de_senha_codigo');
+    setErro("");
+
+    if (!email) {
+      setErro("Por favor, digite o seu e-mail.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/password-reset/request/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Redireciona para o próximo passo passando o e-mail na URL
+        router.push(`/Pages/Recuperacao_de_senha_codigo?email=${encodeURIComponent(email)}`);
+      } else {
+        setErro(data.erro || "Ocorreu um erro ao solicitar o código.");
+      }
+    } catch (err) {
+      setErro("Não foi possível conectar ao servidor. Verifique a sua ligação.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -49,9 +81,9 @@ export default function ResetPassword() {
         .reset-btn:hover { border: 1.5px solid #E87722 !important; box-shadow: 0 0 10px rgba(232,119,34,0.45), 0 0 24px rgba(232,119,34,0.2) !important; }
       `}</style>
 
-        <div className="absolute z-20" style={{ top: 24, left: 12 }}>
-          <img src="/Logo_branca.png" alt="FazUno" style={{ height: 60, width: "auto" }} />
-        </div>
+      <div className="absolute z-20" style={{ top: 24, left: 12 }}>
+        <img src="/Logo_branca.png" alt="FazUno" style={{ height: 60, width: "auto" }} />
+      </div>
 
       <div
         className="relative w-screen h-screen overflow-hidden flex items-center justify-center"
@@ -73,9 +105,26 @@ export default function ResetPassword() {
             Redefinir senha
           </h1>
 
-          <p style={{ fontSize: "0.85rem", color: "rgba(230,230,230,0.5)", lineHeight: 1.6, marginBottom: 32 }}>
+          <p style={{ fontSize: "0.85rem", color: "rgba(230,230,230,0.5)", lineHeight: 1.6, marginBottom: 24 }}>
             Digite seu email para receber um código e redefinir sua senha.
           </p>
+
+          {/* Mensagem de Erro */}
+          {erro && (
+            <div
+              style={{
+                padding: "10px 14px",
+                borderRadius: 8,
+                background: "rgba(239, 68, 68, 0.15)",
+                border: "1px solid rgba(239, 68, 68, 0.4)",
+                color: "#FCA5A5",
+                fontSize: "0.82rem",
+                marginBottom: 20,
+              }}
+            >
+              {erro}
+            </div>
+          )}
 
           {/* Campo de Email */}
           <div style={{ marginBottom: 16 }}>
@@ -89,6 +138,7 @@ export default function ResetPassword() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="reset-input"
+              required
               style={{
                 width: "100%",
                 padding: "13px 16px",
@@ -108,6 +158,7 @@ export default function ResetPassword() {
           <button
             type="submit"
             ref={btnRef}
+            disabled={loading}
             onMouseDown={(e) => { handleRipple(e); e.currentTarget.style.transform = "translateY(0)"; }}
             className="w-full relative overflow-hidden reset-btn"
             style={{
@@ -121,23 +172,26 @@ export default function ResetPassword() {
               fontSize: "0.97rem",
               fontWeight: 600,
               letterSpacing: "0.01em",
-              cursor: "pointer",
+              cursor: loading ? "wait" : "pointer",
+              opacity: loading ? 0.7 : 1,
               transition: "background 0.2s, transform 0.15s, box-shadow 0.2s",
               boxShadow: "0 4px 20px rgba(230,230,230,0.15)",
               boxSizing: "border-box",
             }}
             onMouseEnter={(e) => {
+              if (loading) return;
               e.currentTarget.style.background = "#DCDCDC";
               e.currentTarget.style.transform = "translateY(-2px)";
               e.currentTarget.style.boxShadow = "0 8px 28px rgba(230,230,230,0.2)";
             }}
             onMouseLeave={(e) => {
+              if (loading) return;
               e.currentTarget.style.background = "#E6E6E6";
               e.currentTarget.style.transform = "translateY(0)";
               e.currentTarget.style.boxShadow = "0 4px 20px rgba(230,230,230,0.15)";
             }}
           >
-            Confirmar
+            {loading ? "A enviar..." : "Confirmar"}
           </button>
 
           {/* Link Voltar ao Login */}

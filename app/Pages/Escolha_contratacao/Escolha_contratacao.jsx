@@ -1,32 +1,21 @@
 "use client";
 
-<<<<<<< HEAD
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-=======
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 import Sidebar from "../../components/SideBar_cliente";
 import Topbar from "../../components/TopBar_cliente";
 import {
   FaArrowLeft,
   FaArrowRight,
-<<<<<<< HEAD
   FaBolt,
   FaBullhorn,
   FaCalendarAlt,
   FaBroom,
   FaCar,
-=======
-  FaBullhorn,
-  FaCalendarAlt,
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   FaCheck,
   FaCheckCircle,
   FaClipboardList,
   FaClock,
-<<<<<<< HEAD
   FaDesktop,
   FaFilter,
   FaGraduationCap,
@@ -38,22 +27,13 @@ import {
   FaPaintRoller,
   FaRegCheckCircle,
   FaRegHeart,
-=======
-  FaFilter,
-  FaHeart,
-  FaMapMarkerAlt,
-  FaRegCheckCircle,
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   FaSearch,
   FaShareAlt,
   FaShieldAlt,
   FaStar,
-<<<<<<< HEAD
   FaTimes,
   FaTint,
   FaTools,
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   FaUpload,
   FaUserCheck,
   FaUsers,
@@ -94,11 +74,7 @@ const MENU_ITEMS = [
   { icon: "home", label: "Início", route: "/Pages/Tela_inicial_cliente" },
   { icon: "plus", label: "Abrir novas solicitações", route: "/Pages/Escolha_contratacao" },
   { icon: "list", label: "Minhas solicitações", route: "/Pages/Tela_inicial_cliente" },
-<<<<<<< HEAD
   { icon: "chat", label: "Chat", route: "/Pages/Chat?perfil=cliente" },
-=======
-  { icon: "chat", label: "Chat", route: "/Pages/Tela_inicial_cliente" },
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 ];
 
 const DIRECT_STEPS = [
@@ -109,7 +85,6 @@ const DIRECT_STEPS = [
   "Confirmação",
 ];
 
-<<<<<<< HEAD
 const OPPORTUNITY_STEPS = [
   "Publicar oportunidade",
   "Detalhes",
@@ -145,19 +120,6 @@ const DIRECT_CATEGORIES = [
   { label: "Tecnologia", icon: FaDesktop },
   { label: "Automotivo", icon: FaCar },
   { label: "Educação", icon: FaGraduationCap },
-=======
-const DIRECT_CATEGORIES = [
-  { label: "Limpeza", icon: "broom" },
-  { label: "Reformas", icon: "home" },
-  { label: "Elétrica", icon: "zap" },
-  { label: "Hidráulica", icon: "droplet" },
-  { label: "Pintura", icon: "brush" },
-  { label: "Jardinagem", icon: "leaf" },
-  { label: "Montagem", icon: "wrench" },
-  { label: "Beleza", icon: "heart" },
-  { label: "Tecnologia", icon: "monitor" },
-  { label: "Automotivo", icon: "car" },
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 ];
 
 const DIRECT_SERVICES = [
@@ -171,7 +133,6 @@ const DIRECT_SERVICES = [
     distance: "3 km",
     eta: "10 min",
     image: "/foto_encanador.jpg",
-<<<<<<< HEAD
     profilePhoto: "https://randomuser.me/api/portraits/men/32.jpg",
     profileRoute: "/Pages/Perfil_prestador",
     category: "Elétrica",
@@ -186,10 +147,6 @@ const DIRECT_SERVICES = [
     serviceArea: "Vila Madalena, Pinheiros e regiões próximas",
     nextAvailability: "Hoje após 14h",
     completedServices: "124 serviços realizados",
-=======
-    category: "Elétrica",
-    description: "Instalação completa de chuveiro com revisão do ponto elétrico e teste de funcionamento.",
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
     address: "Rua das Flores, 123, Vila Madalena, São Paulo - SP",
   },
   {
@@ -202,7 +159,6 @@ const DIRECT_SERVICES = [
     distance: "5 km",
     eta: "15 min",
     image: "/foto_encanador2.jpg",
-<<<<<<< HEAD
     profilePhoto: "https://randomuser.me/api/portraits/women/32.jpg",
     category: "Hidráulica",
     subcategory: "Torneiras e vazamentos",
@@ -216,10 +172,6 @@ const DIRECT_SERVICES = [
     serviceArea: "Moema, Vila Mariana e região sul",
     nextAvailability: "Hoje após 15h",
     completedServices: "98 serviços realizados",
-=======
-    category: "Hidráulica",
-    description: "Troca ou instalação de torneira com vedação, teste de vazamento e orientação de uso.",
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
     address: "Av. Liberdade, 1120, Moema, São Paulo - SP",
   },
   {
@@ -232,7 +184,6 @@ const DIRECT_SERVICES = [
     distance: "4 km",
     eta: "20 min",
     image: "/foto_eletricista.jpg",
-<<<<<<< HEAD
     profilePhoto: "https://randomuser.me/api/portraits/men/11.jpg",
     category: "Elétrica",
     subcategory: "Tomadas e pontos elétricos",
@@ -246,10 +197,6 @@ const DIRECT_SERVICES = [
     serviceArea: "Consolação, Centro e Bela Vista",
     nextAvailability: "Amanhã pela manhã",
     completedServices: "76 serviços realizados",
-=======
-    category: "Elétrica",
-    description: "Substituição de tomadas, revisão básica da fiação e teste de segurança após a troca.",
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
     address: "Rua Augusta, 450, Consolação, São Paulo - SP",
   },
   {
@@ -262,7 +209,6 @@ const DIRECT_SERVICES = [
     distance: "6 km",
     eta: "30 min",
     image: "/foto_pintora.avif",
-<<<<<<< HEAD
     profilePhoto: "https://randomuser.me/api/portraits/women/65.jpg",
     category: "Reformas",
     subcategory: "Pintura interna",
@@ -478,22 +424,16 @@ const DIRECT_SERVICES = [
     completedServices: "132 servicos realizados",
     address: "Atendimento remoto",
   },
-=======
-    category: "Reformas",
-    description: "Pintura de ambientes internos com acabamento limpo, proteção de móveis e organização final.",
-    address: "Rua Vergueiro, 880, Vila Mariana, São Paulo - SP",
-  },
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 ];
 
 const CONTRACT_FLOW_KEY = "fazuno_tipo_contratacao";
 const DIRECT_STEP_KEY = "fazuno_solicitacao_direta_etapa";
-<<<<<<< HEAD
 const DIRECT_MAX_STEP_KEY = "fazuno_solicitacao_direta_etapa_maxima";
 const DIRECT_SERVICE_KEY = "fazuno_solicitacao_direta_servico";
 const EXTERNAL_DIRECT_SERVICE_KEY = "fazuno_solicitacao_direta_servico_externo";
 const CLIENT_REQUESTS_KEY = "fazuno_minhas_solicitacoes_extra";
 const LAST_CLIENT_REQUEST_KEY = "fazuno_ultima_solicitacao_cliente";
+
 const DEFAULT_DIRECT_SCHEDULE = {
   date: "25/05/2025",
   isoDate: "2025-05-25",
@@ -728,9 +668,6 @@ function savePublishedOpportunity(form) {
   window.sessionStorage.setItem(LAST_CLIENT_REQUEST_KEY, opportunity.id);
   return opportunity;
 }
-=======
-const DIRECT_SERVICE_KEY = "fazuno_solicitacao_direta_servico";
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 
 function getStoredDirectStep() {
   const savedStep = Number(window.sessionStorage.getItem(DIRECT_STEP_KEY));
@@ -738,21 +675,17 @@ function getStoredDirectStep() {
   return Math.min(Math.max(savedStep, 1), DIRECT_STEPS.length);
 }
 
-<<<<<<< HEAD
 function getStoredDirectMaxStep() {
   const savedStep = Number(window.sessionStorage.getItem(DIRECT_MAX_STEP_KEY));
   if (!savedStep) return 1;
   return Math.min(Math.max(savedStep, 1), DIRECT_STEPS.length);
 }
 
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 function getStoredDirectService() {
   const savedServiceId = Number(window.sessionStorage.getItem(DIRECT_SERVICE_KEY));
   return DIRECT_SERVICES.find((service) => service.id === savedServiceId) || DIRECT_SERVICES[0];
 }
 
-<<<<<<< HEAD
 function getExternalDirectService() {
   try {
     const rawService = window.sessionStorage.getItem(EXTERNAL_DIRECT_SERVICE_KEY);
@@ -784,43 +717,6 @@ function normalizeSearch(value) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .trim();
-}
-
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
-function SidebarIcon({ name, size = 17, color = "currentColor", strokeWidth = 2 }) {
-  const paths = {
-    home: ["M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z", "M9 21V12h6v9"],
-    plus: ["M12 5v14", "M5 12h14"],
-    list: ["M8 6h13", "M8 12h13", "M8 18h13", "M3 6h.01", "M3 12h.01", "M3 18h.01"],
-    chat: ["M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"],
-    bell: ["M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9", "M13.73 21a2 2 0 01-3.46 0"],
-    help: ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", "M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3", "M12 17h.01"],
-    settings: ["M12 15a3 3 0 100-6 3 3 0 000 6z", "M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"],
-    chevDown: ["M6 9l6 6 6-6"],
-    droplet: ["M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"],
-    zap: ["M13 2L3 14h9l-1 8 10-12h-9l1-8z"],
-    heart: ["M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"],
-    broom: ["M2 19.5A2.5 2.5 0 014.5 17h15", "M4.5 17l1.5-9h12l1.5 9", "M9 11v6", "M12 11v6", "M15 11v6"],
-    brush: ["M18.37 2.63a2.12 2.12 0 010 3L8.2 15.8l-4 1 1-4L15.37 2.63a2.12 2.12 0 013 0z", "M4 21c3 0 5-1 5-4"],
-    leaf: ["M17 8C8 10 5.9 16.17 3.82 19.56A1 1 0 004.72 21C11.81 17.44 14.83 12.66 17 8z", "M17 8c0 9-9 15-17 7"],
-    wrench: ["M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"],
-    scissors: ["M6 9a3 3 0 100-6 3 3 0 000 6z", "M6 15a3 3 0 100 6 3 3 0 000-6z", "M20 4L8.12 15.88", "M14.47 14.48L20 20", "M8.12 8.12L12 12"],
-    monitor: ["M20 3H4a2 2 0 00-2 2v11a2 2 0 002 2h16a2 2 0 002-2V5a2 2 0 00-2-2z", "M8 21h8", "M12 17v4"],
-    car: ["M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v9a2 2 0 01-2 2h-2", "M17 17m-2 0a2 2 0 104 0 2 2 0 00-4 0", "M7 17m-2 0a2 2 0 104 0 2 2 0 00-4 0"],
-<<<<<<< HEAD
-    book: ["M4 19.5A2.5 2.5 0 016.5 17H20", "M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5z", "M8 6h8", "M8 10h6"],
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
-  };
-
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
-      {paths[name].map((d) => (
-        <path key={d} d={d} />
-      ))}
-    </svg>
-  );
 }
 
 function OptionIllustration({ option }) {
@@ -873,19 +769,13 @@ function OptionCard({ option, selected, onSelect }) {
         </ul>
       </div>
       <button type="button" onClick={() => onSelect(option.key)}>
-<<<<<<< HEAD
         Continuar
         <FaArrowRight />
-=======
-        <FaCheck />
-        Continuar
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       </button>
     </article>
   );
 }
 
-<<<<<<< HEAD
 function StepIndicator({ step, maxStep, onStepClick, steps = DIRECT_STEPS }) {
   return (
     <div className="direct-steps" aria-label="Etapas do fluxo">
@@ -907,20 +797,6 @@ function StepIndicator({ step, maxStep, onStepClick, steps = DIRECT_STEPS }) {
             <span>{done ? <FaCheck /> : stepNumber}</span>
             <p>{label}</p>
           </button>
-=======
-function StepIndicator({ step }) {
-  return (
-    <div className="direct-steps" aria-label="Etapas da solicitação direta">
-      {DIRECT_STEPS.map((label, index) => {
-        const active = step === index + 1;
-        const done = step > index + 1;
-
-        return (
-          <div key={label} className={`direct-step ${active ? "direct-step--active" : ""} ${done ? "direct-step--done" : ""}`}>
-            <span>{done ? <FaCheck /> : index + 1}</span>
-            <p>{label}</p>
-          </div>
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         );
       })}
     </div>
@@ -941,7 +817,6 @@ function MiniServiceCard({ service, onClick }) {
 }
 
 function ProfessionalCard({ service, onDetails, onRequest }) {
-<<<<<<< HEAD
   const profilePhoto = service.profilePhoto || service.image;
   const [isFavorited, setIsFavorited] = useState(false);
 
@@ -1002,55 +877,19 @@ function ProfessionalCard({ service, onDetails, onRequest }) {
         </button>
         <button type="button" className="direct-primary" onClick={onRequest}>
           <FaCalendarAlt />
-=======
-  return (
-    <article className="direct-result-card">
-      <img src={service.image} alt={service.title} />
-      <div className="direct-result-info">
-        <h3>{service.title}</h3>
-        <strong>{service.professional}</strong>
-        <p>
-          <FaStar />
-          {service.rating} ({service.reviews})
-          <span>
-            <FaCheckCircle />
-            Verificado
-          </span>
-        </p>
-        <p>
-          <FaClock />
-          Responde em {service.eta}
-        </p>
-        <p>
-          <FaMapMarkerAlt />
-          {service.distance} de você
-        </p>
-        <small>A partir de {service.price}</small>
-      </div>
-      <div className="direct-result-actions">
-        <button type="button" className="direct-secondary" onClick={onDetails}>
-          Ver perfil
-        </button>
-        <button type="button" className="direct-primary" onClick={onRequest}>
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           Solicitar
         </button>
       </div>
     </article>
   );
 }
-<<<<<<< HEAD
+
 function DirectSearchStep({ onNext, onSelect, onBack, onCategorySelect, initialSearch = "" }) {
   const [searchQuery, setSearchQuery] = useState(initialSearch);
-=======
-
-function DirectSearchStep({ onNext, onSelect, onBack }) {
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   const categoriesRef = useRef(null);
   const scrollCategories = (direction) => {
     categoriesRef.current?.scrollBy({ left: direction * 300, behavior: "smooth" });
   };
-<<<<<<< HEAD
   const normalizedQuery = normalizeSearch(searchQuery);
   const filteredCategories = useMemo(() => {
     if (!normalizedQuery) return DIRECT_CATEGORIES;
@@ -1071,8 +910,6 @@ function DirectSearchStep({ onNext, onSelect, onBack }) {
       return normalizeSearch(searchable).includes(normalizedQuery);
     });
   }, [normalizedQuery]);
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 
   return (
     <section className="direct-panel">
@@ -1085,16 +922,12 @@ function DirectSearchStep({ onNext, onSelect, onBack }) {
 
       <label className="direct-search">
         <FaSearch />
-<<<<<<< HEAD
         <input type="search" placeholder="O que você precisa?" value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} />
         {searchQuery && (
           <button type="button" aria-label="Limpar busca" onClick={() => setSearchQuery("")}>
             <FaTimes />
           </button>
         )}
-=======
-        <input type="search" placeholder="O que você precisa?" />
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       </label>
 
       <div className="direct-section-title">
@@ -1106,7 +939,6 @@ function DirectSearchStep({ onNext, onSelect, onBack }) {
           <FaArrowLeft />
         </button>
         <div className="direct-categories" ref={categoriesRef}>
-<<<<<<< HEAD
           {filteredCategories.map((category) => {
             const CategoryIcon = category.icon;
 
@@ -1132,16 +964,6 @@ function DirectSearchStep({ onNext, onSelect, onBack }) {
               Nenhuma categoria encontrada.
             </div>
           )}
-=======
-          {DIRECT_CATEGORIES.map((category) => (
-            <button key={category.label} type="button">
-              <span>
-                <SidebarIcon name={category.icon} size={18} color="#F1670F" strokeWidth={2} />
-              </span>
-              {category.label}
-            </button>
-          ))}
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         </div>
         <button type="button" className="direct-carousel-arrow" aria-label="Próximas categorias" onClick={() => scrollCategories(1)}>
           <FaArrowRight />
@@ -1153,39 +975,28 @@ function DirectSearchStep({ onNext, onSelect, onBack }) {
       </div>
 
       <div className="direct-mini-list">
-<<<<<<< HEAD
         {filteredPopularServices.map((service) => (
-=======
-        {DIRECT_SERVICES.slice(0, 3).map((service) => (
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           <MiniServiceCard
             key={service.id}
             service={service}
             onClick={() => {
               onSelect(service);
-<<<<<<< HEAD
               onCategorySelect("Todas");
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
               onNext(2);
             }}
           />
         ))}
-<<<<<<< HEAD
         {filteredPopularServices.length === 0 && (
           <div className="direct-empty-results">
             Nenhum serviço encontrado para &quot;{searchQuery}&quot;.
           </div>
         )}
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       </div>
 
     </section>
   );
 }
 
-<<<<<<< HEAD
 function DirectResultsStep({ onBack, onDetails, onRequest, initialCategory = "Todas", initialSearch = "" }) {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(initialSearch);
@@ -1234,9 +1045,6 @@ function DirectResultsStep({ onBack, onDetails, onRequest, initialCategory = "To
     setSortFilter("relevancia");
   }
 
-=======
-function DirectResultsStep({ onBack, onDetails, onRequest }) {
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   return (
     <section className="direct-panel">
       <div className="direct-panel-header">
@@ -1247,7 +1055,6 @@ function DirectResultsStep({ onBack, onDetails, onRequest }) {
       </div>
 
       <div className="direct-result-top">
-<<<<<<< HEAD
         <p>{filteredServices.length} serviços encontrados</p>
         <button type="button" className={filtersOpen ? "direct-filter-trigger direct-filter-trigger--active" : "direct-filter-trigger"} onClick={() => setFiltersOpen((open) => !open)}>
           <FaFilter />
@@ -1309,17 +1116,6 @@ function DirectResultsStep({ onBack, onDetails, onRequest }) {
 
       <div className="direct-results">
         {filteredServices.map((service) => (
-=======
-        <p>{DIRECT_SERVICES.length * 42} serviços encontrados</p>
-        <button type="button">
-          <FaFilter />
-          Filtrar
-        </button>
-      </div>
-
-      <div className="direct-results">
-        {DIRECT_SERVICES.map((service) => (
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           <ProfessionalCard
             key={service.id}
             service={service}
@@ -1327,29 +1123,23 @@ function DirectResultsStep({ onBack, onDetails, onRequest }) {
             onRequest={() => onRequest(service)}
           />
         ))}
-<<<<<<< HEAD
         {filteredServices.length === 0 && (
           <div className="direct-empty-results">
             Nenhum serviço encontrado com esses filtros.
           </div>
         )}
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       </div>
     </section>
   );
 }
 
 function DirectDetailsStep({ service, onBack, onRequest }) {
-<<<<<<< HEAD
   const router = useRouter();
   const [isFavorited, setIsFavorited] = useState(false);
   const included = service.included || ["Execução do serviço", "Orientação inicial", "Teste de qualidade"];
   const excluded = service.excluded || ["Materiais adicionais", "Serviços fora do combinado"];
   const profilePhoto = service.profilePhoto || service.image;
 
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   return (
     <section className="direct-panel direct-panel--details">
       <div className="direct-detail-media">
@@ -1361,7 +1151,6 @@ function DirectDetailsStep({ service, onBack, onRequest }) {
           <button type="button" aria-label="Compartilhar">
             <FaShareAlt />
           </button>
-<<<<<<< HEAD
           <button
             type="button"
             className={isFavorited ? "is-favorited" : ""}
@@ -1370,17 +1159,12 @@ function DirectDetailsStep({ service, onBack, onRequest }) {
             onClick={() => setIsFavorited((current) => !current)}
           >
             {isFavorited ? <FaHeart /> : <FaRegHeart />}
-=======
-          <button type="button" aria-label="Favoritar">
-            <FaHeart />
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           </button>
         </div>
         <span>{service.category}</span>
       </div>
 
       <div className="direct-detail-content">
-<<<<<<< HEAD
         <div className="direct-service-heading">
           <div>
             <p>{service.category} / {service.subcategory}</p>
@@ -1411,19 +1195,10 @@ function DirectDetailsStep({ service, onBack, onRequest }) {
         </div>
 
         <p className="direct-service-description">{service.description}</p>
-=======
-        <h2>{service.title}</h2>
-        <strong>{service.professional}</strong>
-        <p className="direct-rating">
-          <FaStar />
-          {service.rating} ({service.reviews} avaliações)
-        </p>
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 
         <div className="direct-badges">
           <span>
             <FaCheckCircle />
-<<<<<<< HEAD
             {service.chargingType}
           </span>
           <span>{service.attendanceMode}</span>
@@ -1483,46 +1258,6 @@ function DirectDetailsStep({ service, onBack, onRequest }) {
           </div>
         </div>
 
-=======
-            Verificado
-          </span>
-          <span>Prestador destaque</span>
-        </div>
-
-        <div className="direct-detail-facts">
-          <p>
-            <FaClock />
-            Responde em {service.eta}
-          </p>
-          <p>
-            <FaMapMarkerAlt />
-            {service.distance} de você
-          </p>
-          <p>
-            <FaCheckCircle />
-            Disponível hoje
-          </p>
-          <p>
-            <FaCalendarAlt />
-            Próximo horário: hoje após 14h
-          </p>
-          <p>
-            <FaShieldAlt />
-            124 serviços realizados
-          </p>
-        </div>
-
-        {["Sobre o serviço", "O que está incluso", "O que não está incluso", "Perguntas frequentes"].map((item) => (
-          <button key={item} type="button" className="direct-detail-row">
-            {item}
-            <FaArrowRight />
-          </button>
-        ))}
-
-        <button type="button" className="direct-wide-secondary">
-          Ver perfil completo
-        </button>
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         <button type="button" className="direct-wide-primary" onClick={onRequest}>
           Solicitar serviço
         </button>
@@ -1531,7 +1266,6 @@ function DirectDetailsStep({ service, onBack, onRequest }) {
   );
 }
 
-<<<<<<< HEAD
 function ProviderCalendarModal({ schedule, onClose, onConfirm }) {
   const initialDate = new Date(`${schedule.isoDate}T12:00:00`);
   const [visibleMonth, setVisibleMonth] = useState(new Date(initialDate.getFullYear(), initialDate.getMonth(), 1));
@@ -1663,9 +1397,6 @@ function DirectFormStep({ service, onBack, onConfirm }) {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [schedule, setSchedule] = useState(DEFAULT_DIRECT_SCHEDULE);
 
-=======
-function DirectFormStep({ service, onBack, onConfirm }) {
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   return (
     <section className="direct-panel direct-panel--form">
       <div className="direct-panel-header">
@@ -1685,7 +1416,6 @@ function DirectFormStep({ service, onBack, onConfirm }) {
         </label>
         <label>
           Data desejada
-<<<<<<< HEAD
           <button type="button" className="direct-input-wrap direct-schedule-trigger" onClick={() => setCalendarOpen(true)}>
             <span>{schedule.date}</span>
             <FaCalendarAlt />
@@ -1700,33 +1430,6 @@ function DirectFormStep({ service, onBack, onConfirm }) {
         </label>
       </div>
 
-=======
-          <span className="direct-input-wrap">
-            <input defaultValue="25/05/2025" />
-            <FaCalendarAlt />
-          </span>
-        </label>
-        <label>
-          Horário desejado
-          <select defaultValue="manha">
-            <option value="manha">Manhã (08h - 12h)</option>
-            <option value="tarde">Tarde (13h - 18h)</option>
-            <option value="noite">Noite (18h - 21h)</option>
-          </select>
-        </label>
-      </div>
-
-      <fieldset className="direct-urgency">
-        <legend>Urgência</legend>
-        {["Hoje", "Até 3 dias", "Esta semana", "Sem pressa"].map((item, index) => (
-          <label key={item}>
-            <input type="radio" name="urgency" defaultChecked={index === 0} />
-            {item}
-          </label>
-        ))}
-      </fieldset>
-
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       <label className="direct-textarea">
         Descrição do serviço
         <textarea maxLength={500} placeholder="Descreva mais detalhes sobre sua necessidade..." />
@@ -1745,7 +1448,6 @@ function DirectFormStep({ service, onBack, onConfirm }) {
         </div>
       </div>
 
-<<<<<<< HEAD
       <button type="button" className="direct-wide-primary" onClick={() => onConfirm(schedule)}>
         Continuar
       </button>
@@ -1760,22 +1462,13 @@ function DirectFormStep({ service, onBack, onConfirm }) {
           }}
         />
       )}
-=======
-      <button type="button" className="direct-wide-primary" onClick={onConfirm}>
-        Continuar
-      </button>
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
     </section>
   );
 }
 
-<<<<<<< HEAD
 function DirectConfirmationStep({ service, schedule, request, onHome, onViewRequests }) {
   const requestId = request?.id || `SOL-2025-${String(service.id).padStart(6, "0")}`;
 
-=======
-function DirectConfirmationStep({ service, onHome }) {
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   return (
     <section className="direct-panel direct-panel--success">
       <div className="direct-success-icon">
@@ -1797,28 +1490,17 @@ function DirectConfirmationStep({ service, onHome }) {
           </div>
           <div>
             <dt>Data</dt>
-<<<<<<< HEAD
             <dd>{schedule.date} às {schedule.time}</dd>
-=======
-            <dd>25/05/2025 - Manhã</dd>
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           </div>
           <div>
             <dt>Endereço</dt>
             <dd>{service.address}</dd>
           </div>
         </dl>
-<<<<<<< HEAD
         <strong>#{requestId}</strong>
       </div>
 
       <button type="button" className="direct-wide-primary" onClick={() => onViewRequests(requestId)}>
-=======
-        <strong>#SOL-2025-000123</strong>
-      </div>
-
-      <button type="button" className="direct-wide-primary">
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         Ver minhas solicitações
       </button>
       <button type="button" className="direct-link-button" onClick={onHome}>
@@ -1828,7 +1510,6 @@ function DirectConfirmationStep({ service, onHome }) {
   );
 }
 
-<<<<<<< HEAD
 function OpportunityBasicStep({ form, setForm, onBack, onNext }) {
   return (
     <section className="direct-panel direct-panel--form">
@@ -2090,9 +1771,6 @@ function DirectSolicitationFlow({
   onHome,
   onViewRequests,
 }) {
-=======
-function DirectSolicitationFlow({ step, service, setStep, setService, onBack, onHome }) {
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   const selectedService = service || DIRECT_SERVICES[0];
 
   return (
@@ -2108,7 +1786,6 @@ function DirectSolicitationFlow({ step, service, setStep, setService, onBack, on
         </div>
       </div>
 
-<<<<<<< HEAD
       <StepIndicator step={step} maxStep={maxStep} onStepClick={setStep} />
 
       <div className="direct-step-shell">
@@ -2118,15 +1795,6 @@ function DirectSolicitationFlow({ step, service, setStep, setService, onBack, on
             onBack={() => setStep(1)}
             initialCategory={categoryFilter}
             initialSearch={initialSearch}
-=======
-      <StepIndicator step={step} />
-
-      <div className="direct-step-shell">
-        {step === 1 && <DirectSearchStep onNext={setStep} onSelect={setService} onBack={onBack} />}
-        {step === 2 && (
-          <DirectResultsStep
-            onBack={() => setStep(1)}
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
             onDetails={(nextService) => {
               setService(nextService);
               setStep(3);
@@ -2138,7 +1806,6 @@ function DirectSolicitationFlow({ step, service, setStep, setService, onBack, on
           />
         )}
         {step === 3 && <DirectDetailsStep service={selectedService} onBack={() => setStep(2)} onRequest={() => setStep(4)} />}
-<<<<<<< HEAD
         {step === 4 && <DirectFormStep service={selectedService} onBack={() => setStep(3)} onConfirm={onScheduleConfirm} />}
         {step === 5 && (
           <DirectConfirmationStep
@@ -2149,10 +1816,6 @@ function DirectSolicitationFlow({ step, service, setStep, setService, onBack, on
             onViewRequests={onViewRequests}
           />
         )}
-=======
-        {step === 4 && <DirectFormStep service={selectedService} onBack={() => setStep(3)} onConfirm={() => setStep(5)} />}
-        {step === 5 && <DirectConfirmationStep service={selectedService} onHome={onHome} />}
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
       </div>
     </div>
   );
@@ -2160,15 +1823,11 @@ function DirectSolicitationFlow({ step, service, setStep, setService, onBack, on
 
 export default function EscolhaContratacao() {
   const router = useRouter();
-<<<<<<< HEAD
   const searchParams = useSearchParams();
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   const [storageReady, setStorageReady] = useState(false);
   const [selected, setSelected] = useState("");
   const [flow, setFlow] = useState("choice");
   const [directStep, setDirectStep] = useState(1);
-<<<<<<< HEAD
   const [maxDirectStep, setMaxDirectStep] = useState(1);
   const [selectedService, setSelectedService] = useState(DIRECT_SERVICES[0]);
   const [directCategoryFilter, setDirectCategoryFilter] = useState("Todas");
@@ -2203,44 +1862,30 @@ export default function EscolhaContratacao() {
       return;
     }
 
-=======
-  const [selectedService, setSelectedService] = useState(DIRECT_SERVICES[0]);
-
-  useEffect(() => {
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
     const savedFlow = window.sessionStorage.getItem(CONTRACT_FLOW_KEY);
 
     if (savedFlow === "direta") {
       setSelected("direta");
       setFlow("direta");
       setDirectStep(getStoredDirectStep());
-<<<<<<< HEAD
       setMaxDirectStep(Math.max(getStoredDirectStep(), getStoredDirectMaxStep()));
       setSelectedService(getStoredDirectService());
     } else if (savedFlow === "oportunidade") {
       setSelected("oportunidade");
       setFlow("oportunidade");
-=======
-      setSelectedService(getStoredDirectService());
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
     } else if (savedFlow) {
       setSelected(savedFlow);
     }
 
     setStorageReady(true);
-<<<<<<< HEAD
   }, [searchParams]);
   /* eslint-enable react-hooks/set-state-in-effect */
-=======
-  }, []);
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
 
   useEffect(() => {
     if (!storageReady) return;
 
     window.sessionStorage.setItem(CONTRACT_FLOW_KEY, selected);
     window.sessionStorage.setItem(DIRECT_STEP_KEY, String(directStep));
-<<<<<<< HEAD
     window.sessionStorage.setItem(DIRECT_MAX_STEP_KEY, String(maxDirectStep));
     window.sessionStorage.setItem(DIRECT_SERVICE_KEY, String(selectedService.id));
   }, [directStep, maxDirectStep, selected, selectedService.id, storageReady]);
@@ -2249,13 +1894,6 @@ export default function EscolhaContratacao() {
     const safeStep = Math.min(Math.max(nextStep, 1), DIRECT_STEPS.length);
     setDirectStep(safeStep);
     setMaxDirectStep((current) => Math.max(current, safeStep));
-=======
-    window.sessionStorage.setItem(DIRECT_SERVICE_KEY, String(selectedService.id));
-  }, [directStep, selected, selectedService.id, storageReady]);
-
-  function handleDirectStep(nextStep) {
-    setDirectStep(Math.min(Math.max(nextStep, 1), DIRECT_STEPS.length));
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   }
 
   function handleDirectBack() {
@@ -2266,7 +1904,6 @@ export default function EscolhaContratacao() {
 
     setFlow("choice");
     setSelected("");
-<<<<<<< HEAD
     window.sessionStorage.removeItem(CONTRACT_FLOW_KEY);
   }
 
@@ -2285,8 +1922,6 @@ export default function EscolhaContratacao() {
     setFlow("choice");
     setSelected("");
     window.sessionStorage.removeItem(CONTRACT_FLOW_KEY);
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   }
 
   function handleSelect(value) {
@@ -2296,7 +1931,6 @@ export default function EscolhaContratacao() {
     if (value === "direta") {
       setFlow("direta");
       setDirectStep(getStoredDirectStep());
-<<<<<<< HEAD
       setMaxDirectStep(Math.max(getStoredDirectStep(), getStoredDirectMaxStep()));
       setDirectCategoryFilter("Todas");
       setSelectedService(getStoredDirectService());
@@ -2323,43 +1957,29 @@ export default function EscolhaContratacao() {
     const opportunity = savePublishedOpportunity(opportunityForm);
     setCreatedOpportunity(opportunity);
     handleOpportunityStep(5);
-=======
-      setSelectedService(getStoredDirectService());
-    }
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
   }
 
   return (
     <>
       <style>{`
-<<<<<<< HEAD
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         .choice-page,
         .choice-page * {
           box-sizing: border-box;
         }
 
-<<<<<<< HEAD
         .choice-layout,
         .choice-layout * {
           font-family: 'Poppins', Arial, Helvetica, sans-serif;
         }
 
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         .choice-layout {
           width: 100%;
           height: 100vh;
           display: flex;
           overflow: hidden;
           background: #F5F7FB;
-<<<<<<< HEAD
-=======
-          font-family: Arial, Helvetica, sans-serif;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         .choice-main {
@@ -2394,15 +2014,9 @@ export default function EscolhaContratacao() {
         .choice-header h1 {
           margin: 0;
           color: #0A0B2D;
-<<<<<<< HEAD
           font-size: clamp(1.25rem, 1.8vw, 1.55rem);
           line-height: 1.2;
           font-weight: 700;
-=======
-          font-size: clamp(1.9rem, 3vw, 2.4rem);
-          line-height: 1.1;
-          font-weight: 800;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           letter-spacing: 0;
         }
 
@@ -2410,46 +2024,27 @@ export default function EscolhaContratacao() {
           margin: 10px 0 0;
           max-width: 660px;
           color: #666B7A;
-<<<<<<< HEAD
           font-size: 0.88rem;
-=======
-          font-size: 1rem;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           font-weight: 500;
           line-height: 1.55;
         }
 
         .choice-grid {
           display: grid;
-<<<<<<< HEAD
           grid-template-columns: 1fr;
           gap: 16px;
           max-width: 980px;
           margin: 0 auto;
-=======
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 14px;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         .choice-card {
           position: relative;
-<<<<<<< HEAD
           min-height: 178px;
           display: grid;
           grid-template-columns: 150px minmax(0, 1fr) 178px;
           gap: 0 24px;
           align-items: center;
           padding: 24px 30px;
-=======
-          min-height: 270px;
-          display: grid;
-          grid-template-columns: 176px minmax(0, 1fr);
-          grid-template-rows: 1fr auto;
-          gap: 0 22px;
-          align-items: stretch;
-          padding: 22px 24px;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           border: 1.5px solid #E6E8EF;
           border-radius: 8px;
           background: #FFFFFF;
@@ -2465,13 +2060,8 @@ export default function EscolhaContratacao() {
         }
 
         .choice-illustration {
-<<<<<<< HEAD
           width: 136px;
           height: 136px;
-=======
-          width: 154px;
-          height: 154px;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           position: relative;
           display: flex;
           align-items: center;
@@ -2482,25 +2072,15 @@ export default function EscolhaContratacao() {
 
         .choice-glow {
           position: absolute;
-<<<<<<< HEAD
           width: 124px;
           height: 124px;
-=======
-          width: 132px;
-          height: 132px;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           border-radius: 8px;
           background: var(--soft);
         }
 
         .choice-main-icon {
-<<<<<<< HEAD
           width: 72px;
           height: 72px;
-=======
-          width: 76px;
-          height: 76px;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           position: relative;
           z-index: 2;
           display: inline-flex;
@@ -2570,30 +2150,19 @@ export default function EscolhaContratacao() {
 
         .choice-card-body {
           min-width: 0;
-<<<<<<< HEAD
           padding-left: 26px;
-=======
-          padding-left: 22px;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           border-left: 1px solid #EEF0F5;
           text-align: left;
         }
 
         .choice-card-kicker {
           display: block;
-<<<<<<< HEAD
           margin-bottom: 7px;
           color: var(--accent);
           font-size: 0.72rem;
           font-weight: 800;
           text-transform: uppercase;
           letter-spacing: 0.04em;
-=======
-          margin-bottom: 4px;
-          color: #8A90A0;
-          font-size: 0.72rem;
-          font-weight: 800;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         .choice-card h2 {
@@ -2605,13 +2174,8 @@ export default function EscolhaContratacao() {
         }
 
         .choice-card p {
-<<<<<<< HEAD
           max-width: 560px;
           margin: 0;
-=======
-          max-width: 420px;
-          margin: 0 0 18px;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           color: #666B7A;
           font-size: 0.86rem;
           font-weight: 500;
@@ -2619,7 +2183,6 @@ export default function EscolhaContratacao() {
         }
 
         .choice-card ul {
-<<<<<<< HEAD
           display: flex;
           flex-wrap: wrap;
           gap: 10px 24px;
@@ -2627,11 +2190,6 @@ export default function EscolhaContratacao() {
           margin: 16px 0 0;
           padding: 14px 0 0;
           border-top: 1px solid #EEF0F5;
-=======
-          width: min(100%, 340px);
-          margin: 0;
-          padding: 0;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           list-style: none;
           text-align: left;
         }
@@ -2646,11 +2204,7 @@ export default function EscolhaContratacao() {
         }
 
         .choice-card li + li {
-<<<<<<< HEAD
           margin-top: 0;
-=======
-          margin-top: 13px;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         .choice-card li span {
@@ -2667,25 +2221,15 @@ export default function EscolhaContratacao() {
         }
 
         .choice-card button {
-<<<<<<< HEAD
           width: 156px;
           min-height: 46px;
           grid-column: 3;
-=======
-          width: 100%;
-          min-height: 38px;
-          grid-column: 2;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           justify-self: end;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
-<<<<<<< HEAD
           margin-top: 0;
-=======
-          margin-top: 20px;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           border: 1.5px solid transparent;
           border-radius: 8px;
           background: #0A0B2D;
@@ -2700,11 +2244,7 @@ export default function EscolhaContratacao() {
 
         .choice-card button:hover {
           border-color: var(--hover);
-<<<<<<< HEAD
           background: #111342;
-=======
-          background: var(--hover);
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           box-shadow: 0 8px 22px rgba(241, 103, 15, 0.22);
         }
 
@@ -2745,7 +2285,6 @@ export default function EscolhaContratacao() {
         .direct-flow-title h1 {
           margin: 0;
           color: #0A0B2D;
-<<<<<<< HEAD
           font-size: clamp(1.5rem, 2.4vw, 1.95rem);
           line-height: 1.16;
           font-weight: 750;
@@ -2756,18 +2295,6 @@ export default function EscolhaContratacao() {
           color: #666B7A;
           font-size: 0.84rem;
           font-weight: 500;
-=======
-          font-size: clamp(1.9rem, 3vw, 2.4rem);
-          line-height: 1.1;
-          font-weight: 800;
-        }
-
-        .direct-flow-title p {
-          margin: 8px 0 0;
-          color: #666B7A;
-          font-size: 0.96rem;
-          font-weight: 600;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         .direct-back-to-choice {
@@ -2784,10 +2311,7 @@ export default function EscolhaContratacao() {
           font-size: 0.78rem;
           font-weight: 800;
           cursor: pointer;
-<<<<<<< HEAD
           white-space: nowrap;
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         .direct-back-to-choice:hover {
@@ -2811,7 +2335,6 @@ export default function EscolhaContratacao() {
           border-radius: 8px;
           background: #FFFFFF;
           color: #7A8192;
-<<<<<<< HEAD
           font: inherit;
           font-size: 0.74rem;
           font-weight: 800;
@@ -2835,10 +2358,6 @@ export default function EscolhaContratacao() {
 
         .direct-step:disabled {
           cursor: not-allowed;
-=======
-          font-size: 0.74rem;
-          font-weight: 800;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         .direct-step span {
@@ -2947,7 +2466,6 @@ export default function EscolhaContratacao() {
           font-size: 0.86rem;
         }
 
-<<<<<<< HEAD
         .direct-search button {
           width: 28px;
           height: 28px;
@@ -2967,8 +2485,6 @@ export default function EscolhaContratacao() {
           color: #F1670F;
         }
 
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         .direct-section-title,
         .direct-result-top {
           display: flex;
@@ -3000,7 +2516,6 @@ export default function EscolhaContratacao() {
           cursor: pointer;
         }
 
-<<<<<<< HEAD
         .direct-filter-trigger span {
           width: 18px;
           height: 18px;
@@ -3100,8 +2615,6 @@ export default function EscolhaContratacao() {
           font-weight: 700;
         }
 
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         .direct-carousel-wrap {
           display: grid;
           grid-template-columns: 34px minmax(0, 1fr) 34px;
@@ -3170,15 +2683,12 @@ export default function EscolhaContratacao() {
           background: #FFF4EC;
         }
 
-<<<<<<< HEAD
         .direct-categories button span svg {
           width: 18px;
           height: 18px;
           color: #F1670F;
         }
 
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         .direct-mini-list,
         .direct-results {
           display: flex;
@@ -3243,10 +2753,7 @@ export default function EscolhaContratacao() {
           font-size: 0.78rem;
           font-weight: 800;
           cursor: pointer;
-<<<<<<< HEAD
           white-space: nowrap;
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         .direct-wide-secondary,
@@ -3277,15 +2784,19 @@ export default function EscolhaContratacao() {
         }
 
         .direct-result-card {
-<<<<<<< HEAD
-          grid-template-columns: 76px minmax(0, 1fr) 236px;
+          grid-template-columns: 120px minmax(0, 1fr) 148px;
+          align-items: stretch;
+          gap: 16px;
+          padding: 12px 14px;
+          border-radius: 12px;
+          box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
         }
 
         .direct-result-provider {
           display: inline-flex;
           align-items: center;
           gap: 7px;
-          margin-bottom: 5px;
+          margin-bottom: 6px;
         }
 
         .direct-result-provider img {
@@ -3294,19 +2805,13 @@ export default function EscolhaContratacao() {
           border-radius: 50%;
           object-fit: cover;
           border: 1px solid #E6E8EF;
-=======
-          grid-template-columns: 76px minmax(0, 1fr) 180px;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         .direct-result-info strong {
           display: block;
-<<<<<<< HEAD
-=======
-          margin-bottom: 5px;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           color: #0A0B2D;
           font-size: 0.78rem;
+          font-weight: 800;
         }
 
         .direct-result-info p {
@@ -3328,23 +2833,6 @@ export default function EscolhaContratacao() {
           align-items: center;
           gap: 4px;
           color: #0A0B2D;
-        }
-
-        .direct-result-actions {
-          display: grid;
-<<<<<<< HEAD
-          grid-template-columns: 124px 96px;
-          gap: 8px;
-          justify-content: end;
-        }
-
-        .direct-result-card {
-          grid-template-columns: 120px minmax(0, 1fr) 148px;
-          align-items: stretch;
-          gap: 16px;
-          padding: 12px 14px;
-          border-radius: 12px;
-          box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
         }
 
         .direct-result-media {
@@ -3385,21 +2873,6 @@ export default function EscolhaContratacao() {
           color: #0A0B2D;
           font-size: 0.96rem;
           line-height: 1.25;
-          font-weight: 800;
-        }
-
-        .direct-result-provider {
-          margin-bottom: 6px;
-        }
-
-        .direct-result-provider img {
-          width: 24px;
-          height: 24px;
-        }
-
-        .direct-result-provider strong {
-          color: #0A0B2D;
-          font-size: 0.78rem;
           font-weight: 800;
         }
 
@@ -3531,10 +3004,6 @@ export default function EscolhaContratacao() {
           min-height: 38px;
           border-radius: 9px;
           font-size: 0.72rem;
-=======
-          grid-template-columns: 1fr 1fr;
-          gap: 8px;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         .direct-detail-media {
@@ -3571,18 +3040,14 @@ export default function EscolhaContratacao() {
         .direct-floating-actions button {
           width: 34px;
           height: 34px;
-<<<<<<< HEAD
           display: inline-flex;
           align-items: center;
           justify-content: center;
           padding: 0;
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           border: 0;
           border-radius: 8px;
           background: rgba(255, 255, 255, 0.92);
           color: #0A0B2D;
-<<<<<<< HEAD
           font-size: 0.95rem;
           line-height: 1;
           cursor: pointer;
@@ -3593,11 +3058,6 @@ export default function EscolhaContratacao() {
           flex-shrink: 0;
         }
 
-=======
-          cursor: pointer;
-        }
-
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         .direct-detail-media > span {
           position: absolute;
           left: 14px;
@@ -3677,7 +3137,6 @@ export default function EscolhaContratacao() {
           cursor: pointer;
         }
 
-<<<<<<< HEAD
         .direct-service-heading {
           display: flex;
           align-items: flex-start;
@@ -3934,8 +3393,6 @@ export default function EscolhaContratacao() {
           font-weight: 500;
         }
 
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         .direct-form-grid,
         .direct-panel--form {
           display: flex;
@@ -3944,18 +3401,10 @@ export default function EscolhaContratacao() {
         }
 
         .direct-form-grid label,
-<<<<<<< HEAD
         .direct-textarea {
           color: #0A0B2D;
           font-size: 0.78rem;
           font-weight: 650;
-=======
-        .direct-textarea,
-        .direct-urgency legend {
-          color: #0A0B2D;
-          font-size: 0.78rem;
-          font-weight: 800;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         }
 
         .direct-input-wrap,
@@ -3981,7 +3430,6 @@ export default function EscolhaContratacao() {
           outline: 0;
           background: transparent;
           font: inherit;
-<<<<<<< HEAD
           font-weight: 500;
           color: #0A0B2D;
         }
@@ -3994,36 +3442,11 @@ export default function EscolhaContratacao() {
           text-align: left;
         }
 
-=======
-          color: #0A0B2D;
-        }
-
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         .direct-input-wrap svg,
         .direct-textarea span {
           color: #0B55F4;
         }
 
-<<<<<<< HEAD
-=======
-        .direct-urgency {
-          margin: 0;
-          padding: 12px;
-          border: 1.5px solid #E6E8EF;
-          border-radius: 8px;
-        }
-
-        .direct-urgency label {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin-top: 10px;
-          color: #667085;
-          font-size: 0.8rem;
-          font-weight: 700;
-        }
-
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         .direct-textarea {
           position: relative;
           display: block;
@@ -4034,10 +3457,7 @@ export default function EscolhaContratacao() {
           padding: 12px;
           resize: none;
           font: inherit;
-<<<<<<< HEAD
           font-weight: 500;
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           outline: 0;
         }
 
@@ -4073,7 +3493,6 @@ export default function EscolhaContratacao() {
         }
 
         .direct-attachments button {
-<<<<<<< HEAD
           display: inline-flex;
           align-items: center;
           justify-content: center;
@@ -4441,14 +3860,6 @@ export default function EscolhaContratacao() {
           color: #FFFFFF;
         }
 
-=======
-          border: 1.5px dashed #C8D5F2;
-          background: #F8FAFF;
-          color: #0B55F4;
-          cursor: pointer;
-        }
-
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
         .direct-panel--success {
           display: flex;
           flex-direction: column;
@@ -4550,20 +3961,13 @@ export default function EscolhaContratacao() {
           }
 
           .choice-header h1 {
-<<<<<<< HEAD
             font-size: 1.2rem;
-=======
-            font-size: 1.55rem;
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           }
 
           .choice-grid {
             grid-template-columns: 1fr;
             gap: 14px;
-<<<<<<< HEAD
             max-width: 100%;
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           }
 
           .choice-card {
@@ -4647,10 +4051,7 @@ export default function EscolhaContratacao() {
 
           .choice-card button {
             grid-column: 1 / -1;
-<<<<<<< HEAD
             width: 100%;
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
             min-height: 46px;
             margin-top: 0;
           }
@@ -4664,7 +4065,6 @@ export default function EscolhaContratacao() {
           }
 
           .direct-result-card {
-<<<<<<< HEAD
             grid-template-columns: 1fr;
           }
 
@@ -4684,17 +4084,11 @@ export default function EscolhaContratacao() {
 
           .direct-filter-panel {
             grid-template-columns: 1fr;
-=======
-            grid-template-columns: 72px minmax(0, 1fr);
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           }
 
           .direct-result-actions {
             grid-column: 1 / -1;
-<<<<<<< HEAD
             grid-template-rows: auto;
-=======
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
           }
 
           .direct-flow-title {
@@ -4726,7 +4120,6 @@ export default function EscolhaContratacao() {
               {flow === "direta" ? (
                 <DirectSolicitationFlow
                   step={directStep}
-<<<<<<< HEAD
                   maxStep={maxDirectStep}
                   service={selectedService}
                   categoryFilter={directCategoryFilter}
@@ -4758,40 +4151,33 @@ export default function EscolhaContratacao() {
                   onPublish={handlePublishOpportunity}
                   onHome={() => router.push("/Pages/Tela_inicial_cliente")}
                   onViewOpportunity={(opportunityId) => router.push(`/Pages/Minhas_Solicitacoes?abrir=${encodeURIComponent(opportunityId)}`)}
-=======
-                  service={selectedService}
-                  setStep={handleDirectStep}
-                  setService={setSelectedService}
-                  onBack={handleDirectBack}
-                  onHome={() => router.push("/Pages/Tela_inicial_cliente")}
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
                 />
               ) : (
                 <>
-              <section className="choice-header">
-                <h1>Como você gostaria de contratar?</h1>
-                <p>Escolha a opção que melhor atende à sua necessidade.</p>
-              </section>
+                  <section className="choice-header">
+                    <h1>Como você gostaria de contratar?</h1>
+                    <p>Escolha a opção que melhor atende à sua necessidade.</p>
+                  </section>
 
-              <section className="choice-grid" aria-label="Tipos de contratação">
-                {OPTIONS.map((option) => (
-                  <OptionCard
-                    key={option.key}
-                    option={option}
-                    selected={selected === option.key}
-                    onSelect={handleSelect}
-                  />
-                ))}
-              </section>
+                  <section className="choice-grid" aria-label="Tipos de contratação">
+                    {OPTIONS.map((option) => (
+                      <OptionCard
+                        key={option.key}
+                        option={option}
+                        selected={selected === option.key}
+                        onSelect={handleSelect}
+                      />
+                    ))}
+                  </section>
 
-              {selected && (
-                <div className="choice-feedback" role="status">
-                  <FaShieldAlt />
-                  {selected === "direta"
-                    ? "Solicitação direta selecionada. Próxima etapa: escolher um serviço cadastrado."
-                    : "Publicação de oportunidade selecionada. Próxima etapa: descrever sua necessidade."}
-                </div>
-              )}
+                  {selected && (
+                    <div className="choice-feedback" role="status">
+                      <FaShieldAlt />
+                      {selected === "direta"
+                        ? "Solicitação direta selecionada. Próxima etapa: escolher um serviço cadastrado."
+                        : "Publicação de oportunidade selecionada. Próxima etapa: descrever sua necessidade."}
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -4800,9 +4186,4 @@ export default function EscolhaContratacao() {
       </div>
     </>
   );
-<<<<<<< HEAD
 }
-
-=======
-}
->>>>>>> bbd136c22832df1cac739ce4c8ace8c00814fd4b
