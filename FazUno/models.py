@@ -13,14 +13,97 @@ class PasswordResetCode(models.Model):
     is_used = models.BooleanField(default=False)
 
     def is_valid(self):
-        # O código expira após 15 minutos e não pode ter sido utilizado
         now = timezone.now()
         return not self.is_used and (now - self.created_at) < timedelta(minutes=15)
 
     @staticmethod
     def generate_code():
-        # Gera um código numérico aleatório de 6 dígitos
         return str(random.randint(100000, 999999))
 
     def __str__(self):
         return f"Código {self.code} - {self.user.email}"
+
+class Solicitacao(models.Model):
+    STATUS_CHOICES = [
+        ('pendente', 'Pendente'),
+        ('aceita', 'Aceita'),
+        ('recusada', 'Recusada'),
+        ('cancelada', 'Cancelada'),
+        ('concluida', 'Concluída'),
+    ]
+
+    cliente = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='solicitacoes_enviadas'
+    )
+
+    prestador = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='solicitacoes_recebidas'
+    )
+
+    servico = models.CharField(max_length=150)
+
+    descricao = models.TextField()
+
+    data_servico = models.DateField()
+
+    horario = models.TimeField()
+
+    valor = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True
+    )
+
+    endereco = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pendente'
+    )
+
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.servico} - {self.cliente.username}"
+
+class Agendamento(models.Model):
+    STATUS_CHOICES = [
+        ('agendado', 'Agendado'),
+        ('em_andamento', 'Em andamento'),
+        ('concluido', 'Concluído'),
+        ('cancelado', 'Cancelado'),
+    ]
+
+    solicitacao = models.OneToOneField(
+        'Solicitacao',
+        on_delete=models.CASCADE,
+        related_name='agendamento'
+    )
+
+    data = models.DateField()
+    horario = models.TimeField()
+    local = models.CharField(max_length=255)
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='agendado'
+    )
+
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.data} às {self.horario} - {self.status}"

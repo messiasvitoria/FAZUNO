@@ -25,8 +25,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',  # Permite que o Next.js comunique com o Django
-    'django.contrib.admin',
+    'corsheaders',
+    'rest_framework', 
+    'django.contrib.admin',# Permite que o Next.js comunique com o Django
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
