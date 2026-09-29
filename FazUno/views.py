@@ -6,8 +6,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import PasswordResetCode
-from .models import PasswordResetCode
+from .models import PasswordResetCode,Perfil
+from .serializers import PerfilSerializer,PrestadorSerializer, PrestadorUpdateSerializer
 
 
 def validar_senha_forte(password):
@@ -60,8 +60,15 @@ def register_view(request):
             user = User.objects.create_user(username=username, email=email, password=password)
             user.save()
 
-            return JsonResponse({"mensagem": "Usuário cadastrado com sucesso!"}, status=201)
-
+            return JsonResponse({
+                "mensagem": "Usuário cadastrado com sucesso!",
+                "user": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email
+                }
+            }, status=201)
+        
         except json.JSONDecodeError:
             return JsonResponse({"erro": "JSON inválido enviado na requisição."}, status=400)
 
@@ -228,3 +235,100 @@ def confirm_reset_password_view(request):
 
 def teste_api(request):
     return JsonResponse({"mensagem": "Conexão entre Django e Next.js funcionando!"})
+
+@csrf_exempt
+def perfil_view(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            user_id = data.get("user")
+            tipo = data.get("tipo")
+
+            if not user_id or not tipo:
+                return JsonResponse(
+                    {"erro": "Usuário e tipo são obrigatórios."},
+                    status=400
+                )
+
+            perfil = Perfil.objects.create(
+                user_id=user_id,
+                tipo=tipo
+            )
+
+            serializer = PerfilSerializer(perfil)
+
+            return JsonResponse(serializer.data, status=201)
+
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"erro": "JSON inválido enviado na requisição."},
+                status=400
+            )
+
+@csrf_exempt
+def prestadores_view(request):
+    if request.method == "GET":
+        prestadores = Perfil.objects.filter(tipo="prestador")
+
+        serializer = PrestadorSerializer(prestadores, many=True)
+
+        return JsonResponse(serializer.data, safe=False)
+
+    return JsonResponse(
+        {"erro": "Método não permitido."},
+        status=405
+    )
+
+@csrf_exempt
+def atualizar_prestador_view(request, user_id):
+    if request.method == "PUT":
+        try:
+            data = json.loads(request.body)
+
+            user = User.objects.get(id=user_id)
+
+            serializer = PrestadorUpdateSerializer(data=data)
+
+            if not serializer.is_valid():
+                return JsonResponse(
+                    serializer.errors,
+                    status=400
+                )
+
+            if "username" in serializer.validated_data:
+                user.username = serializer.validated_data["username"]
+
+            if "email" in serializer.validated_data:
+                user.email = serializer.validated_data["email"]
+
+            if "password" in serializer.validated_data:
+                user.set_password(serializer.validated_data["password"])
+
+            user.save()
+
+            return JsonResponse({
+                "mensagem": "Prestador atualizado com sucesso!",
+                "user": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email
+                }
+            })
+
+        except User.DoesNotExist:
+            return JsonResponse(
+                {"erro": "Usuário não encontrado."},
+                status=404
+            )
+
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"erro": "JSON inválido enviado na requisição."},
+                status=400
+            )
+
+    return JsonResponse(
+        {"erro": "Método não permitido."},
+        status=405
+    )

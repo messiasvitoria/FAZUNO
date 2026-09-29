@@ -7,6 +7,9 @@ from .views import (
     verify_code_view,
     confirm_reset_password_view,
     teste_api,
+    perfil_view,
+    prestadores_view,
+    atualizar_prestador_view,
 )
 
 urlpatterns = [
@@ -24,4 +27,9 @@ urlpatterns = [
 
     # Rota de Teste
     path('api/teste/', teste_api, name='teste_api'),
+
+    # Perfil do usuario
+    path('api/perfil/', perfil_view, name='perfil'),
+    path('api/prestadores/', prestadores_view, name='prestadores'),
+    path('api/prestadores/<int:user_id>/', atualizar_prestador_view, name='atualizar_prestador'),
 ]

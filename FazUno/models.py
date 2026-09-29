@@ -24,3 +24,12 @@ class PasswordResetCode(models.Model):
 
     def __str__(self):
         return f"Código {self.code} - {self.user.email}"
+    
+class Perfil(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.tipo}"
+
+

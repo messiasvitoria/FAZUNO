@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from .models import Perfil
 
 User = get_user_model()
 
@@ -23,3 +24,21 @@ class ConfirmResetPasswordSerializer(serializers.Serializer):
         if data['new_password'] != data['confirm_password']:
             raise serializers.ValidationError({"confirm_password": "As senhas não coincidem."})
         return data
+    
+class PerfilSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Perfil
+        fields = ['id', 'user', 'tipo']
+
+class PrestadorSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
+    email = serializers.EmailField(source='user.email')
+
+    class Meta:
+        model = Perfil
+        fields = ['id', 'user', 'username', 'email', 'tipo']
+
+class PrestadorUpdateSerializer(serializers.Serializer):
+    username = serializers.CharField(required=False)
+    email = serializers.EmailField(required=False)
+    password = serializers.CharField(required=False, write_only=True)
