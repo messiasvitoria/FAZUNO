@@ -9,7 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import PasswordResetCode,Perfil, Servico
 from .serializers import PerfilSerializer,PrestadorSerializer, PrestadorUpdateSerializer, ServicoSerializer
 
-
 def validar_senha_forte(password):
     erros = []
     
@@ -359,6 +358,48 @@ def servicos_view(request):
             return JsonResponse(
                 ServicoSerializer(servico).data,
                 status=201
+            )
+
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"erro": "JSON inválido enviado na requisição."},
+                status=400
+            )
+
+    return JsonResponse(
+        {"erro": "Método não permitido."},
+        status=405
+    )
+
+@csrf_exempt
+def atualizar_servico_view(request, servico_id):
+    if request.method == "PUT":
+        try:
+            data = json.loads(request.body)
+
+            servico = Servico.objects.get(id=servico_id)
+
+            serializer = ServicoSerializer(
+                servico,
+                data=data
+            )
+
+            if not serializer.is_valid():
+                return JsonResponse(
+                    serializer.errors,
+                    status=400
+                )
+
+            servico = serializer.save()
+
+            return JsonResponse(
+                ServicoSerializer(servico).data
+            )
+
+        except Servico.DoesNotExist:
+            return JsonResponse(
+                {"erro": "Serviço não encontrado."},
+                status=404
             )
 
         except json.JSONDecodeError:

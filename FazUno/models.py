@@ -35,6 +35,10 @@ class Perfil(models.Model):
 class Servico(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField()
+    prestadores = models.ManyToManyField(
+        Perfil,
+        related_name="servicos"
+    )
 
     def __str__(self):
         return self.nome

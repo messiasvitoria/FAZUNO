@@ -46,4 +46,4 @@ class PrestadorUpdateSerializer(serializers.Serializer):
 class ServicoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Servico
-        fields = ['id', 'nome', 'descricao']    
+        fields = ['id', 'nome', 'descricao','prestadores']    
