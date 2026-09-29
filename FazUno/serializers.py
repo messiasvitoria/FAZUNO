@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Perfil
+from .models import Perfil, Servico
 
 User = get_user_model()
 
@@ -42,3 +42,8 @@ class PrestadorUpdateSerializer(serializers.Serializer):
     username = serializers.CharField(required=False)
     email = serializers.EmailField(required=False)
     password = serializers.CharField(required=False, write_only=True)
+
+class ServicoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Servico
+        fields = ['id', 'nome', 'descricao']    

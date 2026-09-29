@@ -10,6 +10,7 @@ from .views import (
     perfil_view,
     prestadores_view,
     atualizar_prestador_view,
+    servicos_view,
 )
 
 urlpatterns = [
@@ -32,4 +33,5 @@ urlpatterns = [
     path('api/perfil/', perfil_view, name='perfil'),
     path('api/prestadores/', prestadores_view, name='prestadores'),
     path('api/prestadores/<int:user_id>/', atualizar_prestador_view, name='atualizar_prestador'),
+    path('api/servicos/', servicos_view, name='servicos'),
 ]

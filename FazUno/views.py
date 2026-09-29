@@ -6,8 +6,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import PasswordResetCode,Perfil
-from .serializers import PerfilSerializer,PrestadorSerializer, PrestadorUpdateSerializer
+from .models import PasswordResetCode,Perfil, Servico
+from .serializers import PerfilSerializer,PrestadorSerializer, PrestadorUpdateSerializer, ServicoSerializer
 
 
 def validar_senha_forte(password):
@@ -320,6 +320,45 @@ def atualizar_prestador_view(request, user_id):
             return JsonResponse(
                 {"erro": "Usuário não encontrado."},
                 status=404
+            )
+
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"erro": "JSON inválido enviado na requisição."},
+                status=400
+            )
+
+    return JsonResponse(
+        {"erro": "Método não permitido."},
+        status=405
+    )
+@csrf_exempt
+def servicos_view(request):
+    if request.method == "GET":
+        servicos = Servico.objects.all()
+        serializer = ServicoSerializer(servicos, many=True)
+
+        return JsonResponse(
+            serializer.data,
+            safe=False
+        )
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            serializer = ServicoSerializer(data=data)
+
+            if not serializer.is_valid():
+                return JsonResponse(
+                    serializer.errors,
+                    status=400
+                )
+
+            servico = serializer.save()
+
+            return JsonResponse(
+                ServicoSerializer(servico).data,
+                status=201
             )
 
         except json.JSONDecodeError:
