@@ -1,5 +1,6 @@
 import json
 import re
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -8,6 +9,15 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import PasswordResetCode,Perfil, Servico
 from .serializers import PerfilSerializer,PrestadorSerializer, PrestadorUpdateSerializer, ServicoSerializer
+
+from .models import PasswordResetCode
+from .models import Agendamento
+from .models import Solicitacao
+from .serializers import AgendamentoSerializer
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
 
 def validar_senha_forte(password):
     erros = []
@@ -412,3 +422,98 @@ def atualizar_servico_view(request, servico_id):
         {"erro": "Método não permitido."},
         status=405
     )
+@api_view(['GET', 'POST'])
+def agendamentos_view(request):
+    if request.method == 'GET':
+        agendamentos = Agendamento.objects.all()
+        serializer = AgendamentoSerializer(agendamentos, many=True)
+        return Response(serializer.data)
+
+    if request.method == 'POST':
+        serializer = AgendamentoSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+@api_view(['GET'])
+def agendamento_detalhe_view(request, id):
+    try:
+        agendamento = Agendamento.objects.get(id=id)
+    except Agendamento.DoesNotExist:
+        return Response(
+            {"erro": "Agendamento não encontrado."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    serializer = AgendamentoSerializer(agendamento)
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+def agendamento_atualizar_view(request, id):
+    try:
+        agendamento = Agendamento.objects.get(id=id)
+    except Agendamento.DoesNotExist:
+        return Response(
+            {"erro": "Agendamento não encontrado."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if agendamento.status in ['concluido', 'cancelado']:
+        return Response(
+            {
+                "erro": "Este agendamento não pode mais ser alterado."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    serializer = AgendamentoSerializer(
+        agendamento,
+        data=request.data
+    )
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response(
+        serializer.errors,
+        status=status.HTTP_400_BAD_REQUEST
+    )
+
+
+@api_view(['PUT'])
+def agendamento_cancelar_view(request, id):
+    try:
+        agendamento = Agendamento.objects.get(id=id)
+    except Agendamento.DoesNotExist:
+        return Response(
+            {"erro": "Agendamento não encontrado."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if agendamento.status in ['concluido', 'cancelado']:
+        return Response(
+            {
+                "erro": "Este agendamento não pode mais ser cancelado."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    agendamento.status = 'cancelado'
+    agendamento.save()
+
+    agendamento.solicitacao.status = 'cancelada'
+    agendamento.solicitacao.save()
+
+    serializer = AgendamentoSerializer(agendamento)
+
+    return Response(serializer.data)

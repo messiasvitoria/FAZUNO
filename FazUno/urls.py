@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+
 from .views import (
     register_view,
     login_view,
@@ -12,6 +13,10 @@ from .views import (
     atualizar_prestador_view,
     servicos_view,
     atualizar_servico_view,
+    agendamentos_view,
+    agendamento_detalhe_view,
+    agendamento_atualizar_view,
+    agendamento_cancelar_view,
 )
 
 urlpatterns = [
@@ -36,4 +41,10 @@ urlpatterns = [
     path('api/prestadores/<int:user_id>/', atualizar_prestador_view, name='atualizar_prestador'),
     path('api/servicos/', servicos_view, name='servicos'),
     path('api/servicos/<int:servico_id>/',atualizar_servico_view,name='atualizar_servico'),
+
+    # Minha parte de agendamentos
+    path('api/agendamentos/', agendamentos_view, name='agendamentos'),
+    path('api/agendamentos/<int:id>/', agendamento_detalhe_view, name='agendamento_detalhe'),
+    path('api/agendamentos/<int:id>/atualizar/', agendamento_atualizar_view, name='agendamento_atualizar'),
+    path('api/agendamentos/<int:id>/cancelar/', agendamento_cancelar_view, name='agendamento_cancelar'),
 ]

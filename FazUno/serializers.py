@@ -1,6 +1,8 @@
 from rest_framework import serializers
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from .models import Perfil, Servico
+from .models import Agendamento
 
 User = get_user_model()
 
@@ -24,7 +26,7 @@ class ConfirmResetPasswordSerializer(serializers.Serializer):
         if data['new_password'] != data['confirm_password']:
             raise serializers.ValidationError({"confirm_password": "As senhas não coincidem."})
         return data
-    
+
 class PerfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Perfil
@@ -46,4 +48,34 @@ class PrestadorUpdateSerializer(serializers.Serializer):
 class ServicoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Servico
-        fields = ['id', 'nome', 'descricao','prestadores']    
+        fields = ['id', 'nome', 'descricao','prestadores']
+
+class AgendamentoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Agendamento
+        fields = [
+            'id',
+            'solicitacao',
+            'data',
+            'horario',
+            'local',
+            'status',
+            'criado_em',
+            'atualizado_em',
+        ]
+
+    def validate(self, data):
+        solicitacao = data.get('solicitacao')
+
+        if solicitacao.status != 'aceita':
+            raise serializers.ValidationError({
+                'solicitacao': 'Só é possível criar um agendamento para uma solicitação aceita.'
+            })
+
+        if data['data'] < timezone.now().date():
+            raise serializers.ValidationError({
+                'data': 'A data do agendamento não pode ser anterior à data atual.'
+            })
+
+        return data
