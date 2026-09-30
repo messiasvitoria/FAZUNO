@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import PasswordResetCode,Perfil, Servico
+from .models import PasswordResetCode,Perfil, Servico, DadosPrestador
 from .serializers import PerfilSerializer,PrestadorSerializer, PrestadorUpdateSerializer, ServicoSerializer
 
 from .models import PasswordResetCode
@@ -253,6 +253,9 @@ def perfil_view(request):
 
             user_id = data.get("user")
             tipo = data.get("tipo")
+            telefone = data.get("telefone", "")
+            area_atuacao = data.get("area_atuacao")
+            descricao = data.get("descricao")
 
             if not user_id or not tipo:
                 return JsonResponse(
@@ -260,10 +263,24 @@ def perfil_view(request):
                     status=400
                 )
 
+            if tipo != "prestador" and (area_atuacao or descricao):
+                return JsonResponse(
+                    {"erro": "area_atuacao e descricao são exclusivos do perfil prestador."},
+                    status=400
+                )
+
             perfil = Perfil.objects.create(
                 user_id=user_id,
-                tipo=tipo
+                tipo=tipo,
+                telefone=telefone
             )
+
+            if tipo == "prestador":
+                DadosPrestador.objects.create(
+                    perfil=perfil,
+                    area_atuacao=area_atuacao or "",
+                    descricao=descricao or ""
+                )
 
             serializer = PerfilSerializer(perfil)
 
@@ -278,7 +295,9 @@ def perfil_view(request):
 @csrf_exempt
 def prestadores_view(request):
     if request.method == "GET":
-        prestadores = Perfil.objects.filter(tipo="prestador")
+        prestadores = Perfil.objects.filter(tipo="prestador").select_related(
+            "user", "dados_prestador"
+        ).prefetch_related("servicos_oferecidos__servico")
 
         serializer = PrestadorSerializer(prestadores, many=True)
 
@@ -315,6 +334,27 @@ def atualizar_prestador_view(request, user_id):
                 user.set_password(serializer.validated_data["password"])
 
             user.save()
+
+            perfil = Perfil.objects.filter(user_id=user_id).first()
+
+            if perfil:
+                if "telefone" in serializer.validated_data:
+                    perfil.telefone = serializer.validated_data["telefone"]
+                    perfil.save()
+
+                if perfil.tipo == "prestador" and (
+                    "area_atuacao" in serializer.validated_data
+                    or "descricao" in serializer.validated_data
+                ):
+                    dados_prestador, _ = DadosPrestador.objects.get_or_create(perfil=perfil)
+
+                    if "area_atuacao" in serializer.validated_data:
+                        dados_prestador.area_atuacao = serializer.validated_data["area_atuacao"]
+
+                    if "descricao" in serializer.validated_data:
+                        dados_prestador.descricao = serializer.validated_data["descricao"]
+
+                    dados_prestador.save()
 
             return JsonResponse({
                 "mensagem": "Prestador atualizado com sucesso!",

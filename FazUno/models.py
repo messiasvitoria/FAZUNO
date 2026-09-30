@@ -1,6 +1,7 @@
 import random
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
 from django.utils import timezone
 from datetime import timedelta
 
@@ -26,20 +27,64 @@ class PasswordResetCode(models.Model):
 class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     tipo = models.CharField(max_length=20)
+    telefone = models.CharField(max_length=20, blank=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.tipo}"
+
+class DadosPrestador(models.Model):
+    perfil = models.OneToOneField(
+        Perfil,
+        on_delete=models.CASCADE,
+        related_name="dados_prestador"
+    )
+    area_atuacao = models.CharField(max_length=150, blank=True)
+    descricao = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"Dados de prestador - {self.perfil.user.username}"
 
 class Servico(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField()
     prestadores = models.ManyToManyField(
         Perfil,
+        through="PrestadorServico",
         related_name="servicos"
     )
 
     def __str__(self):
         return self.nome
+
+class PrestadorServico(models.Model):
+    prestador = models.ForeignKey(
+        Perfil,
+        on_delete=models.CASCADE,
+        related_name="servicos_oferecidos"
+    )
+    servico = models.ForeignKey(
+        Servico,
+        on_delete=models.CASCADE,
+        related_name="vinculos"
+    )
+    valor = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0)]
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["prestador", "servico"],
+                name="unique_prestador_servico"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.prestador.user.username} - {self.servico.nome}"
 
 class Solicitacao(models.Model):
     STATUS_CHOICES = [
