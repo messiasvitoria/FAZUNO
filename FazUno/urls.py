@@ -17,6 +17,8 @@ from .views import (
     agendamento_detalhe_view,
     agendamento_atualizar_view,
     agendamento_cancelar_view,
+    solicitacoes_view,
+    alterar_status_solicitacao,
 )
 
 urlpatterns = [
@@ -47,4 +49,12 @@ urlpatterns = [
     path('api/agendamentos/<int:id>/', agendamento_detalhe_view, name='agendamento_detalhe'),
     path('api/agendamentos/<int:id>/atualizar/', agendamento_atualizar_view, name='agendamento_atualizar'),
     path('api/agendamentos/<int:id>/cancelar/', agendamento_cancelar_view, name='agendamento_cancelar'),
+
+    # Solicitações
+    path('api/solicitacoes/', solicitacoes_view, name='solicitacoes'),
+    path(
+    'api/solicitacoes/<int:id>/status/',
+    alterar_status_solicitacao,
+    name='alterar_status_solicitacao'
+),
 ]
