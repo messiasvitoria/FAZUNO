@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+
 from .views import (
     register_view,
     login_view,
@@ -7,6 +8,10 @@ from .views import (
     verify_code_view,
     confirm_reset_password_view,
     teste_api,
+    agendamentos_view,
+    agendamento_detalhe_view,
+    agendamento_atualizar_view,
+    agendamento_cancelar_view,
     perfil_view,
     prestadores_view,
     atualizar_prestador_view,
@@ -29,6 +34,12 @@ urlpatterns = [
 
     # Rota de Teste
     path('api/teste/', teste_api, name='teste_api'),
+
+    # Minha parte de agendamentos
+    path('api/agendamentos/', agendamentos_view, name='agendamentos'),
+    path('api/agendamentos/<int:id>/', agendamento_detalhe_view, name='agendamento_detalhe'),
+    path('api/agendamentos/<int:id>/atualizar/', agendamento_atualizar_view, name='agendamento_atualizar'),
+    path('api/agendamentos/<int:id>/cancelar/', agendamento_cancelar_view, name='agendamento_cancelar'),
 
     # Perfil do usuario
     path('api/perfil/', perfil_view, name='perfil'),
