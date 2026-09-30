@@ -149,3 +149,18 @@ CORS_ALLOWED_ORIGINS = [
 
 # Permite que o navegador envie cookies e credenciais de sessão entre as duas aplicações
 CORS_ALLOW_CREDENTIALS = True
+
+
+# ==============================================================================
+# CONFIGURAÇÃO DO DJANGO REST FRAMEWORK
+# ==============================================================================
+
+# Com SessionAuthentication ativa, as views com @api_view retornam 403 por
+# CSRF após o login. Desativamos a autenticação de sessão do DRF e liberamos
+# o acesso, já que a autenticação da aplicação é feita nas próprias views.
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+}
