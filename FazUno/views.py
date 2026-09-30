@@ -17,6 +17,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+from .models import PasswordResetCode,Perfil, Servico
+from .serializers import PerfilSerializer,PrestadorSerializer, PrestadorUpdateSerializer, ServicoSerializer
 
 def validar_senha_forte(password):
     erros = []
@@ -68,8 +70,15 @@ def register_view(request):
             user = User.objects.create_user(username=username, email=email, password=password)
             user.save()
 
-            return JsonResponse({"mensagem": "Usuário cadastrado com sucesso!"}, status=201)
-
+            return JsonResponse({
+                "mensagem": "Usuário cadastrado com sucesso!",
+                "user": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email
+                }
+            }, status=201)
+        
         except json.JSONDecodeError:
             return JsonResponse({"erro": "JSON inválido enviado na requisição."}, status=400)
 
@@ -332,3 +341,180 @@ def agendamento_cancelar_view(request, id):
     serializer = AgendamentoSerializer(agendamento)
 
     return Response(serializer.data)
+@csrf_exempt
+def perfil_view(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            user_id = data.get("user")
+            tipo = data.get("tipo")
+
+            if not user_id or not tipo:
+                return JsonResponse(
+                    {"erro": "Usuário e tipo são obrigatórios."},
+                    status=400
+                )
+
+            perfil = Perfil.objects.create(
+                user_id=user_id,
+                tipo=tipo
+            )
+
+            serializer = PerfilSerializer(perfil)
+
+            return JsonResponse(serializer.data, status=201)
+
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"erro": "JSON inválido enviado na requisição."},
+                status=400
+            )
+
+@csrf_exempt
+def prestadores_view(request):
+    if request.method == "GET":
+        prestadores = Perfil.objects.filter(tipo="prestador")
+
+        serializer = PrestadorSerializer(prestadores, many=True)
+
+        return JsonResponse(serializer.data, safe=False)
+
+    return JsonResponse(
+        {"erro": "Método não permitido."},
+        status=405
+    )
+
+@csrf_exempt
+def atualizar_prestador_view(request, user_id):
+    if request.method == "PUT":
+        try:
+            data = json.loads(request.body)
+
+            user = User.objects.get(id=user_id)
+
+            serializer = PrestadorUpdateSerializer(data=data)
+
+            if not serializer.is_valid():
+                return JsonResponse(
+                    serializer.errors,
+                    status=400
+                )
+
+            if "username" in serializer.validated_data:
+                user.username = serializer.validated_data["username"]
+
+            if "email" in serializer.validated_data:
+                user.email = serializer.validated_data["email"]
+
+            if "password" in serializer.validated_data:
+                user.set_password(serializer.validated_data["password"])
+
+            user.save()
+
+            return JsonResponse({
+                "mensagem": "Prestador atualizado com sucesso!",
+                "user": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email
+                }
+            })
+
+        except User.DoesNotExist:
+            return JsonResponse(
+                {"erro": "Usuário não encontrado."},
+                status=404
+            )
+
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"erro": "JSON inválido enviado na requisição."},
+                status=400
+            )
+
+    return JsonResponse(
+        {"erro": "Método não permitido."},
+        status=405
+    )
+@csrf_exempt
+def servicos_view(request):
+    if request.method == "GET":
+        servicos = Servico.objects.all()
+        serializer = ServicoSerializer(servicos, many=True)
+
+        return JsonResponse(
+            serializer.data,
+            safe=False
+        )
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            serializer = ServicoSerializer(data=data)
+
+            if not serializer.is_valid():
+                return JsonResponse(
+                    serializer.errors,
+                    status=400
+                )
+
+            servico = serializer.save()
+
+            return JsonResponse(
+                ServicoSerializer(servico).data,
+                status=201
+            )
+
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"erro": "JSON inválido enviado na requisição."},
+                status=400
+            )
+
+    return JsonResponse(
+        {"erro": "Método não permitido."},
+        status=405
+    )
+
+@csrf_exempt
+def atualizar_servico_view(request, servico_id):
+    if request.method == "PUT":
+        try:
+            data = json.loads(request.body)
+
+            servico = Servico.objects.get(id=servico_id)
+
+            serializer = ServicoSerializer(
+                servico,
+                data=data
+            )
+
+            if not serializer.is_valid():
+                return JsonResponse(
+                    serializer.errors,
+                    status=400
+                )
+
+            servico = serializer.save()
+
+            return JsonResponse(
+                ServicoSerializer(servico).data
+            )
+
+        except Servico.DoesNotExist:
+            return JsonResponse(
+                {"erro": "Serviço não encontrado."},
+                status=404
+            )
+
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"erro": "JSON inválido enviado na requisição."},
+                status=400
+            )
+
+    return JsonResponse(
+        {"erro": "Método não permitido."},
+        status=405
+    )

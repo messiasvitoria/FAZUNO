@@ -107,3 +107,21 @@ class Agendamento(models.Model):
 
     def __str__(self):
         return f"{self.data} às {self.horario} - {self.status}"
+
+class Perfil(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.tipo}"
+
+class Servico(models.Model):
+    nome = models.CharField(max_length=100)
+    descricao = models.TextField()
+    prestadores = models.ManyToManyField(
+        Perfil,
+        related_name="servicos"
+    )
+
+    def __str__(self):
+        return self.nome

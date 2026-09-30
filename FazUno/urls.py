@@ -12,6 +12,11 @@ from .views import (
     agendamento_detalhe_view,
     agendamento_atualizar_view,
     agendamento_cancelar_view,
+    perfil_view,
+    prestadores_view,
+    atualizar_prestador_view,
+    servicos_view,
+    atualizar_servico_view,
 )
 
 urlpatterns = [
@@ -35,4 +40,11 @@ urlpatterns = [
     path('api/agendamentos/<int:id>/', agendamento_detalhe_view, name='agendamento_detalhe'),
     path('api/agendamentos/<int:id>/atualizar/', agendamento_atualizar_view, name='agendamento_atualizar'),
     path('api/agendamentos/<int:id>/cancelar/', agendamento_cancelar_view, name='agendamento_cancelar'),
+
+    # Perfil do usuario
+    path('api/perfil/', perfil_view, name='perfil'),
+    path('api/prestadores/', prestadores_view, name='prestadores'),
+    path('api/prestadores/<int:user_id>/', atualizar_prestador_view, name='atualizar_prestador'),
+    path('api/servicos/', servicos_view, name='servicos'),
+    path('api/servicos/<int:servico_id>/',atualizar_servico_view,name='atualizar_servico'),
 ]

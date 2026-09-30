@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from .models import Agendamento
+from .models import Perfil, Servico
 
 User = get_user_model()
 
@@ -55,3 +56,26 @@ class AgendamentoSerializer(serializers.ModelSerializer):
             })
 
         return data
+
+class PerfilSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Perfil
+        fields = ['id', 'user', 'tipo']
+
+class PrestadorSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
+    email = serializers.EmailField(source='user.email')
+
+    class Meta:
+        model = Perfil
+        fields = ['id', 'user', 'username', 'email', 'tipo']
+
+class PrestadorUpdateSerializer(serializers.Serializer):
+    username = serializers.CharField(required=False)
+    email = serializers.EmailField(required=False)
+    password = serializers.CharField(required=False, write_only=True)
+
+class ServicoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Servico
+        fields = ['id', 'nome', 'descricao','prestadores']
