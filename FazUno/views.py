@@ -462,6 +462,7 @@ def atualizar_servico_view(request, servico_id):
         {"erro": "Método não permitido."},
         status=405
     )
+# Lista e cria agendamentos
 @api_view(['GET', 'POST'])
 def agendamentos_view(request):
     if request.method == 'GET':
@@ -530,6 +531,7 @@ def agendamento_atualizar_view(request, id):
     )
 
 
+# Cancela o agendamento e também cancela a solicitação relacionada
 @api_view(['PUT'])
 def agendamento_cancelar_view(request, id):
     try:

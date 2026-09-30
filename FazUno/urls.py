@@ -44,7 +44,7 @@ urlpatterns = [
     path('api/servicos/', servicos_view, name='servicos'),
     path('api/servicos/<int:servico_id>/',atualizar_servico_view,name='atualizar_servico'),
 
-    # Minha parte de agendamentos
+    # Rotas da API de Agendamentos
     path('api/agendamentos/', agendamentos_view, name='agendamentos'),
     path('api/agendamentos/<int:id>/', agendamento_detalhe_view, name='agendamento_detalhe'),
     path('api/agendamentos/<int:id>/atualizar/', agendamento_atualizar_view, name='agendamento_atualizar'),

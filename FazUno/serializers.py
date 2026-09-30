@@ -150,6 +150,7 @@ class ServicoSerializer(serializers.ModelSerializer):
                 valor=item.get('valor')
             )
 
+# Converte os dados do Agendamento para JSON e valida as informações recebidas pela API
 class AgendamentoSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -165,6 +166,7 @@ class AgendamentoSerializer(serializers.ModelSerializer):
             'atualizado_em',
         ]
 
+    # Regras de negócio para criação e alteração de agendamentos
     def validate(self, data):
         solicitacao = data.get('solicitacao')
 

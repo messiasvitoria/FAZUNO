@@ -141,6 +141,7 @@ class Solicitacao(models.Model):
     def __str__(self):
         return f"{self.servico} - {self.cliente.username}"
 
+# Modelo responsável por armazenar os agendamentos dos serviços
 class Agendamento(models.Model):
     STATUS_CHOICES = [
         ('agendado', 'Agendado'),
@@ -149,6 +150,7 @@ class Agendamento(models.Model):
         ('cancelado', 'Cancelado'),
     ]
 
+    # Cada solicitação pode ter apenas um agendamento
     solicitacao = models.OneToOneField(
         'Solicitacao',
         on_delete=models.CASCADE,
