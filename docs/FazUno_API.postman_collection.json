@@ -485,7 +485,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "[\n  {\n    \"id\": 2,\n    \"user\": 2,\n    \"username\": \"joao\",\n    \"email\": \"joao@email.com\",\n    \"tipo\": \"prestador\",\n    \"telefone\": \"89999990000\",\n    \"area_atuacao\": \"Elétrica residencial\",\n    \"descricao\": \"Eletricista com 10 anos de experiência\",\n    \"categorias\": [\n      \"Elétrica\"\n    ],\n    \"servicos\": [\n      {\n        \"id\": 1,\n        \"nome\": \"Instalação elétrica\",\n        \"descricao\": \"Troca de tomadas e disjuntores\",\n        \"categoria\": \"Elétrica\",\n        \"valor\": \"150.00\"\n      },\n      {\n        \"id\": 2,\n        \"nome\": \"Sem categoria\",\n        \"descricao\": \"x\",\n        \"categoria\": null,\n        \"valor\": null\n      }\n    ]\n  }\n]"
+              "body": "[\n  {\n    \"id\": 2,\n    \"user\": 2,\n    \"username\": \"joao\",\n    \"email\": \"joao@email.com\",\n    \"tipo\": \"prestador\",\n    \"telefone\": \"89999990000\",\n    \"area_atuacao\": \"Elétrica residencial\",\n    \"descricao\": \"Eletricista com 10 anos de experiência\",\n    \"servicos\": [\n      {\n        \"id\": 1,\n        \"nome\": \"Instalação elétrica\",\n        \"descricao\": \"Troca de tomadas e disjuntores\",\n        \"valor\": \"150.00\"\n      },\n      {\n        \"id\": 2,\n        \"nome\": \"Higienização de estofados\",\n        \"descricao\": \"x\",\n        \"valor\": null\n      }\n    ]\n  }\n]"
             }
           ]
         },
@@ -586,69 +586,6 @@
       "description": "",
       "item": [
         {
-          "name": "Listar categorias",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/categorias/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "categorias",
-                ""
-              ]
-            },
-            "description": "Categorias iniciais são criadas pela migration 0002."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
-                  "var c = pm.response.json().find(function (x) { return x.nome === \"Elétrica\"; });",
-                  "pm.test(\"Categoria Elétrica disponível\", function () { pm.expect(c).to.be.an(\"object\"); });",
-                  "pm.collectionVariables.set(\"categoria_id\", c.id);"
-                ]
-              }
-            }
-          ],
-          "response": [
-            {
-              "name": "200 – Listar categorias",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/api/categorias/",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "categorias",
-                    ""
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "[\n  {\n    \"id\": 8,\n    \"nome\": \"Eletrodomésticos\"\n  },\n  {\n    \"id\": 1,\n    \"nome\": \"Elétrica\"\n  },\n  {\n    \"id\": 2,\n    \"nome\": \"Hidráulica\"\n  },\n  {\n    \"id\": 7,\n    \"nome\": \"Jardinagem\"\n  },\n  {\n    \"id\": 4,\n    \"nome\": \"Limpeza\"\n  },\n  {\n    \"id\": 5,\n    \"nome\": \"Montagem e instalação\"\n  },\n  {\n    \"id\": 3,\n    \"nome\": \"Pintura\"\n  },\n  {\n    \"id\": 6,\n    \"nome\": \"Reformas e reparos\"\n  }\n]"
-            }
-          ]
-        },
-        {
           "name": "Cadastrar serviço",
           "request": {
             "method": "POST",
@@ -672,7 +609,7 @@
             "description": "prestadores: lista de {prestador: id do perfil, valor}. Também aceita lista de ids (sem valor).",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nome\": \"Instalação elétrica\",\n  \"descricao\": \"Troca de tomadas e disjuntores\",\n  \"categoria\": \"{{categoria_id}}\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{prestador_perfil_id}}\",\n      \"valor\": 150\n    }\n  ]\n}",
+              "raw": "{\n  \"nome\": \"Instalação elétrica\",\n  \"descricao\": \"Troca de tomadas e disjuntores\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{prestador_perfil_id}}\",\n      \"valor\": 150\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -688,8 +625,7 @@
                 "exec": [
                   "pm.test(\"Status 201\", function () { pm.response.to.have.status(201); });",
                   "pm.collectionVariables.set(\"servico_id\", pm.response.json().id);",
-                  "pm.test(\"Vínculo com valor\", function () { pm.expect(pm.response.json().prestadores[0].valor).to.eql(\"150.00\"); });",
-                  "pm.test(\"Categoria associada\", function () { pm.expect(pm.response.json().categoria_nome).to.eql(\"Elétrica\"); });"
+                  "pm.test(\"Vínculo com valor\", function () { pm.expect(pm.response.json().prestadores[0].valor).to.eql(\"150.00\"); });"
                 ]
               }
             }
@@ -718,7 +654,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"nome\": \"Instalação elétrica\",\n  \"descricao\": \"Troca de tomadas e disjuntores\",\n  \"categoria\": \"{{categoria_id}}\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{prestador_perfil_id}}\",\n      \"valor\": 150\n    }\n  ]\n}",
+                  "raw": "{\n  \"nome\": \"Instalação elétrica\",\n  \"descricao\": \"Troca de tomadas e disjuntores\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{prestador_perfil_id}}\",\n      \"valor\": 150\n    }\n  ]\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -735,7 +671,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": 1,\n  \"nome\": \"Instalação elétrica\",\n  \"descricao\": \"Troca de tomadas e disjuntores\",\n  \"categoria\": 1,\n  \"categoria_nome\": \"Elétrica\",\n  \"prestadores\": [\n    {\n      \"prestador\": 2,\n      \"username\": \"joao\",\n      \"valor\": \"150.00\"\n    }\n  ]\n}"
+              "body": "{\n  \"id\": 1,\n  \"nome\": \"Instalação elétrica\",\n  \"descricao\": \"Troca de tomadas e disjuntores\",\n  \"prestadores\": [\n    {\n      \"prestador\": 2,\n      \"username\": \"joao\",\n      \"valor\": \"150.00\"\n    }\n  ]\n}"
             }
           ]
         },
@@ -794,7 +730,7 @@
             "description": "",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nome\": \"Instalação elétrica\",\n  \"descricao\": \"Troca de tomadas, disjuntores e fiação\",\n  \"categoria\": \"{{categoria_id}}\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{prestador_perfil_id}}\",\n      \"valor\": 180\n    }\n  ]\n}",
+              "raw": "{\n  \"nome\": \"Instalação elétrica\",\n  \"descricao\": \"Troca de tomadas, disjuntores e fiação\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{prestador_perfil_id}}\",\n      \"valor\": 180\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -841,7 +777,7 @@
                 "exec": [
                   "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
                   "var p = pm.response.json().find(function (x) { return x.id == pm.collectionVariables.get(\"prestador_perfil_id\"); });",
-                  "pm.test(\"Prestador lista o serviço com valor\", function () { pm.expect(p.servicos[0].valor).to.eql(\"180.00\"); pm.expect(p.telefone).to.eql(\"89988887777\"); pm.expect(p.area_atuacao).to.eql(\"Elétrica residencial\"); pm.expect(p.descricao).to.eql(\"Eletricista residencial e predial\"); pm.expect(p.categorias).to.include(\"Elétrica\"); });"
+                  "pm.test(\"Prestador lista o serviço com valor\", function () { pm.expect(p.servicos[0].valor).to.eql(\"180.00\"); pm.expect(p.telefone).to.eql(\"89988887777\"); pm.expect(p.area_atuacao).to.eql(\"Elétrica residencial\"); pm.expect(p.descricao).to.eql(\"Eletricista residencial e predial\"); });"
                 ]
               }
             }
@@ -873,7 +809,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "[\n  {\n    \"id\": 2,\n    \"user\": 2,\n    \"username\": \"joao\",\n    \"email\": \"joao@email.com\",\n    \"tipo\": \"prestador\",\n    \"telefone\": \"89999990000\",\n    \"area_atuacao\": \"Elétrica residencial\",\n    \"descricao\": \"Eletricista com 10 anos de experiência\",\n    \"categorias\": [\n      \"Elétrica\"\n    ],\n    \"servicos\": [\n      {\n        \"id\": 1,\n        \"nome\": \"Instalação elétrica\",\n        \"descricao\": \"Troca de tomadas e disjuntores\",\n        \"categoria\": \"Elétrica\",\n        \"valor\": \"150.00\"\n      },\n      {\n        \"id\": 2,\n        \"nome\": \"Sem categoria\",\n        \"descricao\": \"x\",\n        \"categoria\": null,\n        \"valor\": null\n      }\n    ]\n  }\n]"
+              "body": "[\n  {\n    \"id\": 2,\n    \"user\": 2,\n    \"username\": \"joao\",\n    \"email\": \"joao@email.com\",\n    \"tipo\": \"prestador\",\n    \"telefone\": \"89999990000\",\n    \"area_atuacao\": \"Elétrica residencial\",\n    \"descricao\": \"Eletricista com 10 anos de experiência\",\n    \"servicos\": [\n      {\n        \"id\": 1,\n        \"nome\": \"Instalação elétrica\",\n        \"descricao\": \"Troca de tomadas e disjuntores\",\n        \"valor\": \"150.00\"\n      },\n      {\n        \"id\": 2,\n        \"nome\": \"Higienização de estofados\",\n        \"descricao\": \"x\",\n        \"valor\": null\n      }\n    ]\n  }\n]"
             }
           ]
         }
@@ -1630,94 +1566,6 @@
                 }
               ],
               "body": "{\n  \"erro\": \"area_atuacao e descricao são exclusivos do perfil prestador.\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "Serviço com categoria inexistente",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/servicos/",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "servicos",
-                ""
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nome\": \"Pintura\",\n  \"descricao\": \"Pintura residencial\",\n  \"categoria\": 999999,\n  \"prestadores\": [\n    \"{{prestador_perfil_id}}\"\n  ]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
-                ]
-              }
-            }
-          ],
-          "response": [
-            {
-              "name": "400 – Serviço com categoria inexistente",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/servicos/",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "servicos",
-                    ""
-                  ]
-                },
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"nome\": \"Pintura\",\n  \"descricao\": \"Pintura residencial\",\n  \"categoria\": 999999,\n  \"prestadores\": [\n    \"{{prestador_perfil_id}}\"\n  ]\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"categoria\": [\n    \"Pk inválido \\\"999\\\" - objeto não existe.\"\n  ]\n}"
             }
           ]
         },
@@ -2602,10 +2450,6 @@
     },
     {
       "key": "cliente_perfil_id",
-      "value": ""
-    },
-    {
-      "key": "categoria_id",
       "value": ""
     },
     {
