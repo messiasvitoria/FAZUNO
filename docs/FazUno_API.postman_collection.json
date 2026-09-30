@@ -1,0 +1,2632 @@
+{
+  "info": {
+    "_postman_id": "b1556a68-0492-4853-9063-fdeac55f025c",
+    "name": "FazUno API – V1",
+    "description": "Testes e exemplos da API do FazUno (V1). Execute as pastas 1 a 6 pelo Collection Runner; a pasta 7 é manual. Referência completa em docs/api.md.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Autenticação",
+      "description": "",
+      "item": [
+        {
+          "name": "Cadastrar cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/register/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "register",
+                ""
+              ]
+            },
+            "description": "Cria o usuário que fará o papel de cliente. Senha: 8+ caracteres, maiúscula, minúscula, número e caractere especial.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"cliente_{{run}}\",\n  \"email\": \"cliente_{{run}}@teste.com\",\n  \"password\": \"Senha@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Gera um sufixo único para poder rodar a coleção várias vezes",
+                  "pm.collectionVariables.set(\"run\", Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"cliente_user_id\", pm.response.json().user.id);"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "201 – Cadastrar cliente",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/register/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "register",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"cliente_{{run}}\",\n  \"email\": \"cliente_{{run}}@teste.com\",\n  \"password\": \"Senha@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"mensagem\": \"Usuário cadastrado com sucesso!\",\n  \"user\": {\n    \"id\": 1,\n    \"username\": \"maria\",\n    \"email\": \"maria@email.com\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Cadastrar prestador",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/register/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "register",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"prestador_{{run}}\",\n  \"email\": \"prestador_{{run}}@teste.com\",\n  \"password\": \"Senha@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"prestador_user_id\", pm.response.json().user.id);"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "201 – Cadastrar prestador",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/register/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "register",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"prestador_{{run}}\",\n  \"email\": \"prestador_{{run}}@teste.com\",\n  \"password\": \"Senha@123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"mensagem\": \"Usuário cadastrado com sucesso!\",\n  \"user\": {\n    \"id\": 2,\n    \"username\": \"joao\",\n    \"email\": \"joao@email.com\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login",
+                ""
+              ]
+            },
+            "description": "Aceita username ou e-mail no campo username.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"cliente_{{run}}\",\n  \"password\": \"Senha@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Retorna o usuário logado\", function () { pm.expect(pm.response.json().user.username).to.eql(\"cliente_\" + pm.collectionVariables.get(\"run\")); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Perfil e prestadores",
+      "description": "",
+      "item": [
+        {
+          "name": "Criar perfil do cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/perfil/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "perfil",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": \"{{cliente_user_id}}\",\n  \"tipo\": \"cliente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"cliente_perfil_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "201 – Criar perfil do cliente",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/perfil/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "perfil",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": \"{{cliente_user_id}}\",\n  \"tipo\": \"cliente\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"user\": 1,\n  \"tipo\": \"cliente\",\n  \"telefone\": \"89977776666\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Criar perfil do prestador",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/perfil/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "perfil",
+                ""
+              ]
+            },
+            "description": "Para tipo prestador, area_atuacao e descricao são gravados em DadosPrestador. Guarda o id do PERFIL, usado no cadastro de serviços.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": \"{{prestador_user_id}}\",\n  \"tipo\": \"prestador\",\n  \"telefone\": \"89999990000\",\n  \"area_atuacao\": \"Elétrica residencial\",\n  \"descricao\": \"Eletricista com 10 anos de experiência\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"prestador_perfil_id\", pm.response.json().id);",
+                  "pm.test(\"Retorna os dados do prestador\", function () { pm.expect(pm.response.json().dados_prestador.area_atuacao).to.eql(\"Elétrica residencial\"); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "201 – Criar perfil do prestador",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/perfil/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "perfil",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": \"{{prestador_user_id}}\",\n  \"tipo\": \"prestador\",\n  \"telefone\": \"89999990000\",\n  \"area_atuacao\": \"Elétrica residencial\",\n  \"descricao\": \"Eletricista com 10 anos de experiência\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 2,\n  \"user\": 2,\n  \"tipo\": \"prestador\",\n  \"telefone\": \"89999990000\",\n  \"dados_prestador\": {\n    \"area_atuacao\": \"Elétrica residencial\",\n    \"descricao\": \"Eletricista com 10 anos de experiência\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Listar prestadores",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/prestadores/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "prestadores",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Retorna uma lista\", function () { pm.expect(pm.response.json()).to.be.an(\"array\"); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 – Listar prestadores",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/prestadores/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "prestadores",
+                    ""
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 2,\n    \"user\": 2,\n    \"username\": \"joao\",\n    \"email\": \"joao@email.com\",\n    \"tipo\": \"prestador\",\n    \"telefone\": \"89999990000\",\n    \"area_atuacao\": \"Elétrica residencial\",\n    \"descricao\": \"Eletricista com 10 anos de experiência\",\n    \"categorias\": [\n      \"Elétrica\"\n    ],\n    \"servicos\": [\n      {\n        \"id\": 1,\n        \"nome\": \"Instalação elétrica\",\n        \"descricao\": \"Troca de tomadas e disjuntores\",\n        \"categoria\": \"Elétrica\",\n        \"valor\": \"150.00\"\n      },\n      {\n        \"id\": 2,\n        \"nome\": \"Sem categoria\",\n        \"descricao\": \"x\",\n        \"categoria\": null,\n        \"valor\": null\n      }\n    ]\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Atualizar prestador",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/prestadores/{{prestador_user_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "prestadores",
+                "{{prestador_user_id}}",
+                ""
+              ]
+            },
+            "description": "O id na URL é o id do USUÁRIO, não do perfil.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"novo_{{run}}@teste.com\",\n  \"telefone\": \"89988887777\",\n  \"descricao\": \"Eletricista residencial e predial\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 – Atualizar prestador",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/prestadores/{{prestador_user_id}}/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "prestadores",
+                    "{{prestador_user_id}}",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"novo_{{run}}@teste.com\",\n  \"telefone\": \"89988887777\",\n  \"descricao\": \"Eletricista residencial e predial\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"mensagem\": \"Prestador atualizado com sucesso!\",\n  \"user\": {\n    \"id\": 2,\n    \"username\": \"joao\",\n    \"email\": \"joao@email.com\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Serviços",
+      "description": "",
+      "item": [
+        {
+          "name": "Listar categorias",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categorias/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categorias",
+                ""
+              ]
+            },
+            "description": "Categorias iniciais são criadas pela migration 0002."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "var c = pm.response.json().find(function (x) { return x.nome === \"Elétrica\"; });",
+                  "pm.test(\"Categoria Elétrica disponível\", function () { pm.expect(c).to.be.an(\"object\"); });",
+                  "pm.collectionVariables.set(\"categoria_id\", c.id);"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 – Listar categorias",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/categorias/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "categorias",
+                    ""
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 8,\n    \"nome\": \"Eletrodomésticos\"\n  },\n  {\n    \"id\": 1,\n    \"nome\": \"Elétrica\"\n  },\n  {\n    \"id\": 2,\n    \"nome\": \"Hidráulica\"\n  },\n  {\n    \"id\": 7,\n    \"nome\": \"Jardinagem\"\n  },\n  {\n    \"id\": 4,\n    \"nome\": \"Limpeza\"\n  },\n  {\n    \"id\": 5,\n    \"nome\": \"Montagem e instalação\"\n  },\n  {\n    \"id\": 3,\n    \"nome\": \"Pintura\"\n  },\n  {\n    \"id\": 6,\n    \"nome\": \"Reformas e reparos\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Cadastrar serviço",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/servicos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "servicos",
+                ""
+              ]
+            },
+            "description": "prestadores: lista de {prestador: id do perfil, valor}. Também aceita lista de ids (sem valor).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Instalação elétrica\",\n  \"descricao\": \"Troca de tomadas e disjuntores\",\n  \"categoria\": \"{{categoria_id}}\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{prestador_perfil_id}}\",\n      \"valor\": 150\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"servico_id\", pm.response.json().id);",
+                  "pm.test(\"Vínculo com valor\", function () { pm.expect(pm.response.json().prestadores[0].valor).to.eql(\"150.00\"); });",
+                  "pm.test(\"Categoria associada\", function () { pm.expect(pm.response.json().categoria_nome).to.eql(\"Elétrica\"); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "201 – Cadastrar serviço",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/servicos/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "servicos",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"Instalação elétrica\",\n  \"descricao\": \"Troca de tomadas e disjuntores\",\n  \"categoria\": \"{{categoria_id}}\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{prestador_perfil_id}}\",\n      \"valor\": 150\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"nome\": \"Instalação elétrica\",\n  \"descricao\": \"Troca de tomadas e disjuntores\",\n  \"categoria\": 1,\n  \"categoria_nome\": \"Elétrica\",\n  \"prestadores\": [\n    {\n      \"prestador\": 2,\n      \"username\": \"joao\",\n      \"valor\": \"150.00\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Listar serviços",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/servicos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "servicos",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Atualizar serviço",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/servicos/{{servico_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "servicos",
+                "{{servico_id}}",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Instalação elétrica\",\n  \"descricao\": \"Troca de tomadas, disjuntores e fiação\",\n  \"categoria\": \"{{categoria_id}}\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{prestador_perfil_id}}\",\n      \"valor\": 180\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Valor atualizado\", function () { pm.expect(pm.response.json().prestadores[0].valor).to.eql(\"180.00\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Serviços do prestador",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/prestadores/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "prestadores",
+                ""
+              ]
+            },
+            "description": "Confere o vínculo prestador–serviço a partir da listagem de prestadores."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "var p = pm.response.json().find(function (x) { return x.id == pm.collectionVariables.get(\"prestador_perfil_id\"); });",
+                  "pm.test(\"Prestador lista o serviço com valor\", function () { pm.expect(p.servicos[0].valor).to.eql(\"180.00\"); pm.expect(p.telefone).to.eql(\"89988887777\"); pm.expect(p.area_atuacao).to.eql(\"Elétrica residencial\"); pm.expect(p.descricao).to.eql(\"Eletricista residencial e predial\"); pm.expect(p.categorias).to.include(\"Elétrica\"); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 – Serviços do prestador",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/prestadores/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "prestadores",
+                    ""
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 2,\n    \"user\": 2,\n    \"username\": \"joao\",\n    \"email\": \"joao@email.com\",\n    \"tipo\": \"prestador\",\n    \"telefone\": \"89999990000\",\n    \"area_atuacao\": \"Elétrica residencial\",\n    \"descricao\": \"Eletricista com 10 anos de experiência\",\n    \"categorias\": [\n      \"Elétrica\"\n    ],\n    \"servicos\": [\n      {\n        \"id\": 1,\n        \"nome\": \"Instalação elétrica\",\n        \"descricao\": \"Troca de tomadas e disjuntores\",\n        \"categoria\": \"Elétrica\",\n        \"valor\": \"150.00\"\n      },\n      {\n        \"id\": 2,\n        \"nome\": \"Sem categoria\",\n        \"descricao\": \"x\",\n        \"categoria\": null,\n        \"valor\": null\n      }\n    ]\n  }\n]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Solicitações",
+      "description": "",
+      "item": [
+        {
+          "name": "Criar solicitação",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/solicitacoes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "solicitacoes",
+                ""
+              ]
+            },
+            "description": "cliente_id e prestador_id são ids de USUÁRIO.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cliente_id\": \"{{cliente_user_id}}\",\n  \"prestador_id\": \"{{prestador_user_id}}\",\n  \"servico\": \"Instalação elétrica\",\n  \"descricao\": \"Trocar 3 tomadas da sala\",\n  \"data_servico\": \"2026-12-10\",\n  \"horario\": \"14:00\",\n  \"valor\": 150,\n  \"endereco\": \"Rua A, 100 - Floriano\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"solicitacao_id\", pm.response.json().solicitacao.id);",
+                  "pm.test(\"Nasce com status pendente\", function () { pm.expect(pm.response.json().solicitacao.status).to.eql(\"pendente\"); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "201 – Criar solicitação",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/solicitacoes/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitacoes",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cliente_id\": \"{{cliente_user_id}}\",\n  \"prestador_id\": \"{{prestador_user_id}}\",\n  \"servico\": \"Instalação elétrica\",\n  \"descricao\": \"Trocar 3 tomadas da sala\",\n  \"data_servico\": \"2026-12-10\",\n  \"horario\": \"14:00\",\n  \"valor\": 150,\n  \"endereco\": \"Rua A, 100 - Floriano\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"mensagem\": \"Solicitação criada com sucesso!\",\n  \"solicitacao\": {\n    \"id\": 1,\n    \"cliente\": \"maria\",\n    \"prestador\": \"joao\",\n    \"servico\": \"Instalação elétrica\",\n    \"descricao\": \"Trocar 3 tomadas da sala\",\n    \"data_servico\": \"2026-12-10\",\n    \"horario\": \"14:00\",\n    \"valor\": 150,\n    \"endereco\": \"Rua Fernando Marques, 100 - Floriano/PI\",\n    \"status\": \"pendente\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Listar solicitações",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/solicitacoes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "solicitacoes",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Prestador aceita a solicitação",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/solicitacoes/{{solicitacao_id}}/status/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "solicitacoes",
+                "{{solicitacao_id}}",
+                "status",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"aceita\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 – Prestador aceita a solicitação",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/solicitacoes/{{solicitacao_id}}/status/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitacoes",
+                    "{{solicitacao_id}}",
+                    "status",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"aceita\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"mensagem\": \"Status atualizado com sucesso!\",\n  \"solicitacao\": {\n    \"id\": 1,\n    \"status\": \"aceita\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Agendamentos",
+      "description": "",
+      "item": [
+        {
+          "name": "Criar agendamento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/agendamentos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agendamentos",
+                ""
+              ]
+            },
+            "description": "Só funciona para solicitação com status aceita.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"solicitacao\": \"{{solicitacao_id}}\",\n  \"data\": \"2026-12-10\",\n  \"horario\": \"14:00\",\n  \"local\": \"Rua A, 100 - Floriano\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set(\"agendamento_id\", pm.response.json().id);",
+                  "pm.test(\"Nasce com status agendado\", function () { pm.expect(pm.response.json().status).to.eql(\"agendado\"); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "201 – Criar agendamento",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/agendamentos/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agendamentos",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"solicitacao\": \"{{solicitacao_id}}\",\n  \"data\": \"2026-12-10\",\n  \"horario\": \"14:00\",\n  \"local\": \"Rua A, 100 - Floriano\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"solicitacao\": 1,\n  \"data\": \"2026-12-10\",\n  \"horario\": \"14:00:00\",\n  \"local\": \"Rua Fernando Marques, 100 - Floriano/PI\",\n  \"status\": \"agendado\",\n  \"criado_em\": \"2026-09-29T23:31:40.022265-03:00\",\n  \"atualizado_em\": \"2026-09-29T23:31:40.022281-03:00\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Listar agendamentos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agendamentos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agendamentos",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Detalhar agendamento",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agendamentos/{{agendamento_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agendamentos",
+                "{{agendamento_id}}",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Atualizar agendamento",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/agendamentos/{{agendamento_id}}/atualizar/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agendamentos",
+                "{{agendamento_id}}",
+                "atualizar",
+                ""
+              ]
+            },
+            "description": "PUT exige o corpo completo.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"solicitacao\": \"{{solicitacao_id}}\",\n  \"data\": \"2026-12-11\",\n  \"horario\": \"09:00\",\n  \"local\": \"Rua A, 100 - Floriano\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Data alterada\", function () { pm.expect(pm.response.json().data).to.eql(\"2026-12-11\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cancelar agendamento",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agendamentos/{{agendamento_id}}/cancelar/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agendamentos",
+                "{{agendamento_id}}",
+                "cancelar",
+                ""
+              ]
+            },
+            "description": "Cancela o agendamento e muda a solicitação para cancelada."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "200 – Cancelar agendamento",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/agendamentos/{{agendamento_id}}/cancelar/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agendamentos",
+                    "{{agendamento_id}}",
+                    "cancelar",
+                    ""
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"solicitacao\": 1,\n  \"data\": \"2026-12-10\",\n  \"horario\": \"14:00:00\",\n  \"local\": \"Rua Fernando Marques, 100 - Floriano/PI\",\n  \"status\": \"cancelado\",\n  \"criado_em\": \"2026-09-29T23:31:40.022265-03:00\",\n  \"atualizado_em\": \"2026-09-29T23:31:40.028364-03:00\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "6. Testes de erro",
+      "description": "Confirmam que as regras de negócio e validações funcionam. Rode depois das pastas 1 a 5.",
+      "item": [
+        {
+          "name": "Cadastro com senha fraca",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/register/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "register",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"fraco_{{run}}\",\n  \"email\": \"fraco_{{run}}@teste.com\",\n  \"password\": \"123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 – Cadastro com senha fraca",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/register/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "register",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"fraco_{{run}}\",\n  \"email\": \"fraco_{{run}}@teste.com\",\n  \"password\": \"123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"erro\": \"A senha deve ter pelo menos 8 caracteres.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login com senha errada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"cliente_{{run}}\",\n  \"password\": \"Errada@999\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "401 – Login com senha errada",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/login/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "login",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"cliente_{{run}}\",\n  \"password\": \"Errada@999\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"erro\": \"Usuário ou senha inválidos.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Cliente com dados de prestador",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/perfil/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "perfil",
+                ""
+              ]
+            },
+            "description": "area_atuacao e descricao são exclusivos do perfil prestador.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": \"{{prestador_user_id}}\",\n  \"tipo\": \"cliente\",\n  \"area_atuacao\": \"Elétrica\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 – Cliente com dados de prestador",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/perfil/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "perfil",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"user\": \"{{prestador_user_id}}\",\n  \"tipo\": \"cliente\",\n  \"area_atuacao\": \"Elétrica\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"erro\": \"area_atuacao e descricao são exclusivos do perfil prestador.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Serviço com categoria inexistente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/servicos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "servicos",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Pintura\",\n  \"descricao\": \"Pintura residencial\",\n  \"categoria\": 999999,\n  \"prestadores\": [\n    \"{{prestador_perfil_id}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 – Serviço com categoria inexistente",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/servicos/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "servicos",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"Pintura\",\n  \"descricao\": \"Pintura residencial\",\n  \"categoria\": 999999,\n  \"prestadores\": [\n    \"{{prestador_perfil_id}}\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"categoria\": [\n    \"Pk inválido \\\"999\\\" - objeto não existe.\"\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Serviço com perfil de cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/servicos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "servicos",
+                ""
+              ]
+            },
+            "description": "Só perfis do tipo prestador podem ser vinculados a um serviço.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Pintura\",\n  \"descricao\": \"Pintura residencial\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{cliente_perfil_id}}\",\n      \"valor\": 100\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 – Serviço com perfil de cliente",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/servicos/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "servicos",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"Pintura\",\n  \"descricao\": \"Pintura residencial\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{cliente_perfil_id}}\",\n      \"valor\": 100\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"prestadores\": {\n    \"0\": {\n      \"prestador\": [\n        \"Perfil de prestador 1 não encontrado.\"\n      ]\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Serviço com prestador repetido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/servicos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "servicos",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Pintura\",\n  \"descricao\": \"Pintura residencial\",\n  \"prestadores\": [\n    \"{{prestador_perfil_id}}\",\n    \"{{prestador_perfil_id}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 – Serviço com prestador repetido",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/servicos/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "servicos",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"Pintura\",\n  \"descricao\": \"Pintura residencial\",\n  \"prestadores\": [\n    \"{{prestador_perfil_id}}\",\n    \"{{prestador_perfil_id}}\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"prestadores\": [\n    \"Prestador informado mais de uma vez.\"\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Serviço com valor negativo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/servicos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "servicos",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Pintura\",\n  \"descricao\": \"Pintura residencial\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{prestador_perfil_id}}\",\n      \"valor\": -10\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 – Serviço com valor negativo",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/servicos/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "servicos",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"Pintura\",\n  \"descricao\": \"Pintura residencial\",\n  \"prestadores\": [\n    {\n      \"prestador\": \"{{prestador_perfil_id}}\",\n      \"valor\": -10\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"prestadores\": {\n    \"0\": {\n      \"valor\": [\n        \"Certifque-se de que este valor seja maior ou igual a 0.\"\n      ]\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Status inválido",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/solicitacoes/{{solicitacao_id}}/status/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "solicitacoes",
+                "{{solicitacao_id}}",
+                "status",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"xyz\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 – Status inválido",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/solicitacoes/{{solicitacao_id}}/status/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitacoes",
+                    "{{solicitacao_id}}",
+                    "status",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"xyz\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"erro\": \"Status inválido.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Transição não permitida (cancelada → aceita)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/solicitacoes/{{solicitacao_id}}/status/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "solicitacoes",
+                "{{solicitacao_id}}",
+                "status",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"aceita\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 – Transição não permitida (cancelada → aceita)",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/solicitacoes/{{solicitacao_id}}/status/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "solicitacoes",
+                    "{{solicitacao_id}}",
+                    "status",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"aceita\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"erro\": \"Não é possível alterar de 'cancelada' para 'aceita'.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Agendamento para solicitação não aceita",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/agendamentos/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agendamentos",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"solicitacao\": \"{{solicitacao_id}}\",\n  \"data\": \"2026-12-10\",\n  \"horario\": \"14:00\",\n  \"local\": \"Rua A\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "400 – Agendamento para solicitação não aceita",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/agendamentos/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agendamentos",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"solicitacao\": \"{{solicitacao_id}}\",\n  \"data\": \"2026-12-10\",\n  \"horario\": \"14:00\",\n  \"local\": \"Rua A\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"solicitacao\": [\n    \"Só é possível criar um agendamento para uma solicitação aceita.\"\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Serviço inexistente",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/servicos/999999/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "servicos",
+                "999999",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"X\",\n  \"descricao\": \"Y\",\n  \"prestadores\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "404 – Serviço inexistente",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/servicos/999999/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "servicos",
+                    "999999",
+                    ""
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nome\": \"X\",\n  \"descricao\": \"Y\",\n  \"prestadores\": []\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"erro\": \"Serviço não encontrado.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Agendamento inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agendamentos/999999/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "agendamentos",
+                "999999",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "404 – Agendamento inexistente",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/agendamentos/999999/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "agendamentos",
+                    "999999",
+                    ""
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"erro\": \"Agendamento não encontrado.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Método não permitido",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/login/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "login",
+                ""
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 405\", function () { pm.response.to.have.status(405); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "7. Recuperação de senha (manual)",
+      "description": "Depende do código enviado por e-mail, então é executada à mão, fora do Runner.",
+      "item": [
+        {
+          "name": "Solicitar código",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/password-reset/request/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "password-reset",
+                "request",
+                ""
+              ]
+            },
+            "description": "Com o EmailBackend de console, o código de 6 dígitos aparece no terminal do runserver. Copie para a variável codigo.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"cliente_{{run}}@teste.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validar código",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/password-reset/verify/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "password-reset",
+                "verify",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"cliente_{{run}}@teste.com\",\n  \"code\": \"{{codigo}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cadastrar nova senha",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/password-reset/confirm/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "password-reset",
+                "confirm",
+                ""
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"cliente_{{run}}@teste.com\",\n  \"code\": \"{{codigo}}\",\n  \"new_password\": \"NovaSenha@123\",\n  \"confirm_password\": \"NovaSenha@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "run",
+      "value": ""
+    },
+    {
+      "key": "cliente_user_id",
+      "value": ""
+    },
+    {
+      "key": "prestador_user_id",
+      "value": ""
+    },
+    {
+      "key": "cliente_perfil_id",
+      "value": ""
+    },
+    {
+      "key": "categoria_id",
+      "value": ""
+    },
+    {
+      "key": "prestador_perfil_id",
+      "value": ""
+    },
+    {
+      "key": "servico_id",
+      "value": ""
+    },
+    {
+      "key": "solicitacao_id",
+      "value": ""
+    },
+    {
+      "key": "agendamento_id",
+      "value": ""
+    },
+    {
+      "key": "codigo",
+      "value": ""
+    }
+  ]
+}
