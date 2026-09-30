@@ -17,6 +17,8 @@ from .views import (
     atualizar_prestador_view,
     servicos_view,
     atualizar_servico_view,
+    solicitacoes_view,
+    alterar_status_solicitacao,
 )
 
 urlpatterns = [
@@ -47,4 +49,12 @@ urlpatterns = [
     path('api/prestadores/<int:user_id>/', atualizar_prestador_view, name='atualizar_prestador'),
     path('api/servicos/', servicos_view, name='servicos'),
     path('api/servicos/<int:servico_id>/',atualizar_servico_view,name='atualizar_servico'),
+
+    # Solicitações
+    path('api/solicitacoes/', solicitacoes_view, name='solicitacoes'),
+    path(
+    'api/solicitacoes/<int:id>/status/',
+    alterar_status_solicitacao,
+    name='alterar_status_solicitacao'
+),
 ]
